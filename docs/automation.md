@@ -2,7 +2,7 @@
 
 ## GitHub Pages
 
-Pages is configured for **GitHub Actions** at https://literate-doodle-2mz1mgr.pages.github.io/. The current enterprise site is **private**, with existing access restrictions preserved. The `pages.yml` workflow publishes only generated `dist` content. It does not upload `.git`, dependencies, credentials, session logs, or demo workspaces.
+Pages is configured for **GitHub Actions** at https://hammadorg93.github.io/copilot-runway/. The site and source repository are deliberately **public**, with no GitHub sign-in required to view the portal. The `pages.yml` workflow publishes only generated `dist` content. It does not upload `.git`, dependencies, credentials, session logs, or demo workspaces.
 
 GitHub Pages availability and private-site access depend on the organization's plan and policy. A private repository does not automatically mean its Pages site is private. Publish only this repository's public, synthetic enablement artifacts; keep customer-specific assessments in the customer's approved system.
 

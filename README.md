@@ -10,9 +10,9 @@ A runway prepares you for takeoff. Copilot Runway helps architects understand wh
 
 ## Start at the flight deck
 
-**[Open Copilot Runway](https://literate-doodle-2mz1mgr.pages.github.io/)** for searchable feature cards, release/readiness filters, side-by-side comparisons, full presenter kits, downloadable slides, an editable local policy workshop, a cost lab, and the official-source Radar.
+**[Open Copilot Runway](https://hammadorg93.github.io/copilot-runway/)** for searchable feature cards, release/readiness filters, side-by-side comparisons, full presenter kits, downloadable slides, an editable local policy workshop, a cost lab, and the official-source Radar.
 
-The provisioned enterprise Pages site is **private** and requires authorized GitHub access. The repository remains private; no visibility or access restriction was relaxed.
+The Pages site and source repository are **public**. The flight deck, slides, assessments, and runbooks require no GitHub sign-in to view.
 
 The portal is a responsive, accessible, self-contained static HTML artifact. It makes no runtime API calls and uses no analytics, third-party fonts, or customer data. Light/dark themes follow the Clawpilot design system. `?clawpilotTheme=light` or `?clawpilotTheme=dark` selects a theme explicitly.
 
@@ -117,4 +117,4 @@ The official watchlist is in `catalog/watch.json`; `npm run sources:scan -- --up
 | `.github/workflows/` | CI, Pages, discovery, and source/compiled agentic scout |
 | `.github/agents/` | Explicit tool-free Dynamic Workflows specialist profile |
 
-Keep credentials, customer data, personal information, and confidential material out of the repository and generated Pages assets. Source and Pages access currently remain private. Publish only non-confidential, synthetic enablement material, and do not relax visibility to work around deployment constraints.
+Keep credentials, customer data, personal information, and confidential material out of the repository and generated Pages assets. Both are deliberately public. Publish only non-confidential, synthetic enablement material.
