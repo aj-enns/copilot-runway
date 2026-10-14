@@ -1,19 +1,21 @@
 import { escapeHtml } from "../scripts/lib.mjs";
 
 export function featureVisual(feature, icons) {
+  const accent = feature.lifecycle.status === "experimental" ? "accent" : "link";
+  const color = (tone) => tone.replace(/^accent(?=-|$)/, accent);
   const rect = (x, y, width, height, tone = "surface", radius = 12, stroke = "border") =>
-    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="${radius}" fill="var(--cp-${tone})" stroke="var(--cp-${stroke})" stroke-width="2"/>`;
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="${radius}" fill="var(--cp-${color(tone)})" stroke="var(--cp-${color(stroke)})" stroke-width="2"/>`;
   const text = (x, y, value, size = 22, tone = "text", weight = 500) =>
-    `<text x="${x}" y="${y}" font-size="${size}" font-weight="${weight}" fill="var(--cp-${tone})">${escapeHtml(value)}</text>`;
+    `<text x="${x}" y="${y}" font-size="${size}" font-weight="${weight}" fill="var(--cp-${color(tone)})">${escapeHtml(value)}</text>`;
   const line = (x1, y1, x2, y2, tone = "border") =>
     `<path d="M${x1} ${y1}H${x2}V${y2}" fill="none" stroke="var(--cp-${tone})" stroke-width="2"/>`;
   const stamp = (name, x, y, size = 28) => {
     if (!icons[name]) throw new Error(`Missing illustration icon: ${name}`);
     const viewBox = icons[name].match(/viewBox="([^"]+)"/)[1];
     const paths = icons[name].replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "");
-    return `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="${viewBox}" fill="var(--cp-accent)">${paths}</svg>`;
+    return `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="${viewBox}" fill="var(--cp-${accent})">${paths}</svg>`;
   };
-  const header = (label) => `${rect(48, 36, 504, 248)}${rect(48, 36, 504, 48, "surface-soft")}${text(72, 68, label, 20, "text-soft", 600)}${stamp(feature.icon, 510, 47, 24)}`;
+  const header = (label) => `${rect(48, 36, 504, 248)}${rect(48, 36, 504, 48, "accent-soft")}${text(72, 68, label, 20, "text", 600)}${stamp(feature.icon, 510, 47, 24)}`;
   const scenes = {
     "computer-use": {
       title: "Work with the app, not around it",
@@ -45,7 +47,7 @@ export function featureVisual(feature, icons) {
     "cloud-sandboxes": {
       title: "Isolate the task. Track the meters.",
       caption: "A hosted Linux session separates the agent workspace from the developer desktop; compute and storage remain metered.",
-      scene: () => `<rect x="28" y="28" width="544" height="264" rx="24" fill="var(--cp-accent-soft)" stroke="var(--cp-accent)" stroke-width="2" stroke-dasharray="8 8"/>
+      scene: () => `<rect x="28" y="28" width="544" height="264" rx="24" fill="var(--cp-${accent}-soft)" stroke="var(--cp-${accent})" stroke-width="2" stroke-dasharray="8 8"/>
         ${rect(50, 54, 318, 210)}${stamp("shield-lock", 72, 72)}${text(112, 97, "Isolated Linux", 24, "text", 600)}${line(72, 116, 346, 116)}
         ${text(72, 157, "repo / synthetic-app", 20, "text-soft")}${text(72, 195, "session / running", 22)}${text(72, 239, "Hosted workspace", 20, "text-soft")}
         ${rect(390, 54, 158, 94)}${stamp("meter", 410, 70)}${text(410, 130, "Compute", 21, "text", 600)}
@@ -75,6 +77,6 @@ export function featureVisual(feature, icons) {
   return {
     title: visual.title,
     caption: visual.caption,
-    svg: `<svg class="feature-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320" role="img" aria-label="${escapeHtml(visual.title)}" font-family="Segoe UI, Aptos, Calibri, sans-serif"><title>${escapeHtml(feature.name)}: ${escapeHtml(visual.title)}</title><desc>${escapeHtml(visual.caption)} Original Runway concept illustration, not a product screenshot or live run.</desc><rect width="600" height="320" fill="var(--cp-surface-soft)"/><circle cx="564" cy="24" r="106" fill="var(--cp-accent-soft)"/><circle cx="22" cy="310" r="92" fill="var(--cp-accent-soft)"/>${visual.scene()}</svg>`,
+    svg: `<svg class="feature-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320" role="img" aria-label="${escapeHtml(visual.title)}" font-family="Segoe UI, Aptos, Calibri, sans-serif"><title>${escapeHtml(feature.name)}: ${escapeHtml(visual.title)}</title><desc>${escapeHtml(visual.caption)} Original Runway concept illustration, not a product screenshot or live run.</desc><rect width="600" height="320" fill="var(--cp-${accent === "link" ? "link-panel" : "accent-soft"})"/><circle cx="564" cy="24" r="106" fill="var(--cp-${accent})" opacity=".14"/><circle cx="22" cy="310" r="92" fill="var(--cp-${accent})" opacity=".14"/>${visual.scene()}</svg>`,
   };
 }

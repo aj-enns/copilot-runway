@@ -126,6 +126,29 @@ test("workspace navigation, keyboard search, and theme controls expose their cur
   await expect(page.locator(".feature-title")).toHaveText("Cloud Sandboxes");
 });
 
+test("brand color accents remain visible and readable in both themes", async ({ page }) => {
+  for (const theme of ["light", "dark"]) {
+    await page.goto(`/?clawpilotTheme=${theme}`);
+    const colors = await page.evaluate(() => {
+      const style = (selector) => getComputedStyle(document.querySelector(selector));
+      return {
+        header: style(".topbar").backgroundColor,
+        headerText: style(".breadcrumb strong").color,
+        surface: style(".feature-card").backgroundColor,
+        hero: style(".hero").backgroundImage,
+        blue: style('[data-feature="computer-use"] .feature-cover').borderBottomColor,
+        rose: style('[data-feature="dynamic-workflows"] .feature-cover').borderBottomColor,
+        metrics: style(".metric").backgroundColor,
+      };
+    });
+    expect(colors.header).not.toBe(colors.headerText);
+    expect(colors.hero).toContain("linear-gradient");
+    expect(colors.blue).not.toBe(colors.rose);
+    expect(colors.metrics).not.toBe(colors.surface);
+    await expect(page.locator('[data-feature="computer-use"] .feature-art')).toBeVisible();
+  }
+});
+
 test("start links, home navigation, Radar shortcuts, and shared downloads work", async ({ page }) => {
   await page.goto("/?clawpilotTheme=light");
   await page.getByRole("button", { name: "Start with Computer Use", exact: true }).click();
@@ -507,18 +530,28 @@ test("secondary dashboard text retains AA contrast in both themes", async ({ pag
     const ratios = await page.evaluate(() => {
       const luminance = (color) => {
         const components = color.match(/[\d.]+/g).slice(0, 3).map((value) => {
-          const channel = Number(value) / 255;
+          const channel = Number(value) / (color.startsWith("color(srgb ") ? 1 : 255);
           return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
         });
         return components[0] * 0.2126 + components[1] * 0.7152 + components[2] * 0.0722;
       };
-      return [".hero-copy > p", ".section-heading p", ".metric small", ".feature-card .summary", ".card-kit", "#result-count"].map((selector) => {
+      return [".hero-copy > p", ".breadcrumb", ".topbar-date", ".section-heading p", ".metric small", ".feature-card .summary", ".card-kit", "#result-count"].map((selector) => {
         const element = document.querySelector(selector);
         let background = element;
         while (getComputedStyle(background).backgroundColor === "rgba(0, 0, 0, 0)") background = background.parentElement;
         const foregroundLuminance = luminance(getComputedStyle(element).color);
-        const backgroundLuminance = luminance(getComputedStyle(background).backgroundColor);
-        return (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) / (Math.min(foregroundLuminance, backgroundLuminance) + 0.05);
+        const backgrounds = [getComputedStyle(background).backgroundColor];
+        if (selector === ".hero-copy > p") {
+          const probe = document.createElement("span");
+          probe.style.color = "var(--cp-link-panel)";
+          document.body.append(probe);
+          backgrounds.push(getComputedStyle(probe).color);
+          probe.remove();
+        }
+        return Math.min(...backgrounds.map((color) => {
+          const backgroundLuminance = luminance(color);
+          return (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) / (Math.min(foregroundLuminance, backgroundLuminance) + 0.05);
+        }));
       });
     });
     expect(ratios.every((ratio) => ratio >= 4.5)).toBe(true);

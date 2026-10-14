@@ -131,7 +131,7 @@ function card(feature) {
   const result = resultFor(feature);
   const passed = feature.readiness.filter((assessment) => assessment.status === "pass").length;
   const isStale = evidenceIsStale(feature, data.rubric, data.sources);
-  return `<article class="feature-card ${feature.featured ? "featured" : ""}" data-feature="${feature.id}">
+  return `<article class="feature-card ${feature.featured ? "featured" : ""}" data-feature="${feature.id}" data-lifecycle="${html(feature.lifecycle.status)}">
     ${visualCover(feature)}
     <div class="card-top"><span class="feature-icon">${icon(feature.icon)}</span><button class="compare-toggle" data-compare="${feature.id}" aria-pressed="${compared.has(feature.id)}" aria-label="Compare ${html(feature.name)}">${icon(compared.has(feature.id) ? "check" : "diff")}Compare</button></div>
     <div class="category-label">${html(feature.category)}</div>
