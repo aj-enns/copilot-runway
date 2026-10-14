@@ -112,19 +112,32 @@ function renderMetrics() {
   $(".topbar-date").innerHTML = `Evidence reviewed <time datetime="${html(data.updatedOn)}">${date(data.updatedOn)}</time>`;
 }
 
+function renderHeroKit() {
+  const feature = data.features.find((entry) => entry.id === "computer-use");
+  $("#hero-kit").innerHTML = `<div class="kit-titlebar"><span>${icon("copilot")}<strong>Featured enablement kit</strong></span>${lifecycleBadge(feature)}</div>
+    <div class="kit-heading"><span class="feature-icon">${icon(feature.icon)}</span><div><span class="kit-path">runway / ${html(feature.id)}</span><h2>${html(feature.name)}</h2></div></div>
+    <div class="kit-files">
+      <button class="kit-file" data-open="${feature.id}" data-tab="readiness"><span class="kit-file-icon">${icon("shield-lock")}</span><span><strong>Enterprise assessment</strong><small>${verdictLabels[resultFor(feature)]}</small></span>${icon("arrow-right")}</button>
+      <a class="kit-file" href="artifacts/slides/${feature.id}.pptx" download><span class="kit-file-icon">${icon("download")}</span><span><strong>Value &amp; cost brief</strong><small>Two slides with official-source citations</small></span>${icon("arrow-right")}</a>
+      <button class="kit-file" data-open="${feature.id}" data-tab="demo"><span class="kit-file-icon">${icon("play")}</span><span><strong>Presenter runbook</strong><small>${feature.demo.minutes}-minute story with scoped reset</small></span>${icon("arrow-right")}</button>
+    </div>
+    <div class="kit-footer"><span>${icon("check")}Kit: ${html(feature.demo.status)}</span><span>Live: ${html(feature.demo.liveStatus)}</span></div>`;
+}
+
 function card(feature) {
   const result = resultFor(feature);
   const passed = feature.readiness.filter((assessment) => assessment.status === "pass").length;
   const isStale = evidenceIsStale(feature, data.rubric, data.sources);
   return `<article class="feature-card ${feature.featured ? "featured" : ""}" data-feature="${feature.id}">
-    <div class="card-top"><span class="feature-icon">${icon(feature.icon)}</span><div class="card-badges">${feature.featured ? '<span class="badge badge-neutral">Start here</span>' : ""}${lifecycleBadge(feature)}</div></div>
+    <div class="card-top"><span class="feature-icon">${icon(feature.icon)}</span><button class="compare-toggle" data-compare="${feature.id}" aria-pressed="${compared.has(feature.id)}" aria-label="Compare ${html(feature.name)}">${icon(compared.has(feature.id) ? "check" : "diff")}Compare</button></div>
     <div class="category-label">${html(feature.category)}</div>
     <h3><button class="feature-title" data-open="${feature.id}">${html(feature.name)}</button></h3>
+    <div class="card-badges">${lifecycleBadge(feature)}${feature.featured ? '<span class="badge badge-neutral">Start here</span>' : ""}</div>
     <p class="summary">${html(feature.summary)}</p>
     <div class="surface-tags">${feature.surfaces.slice(0, 3).map((surface) => `<span class="surface-tag">${html(surface)}</span>`).join("")}</div>
-    <div class="card-readiness"><span>${icon(result === "blocked" ? "alert" : "shield-lock")}</span><strong>${verdictLabels[result]}</strong><small>${isStale ? "Re-review overdue" : `${passed}/${data.rubric.gates.length} documented`}</small></div>
-    <div class="card-kit">2-slide brief &middot; ${feature.demo.minutes}-min kit &middot; live: ${html(feature.demo.liveStatus)}</div>
-    <div class="card-actions"><button class="button button-small" data-open="${feature.id}" data-tab="readiness">Assess</button><button class="button button-small" data-open="${feature.id}" data-tab="demo">${icon("play")}Demo</button><a class="button button-small" href="artifacts/slides/${feature.id}.pptx" download aria-label="Download ${html(feature.name)} slides">${icon("download")}Slides</a><button class="compare-toggle" data-compare="${feature.id}" aria-pressed="${compared.has(feature.id)}" aria-label="Compare ${html(feature.name)}">${icon(compared.has(feature.id) ? "check" : "diff")}Compare</button></div>
+    <div class="card-readiness" data-verdict="${result}"><span>${icon(result === "blocked" ? "alert" : "shield-lock")}</span><strong>${verdictLabels[result]}</strong><small>${isStale ? "Re-review overdue" : `${passed}/${data.rubric.gates.length} recorded passes`}</small></div>
+    <div class="card-kit"><span>${icon("play")}${feature.demo.minutes}-min kit</span><span>Live: ${html(feature.demo.liveStatus)}</span></div>
+    <div class="card-actions"><button class="button button-small" data-open="${feature.id}" data-tab="readiness">${icon("shield-lock")}Assess</button><button class="button button-small" data-open="${feature.id}" data-tab="demo">${icon("play")}Demo</button><a class="button button-small" href="artifacts/slides/${feature.id}.pptx" download aria-label="Download ${html(feature.name)} slides">${icon("download")}Slides</a></div>
   </article>`;
 }
 
@@ -413,9 +426,10 @@ $("#export-cost").addEventListener("click", () => {
 });
 
 function renderThemeToggle() {
-  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-  $("#theme-toggle").setAttribute("aria-label", `Switch to ${nextTheme} theme`);
-  $("#theme-toggle").innerHTML = icon(nextTheme === "light" ? "sun" : "moon");
+  const dark = document.documentElement.dataset.theme === "dark";
+  $("#theme-toggle").setAttribute("aria-pressed", String(dark));
+  $("#theme-toggle").title = `Switch to ${dark ? "light" : "dark"} theme`;
+  $("#theme-toggle").innerHTML = icon(dark ? "sun" : "moon");
 }
 
 $("#theme-toggle").addEventListener("click", () => {
@@ -455,12 +469,14 @@ hydrateIcons();
 renderThemeToggle();
 loadWorkshop();
 renderMetrics();
+renderHeroKit();
 renderCatalog();
 renderReadiness();
 renderLab();
 renderCost();
 renderRadar();
 renderComparison();
+renderThemeToggle();
 $("#cost-sources").innerHTML = sourceLinks(["billing", "sandbox-billing", "sandboxes"]);
 const staleFeatures = data.features.filter((feature) => evidenceIsStale(feature, data.rubric, data.sources));
 if (staleFeatures.length) warn(`${staleFeatures.length} feature assessment(s) or their sources are past the ${data.rubric.reviewWindowDays}-day evidence window. Required gates remain on hold until re-reviewed.`);

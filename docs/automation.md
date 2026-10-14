@@ -4,6 +4,8 @@
 
 Pages is configured for **GitHub Actions** at https://hammadorg93.github.io/copilot-runway/. The site and source repository are deliberately **public**, with no GitHub sign-in required to view the portal. The `pages.yml` workflow publishes only generated `dist` content. It does not upload `.git`, dependencies, credentials, session logs, or demo workspaces.
 
+The [Pages pipeline](../.github/workflows/pages.yml) runs on pushes to `main`, a daily schedule, and manual dispatch. Its build job validates evidence and artifacts, runs unit tests, refreshes official-source signals, builds the portal, and runs the Playwright browser suite before uploading a Pages artifact. The separate deployment job requires that build to succeed and uses GitHub's `deploy-pages` action with scoped Pages/OIDC permissions. A failed browser check cannot publish the refreshed UI.
+
 GitHub Pages availability and private-site access depend on the organization's plan and policy. A private repository does not automatically mean its Pages site is private. Publish only this repository's public, synthetic enablement artifacts; keep customer-specific assessments in the customer's approved system.
 
 The daily Pages run refreshes Radar candidates at build time without writing authoritative source files back to main. A source-fetch failure stops publication rather than silently serving an empty "all current" result.
