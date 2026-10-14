@@ -12,6 +12,7 @@ const iconNames = [
   "copilot", "mark-github", "apps", "shield-lock", "play", "meter", "broadcast",
   "verified", "plus", "sun", "moon", "search", "info", "alert", "download",
   "copy", "check", "diff", "sync", "x", "arrow-right", "git-commit",
+  "people", "device-camera-video", "checklist", "lock",
   ...data.features.map((feature) => feature.icon),
 ];
 data.icons = {};
@@ -72,4 +73,5 @@ for (const feature of data.features) {
 await copyFile(fromRoot("artifacts", "slides", "copilot-runway.pptx"), fromRoot("dist", "artifacts", "slides", "copilot-runway.pptx"));
 await write(fromRoot("dist", "readiness", "README.md"), await readFile(fromRoot("readiness", "README.md"), "utf8"));
 await copyFile(fromRoot("THIRD_PARTY_NOTICES.md"), fromRoot("dist", "THIRD_PARTY_NOTICES.md"));
+await write(fromRoot("dist", "docs", "integration-vision.md"), await readFile(fromRoot("docs", "integration-vision.md"), "utf8"));
 console.log(`Built self-contained flight deck with ${data.features.length} features, embedded official icons, no runtime network calls, and downloadable demo/assessment/slide assets.`);

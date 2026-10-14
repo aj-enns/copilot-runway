@@ -235,6 +235,7 @@ for (const feature of catalog.features) {
     await page.locator(".nav-button[data-view=catalog]").click();
     await card.getByRole("button", { name: "Demo", exact: true }).click();
     await expect(dialog.getByRole("tab", { name: "Demo", exact: true })).toHaveAttribute("aria-selected", "true");
+    await expect(dialog.locator(".lab-illustration .feature-art")).toBeVisible();
     await checkCopyButtons(dialog, page);
     const runbook = page.waitForEvent("download");
     await dialog.getByRole("link", { name: "Download full runbook (.md)" }).click();
@@ -277,7 +278,7 @@ test("copy controls surface denied clipboard access without claiming success", a
     });
   });
   await page.goto("/#view=demos");
-  await page.getByRole("button", { name: "Copy command" }).click();
+  await page.locator("#demo-lab").getByRole("button", { name: "Copy command" }).click();
   await expect(page.locator("#toast")).toContainText("Clipboard access is unavailable");
   await expect(page.locator("#toast")).not.toContainText("Copied.");
 });
@@ -303,18 +304,139 @@ test("comparison limits, selection toggles, opening, and clearing remain coheren
 });
 
 for (const width of [320, 768, 1100, 1440]) {
-  test(`workspace and all six views fit a ${width}px viewport in both themes`, async ({ page }) => {
+  test(`workspace and all seven views fit a ${width}px viewport in both themes`, async ({ page }) => {
     await page.setViewportSize({ width, height: 960 });
     for (const theme of ["light", "dark"]) {
       await page.goto(`/?clawpilotTheme=${theme}`);
-      for (const view of ["catalog", "readiness", "demos", "cost", "radar", "ga"]) {
+      for (const view of ["catalog", "context", "readiness", "demos", "cost", "radar", "ga"]) {
         await page.locator(`.nav-button[data-view="${view}"]`).click();
         await expect(page.locator(`#view-${view}`)).toBeVisible();
+        if (view === "context") await page.getByRole("button", { name: "Preview sample account matches" }).click();
+        if (view === "demos") await page.getByRole("button", { name: "Build recording brief" }).click();
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${theme} ${view} overflows`).toBe(true);
       }
     }
   });
 }
+
+test("account context shows fictional matches, private handoff, and no connected data or persistence", async ({ page, request }) => {
+  const externalRequests = [];
+  const errors = [];
+  page.on("request", (r) => { if (new URL(r.url()).hostname !== "127.0.0.1") externalRequests.push(r.url()); });
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.addInitScript(() => {
+    window.runwayCopiedCommands = [];
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: async (command) => { window.runwayCopiedCommands.push(command); } } });
+  });
+  await page.goto("/?clawpilotTheme=light");
+  await page.getByRole("button", { name: /Pull your account context/ }).click();
+  await expect(page.locator("#view-context")).toBeVisible();
+  await expect(page.locator("#view-context")).toContainText("WorkIQ is not connected");
+  await expect(page.locator(".account-match")).toHaveCount(0);
+  await page.getByRole("button", { name: "Preview sample account matches" }).click();
+  await expect(page.locator(".account-match")).toHaveCount(3);
+  await expect(page.locator(".account-feature-match")).toHaveCount(6);
+  await expect(page.locator("#context-status")).toContainText("no real data was retrieved");
+  await page.getByLabel("Planned lookback").selectOption("7");
+  await expect(page.locator("#workiq-handoff")).toContainText("last 7 days");
+  await page.getByRole("button", { name: "Copy private WorkIQ handoff prompt" }).click();
+  const copied = await page.evaluate(() => window.runwayCopiedCommands.at(-1));
+  expect(copied).toContain("last 7 days");
+  expect(copied).toContain("Do not upload account context");
+  expect(copied).toContain("Current pilot verdict: Hold for evidence");
+  for (const feature of catalog.features) {
+    await page.getByRole("button", { name: `Inspect ${feature.name}`, exact: true }).click();
+    const dialog = page.getByRole("dialog", { name: feature.name, exact: true });
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("button", { name: "Close feature" }).click();
+    await expect(page.locator("#view-context")).toBeVisible();
+  }
+  await page.getByText("How authentication would work", { exact: true }).click();
+  await expect(page.locator(".connector-card")).toContainText("GitHub sign-in does not grant Microsoft 365 access");
+  expect((await request.get("/docs/integration-vision.md")).status()).toBe(200);
+  await page.screenshot({ path: "test-results/account-context.png", fullPage: true });
+  await page.getByRole("button", { name: "Clear sample context" }).click();
+  await expect(page.locator(".account-match")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Preview sample account matches" })).toBeFocused();
+  await page.getByRole("button", { name: "Preview sample account matches" }).click();
+  await page.reload();
+  await expect(page.locator(".account-match")).toHaveCount(0);
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([]);
+  expect(externalRequests).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test("account scenario fit never overrides stale readiness evidence", async ({ page }) => {
+  await page.clock.install({ time: new Date("2026-11-20T12:00:00Z") });
+  await page.goto("/#view=context");
+  await page.getByRole("button", { name: "Preview sample account matches" }).click();
+  await expect(page.locator(".account-feature-match .badge-blocked")).toHaveCount(6);
+  await expect(page.locator("#workiq-handoff")).not.toContainText("Current pilot verdict: Pilot with conditions");
+});
+
+test("every demo has illustrated instructions and a correctly scoped, invalidatable recording brief", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.addInitScript(() => {
+    window.runwayCopiedCommands = [];
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: async (command) => { window.runwayCopiedCommands.push(command); } } });
+  });
+  await page.goto("/#view=demos");
+  const studio = page.locator("#demo-studio");
+  for (const feature of catalog.features) {
+    await page.locator(`.demo-choice[data-lab="${feature.id}"]`).click();
+    await expect(page.locator("#demo-lab .lab-illustration .feature-art")).toHaveCount(1);
+    await expect(studio.getByRole("heading", { name: `How to demo ${feature.name}`, exact: true })).toBeVisible();
+    await expect(studio.locator(".demo-step-art")).toHaveCount(4);
+    await checkCopyButtons(studio, page);
+    await expect(studio.getByRole("button", { name: "Generate video (backend planned)" })).toBeDisabled();
+    await expect(studio.getByRole("button", { name: "Download recording brief (.md)" })).toBeDisabled();
+    await studio.getByLabel("Target video length").selectOption("180");
+    await studio.getByRole("button", { name: "Build recording brief" }).click();
+    await expect(studio.locator(".video-timeline > div")).toHaveCount(4);
+    await expect(studio.locator("#video-brief-content")).toContainText("Target length: 180 seconds");
+    await expect(studio.locator("#video-brief-content")).toContainText("3:00");
+    const downloaded = page.waitForEvent("download");
+    await studio.getByRole("button", { name: "Download recording brief (.md)" }).click();
+    const artifact = await downloaded;
+    expect(artifact.suggestedFilename()).toBe(`runway-${feature.id}-recording-brief.md`);
+    const brief = await readFile(await artifact.path(), "utf8");
+    expect(brief).toContain(`recording brief: ${feature.name}`);
+    expect(brief).toContain(`npm run demo:setup -- ${feature.id}`);
+    expect(brief).toContain(feature.demo.expected);
+    expect(brief).toContain(feature.demo.remoteCleanup);
+    expect(brief).toContain("PLANNED ONLY");
+    expect(brief).toContain("No video, Copilot run, WorkIQ query");
+    await studio.getByLabel("Target video length").selectOption("90");
+    await expect(studio.locator("#video-brief")).not.toBeVisible();
+    await expect(studio.getByRole("button", { name: "Download recording brief (.md)" })).toBeDisabled();
+    await studio.getByRole("button", { name: "Build recording brief" }).click();
+    await expect(studio.locator("#video-brief-content")).toContainText("Target length: 90 seconds");
+    await expect(studio.locator("#video-brief-content")).toContainText("1:30");
+  }
+  expect(errors).toEqual([]);
+});
+
+test("recording planning preserves rehearsal behavior and never dispatches external work", async ({ page }) => {
+  const externalRequests = [];
+  page.on("request", (r) => { if (new URL(r.url()).hostname !== "127.0.0.1") externalRequests.push(r.url()); });
+  await page.goto("/?clawpilotTheme=light#view=demos");
+  await page.getByRole("button", { name: "Jump to illustrated guide" }).click();
+  await expect(page.locator("#demo-studio-title")).toBeFocused();
+  await page.getByRole("button", { name: "Plan a demo video", exact: true }).click();
+  await expect(page.locator("#video-planner-title")).toBeFocused();
+  await page.getByRole("button", { name: "Build recording brief" }).click();
+  await page.locator("#lab-advance").click();
+  await expect(page.locator("#video-brief-content")).toContainText("recording brief: Computer Use");
+  await page.locator("#lab-stop").click();
+  await page.locator("#lab-reset").click();
+  await expect(page.locator("#video-brief")).toBeVisible();
+  await page.screenshot({ path: "test-results/demo-studio.png", fullPage: true });
+  await page.locator('.demo-choice[data-lab="dynamic-workflows"]').click();
+  await expect(page.locator("#video-brief")).not.toBeVisible();
+  await expect(page.getByRole("button", { name: "Generate video (backend planned)" })).toBeDisabled();
+  expect(externalRequests).toEqual([]);
+});
 
 test("concise enterprise use cases appear in every card, detail view, and search", async ({ page }) => {
   await page.goto("/?clawpilotTheme=light");

@@ -20,8 +20,9 @@ Copilot Runway is an independent workspace for Cloud Solution Architects prepari
 | Workspace | What it helps you do | What you leave with |
 | --- | --- | --- |
 | **Flight deck** | Search features and enterprise use cases; filter by lifecycle, surface, and readiness; compare up to three capabilities | A scoped feature shortlist with visible caveats |
+| **Account context** | Preview fictional account-to-feature matches and prepare a private WorkIQ handoff | A read-only prompt and explicit authentication/privacy blueprint, not retrieved account data |
 | **Readiness gates** | Inspect every non-negotiable and its owner, evidence, and test; propose local workshop requirements | A source-backed assessment and exportable proposed policy |
-| **Demo lab** | Rehearse a synthetic control story; open the real-feature presenter kit; copy setup, verify, and reset commands | A repeatable demo plan with expected evidence and cleanup boundaries |
+| **Demo lab** | Rehearse a synthetic control story; follow illustrated steps; open the presenter kit; build a recording storyboard | A repeatable demo plan and downloadable recording brief, not an automatically generated video |
 | **Cost lab** | Change AI-credit and cloud-sandbox assumptions and inspect the published meter arithmetic | An exportable illustrative estimate, not a tenant quote |
 | **Preview radar** | Review daily official-source preview, release, policy, billing, and lifecycle signals | Candidates to investigate, not automatically admitted features |
 | **Recently GA** | Filter reviewed announcements by date and feature/model type, and inspect primary sources | Durable GA history plus a separate queue of unverified new GA signals |
@@ -33,6 +34,18 @@ The portal uses a responsive Microsoft Fluent-inspired shell and GitHub Primer-s
 Each feature now has an original, theme-aware **concept illustration**: a GUI service-desk edit, specialist journal, governed workflow draft, isolated cloud session, cited repository context, or bounded test-repair cycle. Click the illustrated cover for its control story and download a self-contained SVG for customer conversations. These are clearly labeled illustrations, not official product screenshots or evidence of a live run. Maintain them in `site/feature-visuals.mjs`; the build embeds them offline and exports `dist\artifacts\visuals\<feature-id>.svg` without changing assessed feature evidence or slide fingerprints.
 
 Press `/` to focus capability search. Release-stage filters and result counts remain visible on mobile; the navigation scrolls to the selected view. The comparison tray stays available while scrolling and leaves space at the end of the page so it does not cover the final controls.
+
+## New front-end concepts: account context and demo video studio
+
+**[Pull your account context](https://hammadorg93.github.io/copilot-runway/#view=context)** opens an explicitly unconnected WorkIQ concept. Preview three fictional accounts, inspect scenario-to-feature matches with the current readiness verdict, choose a 7/30/90-day handoff window, and copy a read-only prompt for your **own approved private Copilot + WorkIQ session**. The page does not sign in, launch Copilot, access Microsoft 365, or store account results. GitHub sign-in is not Microsoft 365 authentication; WorkIQ needs appropriate licensing and tenant administrator consent.
+
+![Fictional account-context preview with WorkIQ connection boundaries and readiness-aware feature matches](docs/images/account-context.png)
+
+**[Demo lab](https://hammadorg93.github.io/copilot-runway/#view=demos)** now shows a feature concept image and four illustrated **prepare / run with review / verify / reset** instructions. The video studio can build a 90-second or 3-minute storyboard and download a recording brief containing presenter instructions, evidence, cleanup, and recording safeguards. **Generate video** is visibly disabled and labeled backend planned; no recorder, model, Computer Use session, or Actions job is triggered.
+
+![Illustrated demo instructions and the offline recording planner with video generation clearly marked as unconnected](docs/images/demo-studio.png)
+
+The [integration blueprint](docs/integration-vision.md) separates the working front end from future private authentication, account resolution, retrieval, and recording orchestration. Copilot Computer Use is documented for **local macOS/Windows**; unattended desktop recording on Actions is unvalidated, not assumed. Real work context must never enter public Pages, commits, Actions logs/artifacts, or demo recordings. The existing Pages deployment pipeline is unchanged.
 
 ## A customer-session journey
 
@@ -164,7 +177,7 @@ The official watchlist is in `catalog/watch.json`; `npm run sources:scan -- --up
 | `artifacts/slides/` | Generated, cited PowerPoint briefs |
 | `demos/` | Real-feature runbooks, synthetic fixtures, experimental orchestration logic |
 | `site/` | Static portal source and shared pure assessment/calculation model |
-| `docs/` | Automation trust boundaries and illustrative UI screenshots |
+| `docs/` | Automation trust boundaries, context/video integration blueprint, and illustrative UI screenshots |
 | `scripts/` | Validation, build, discovery, scoped demo setup/reset, and artifact generation |
 | `.github/workflows/` | CI, Pages, discovery, and source/compiled agentic scout |
 | `.github/agents/` | Explicit tool-free Dynamic Workflows specialist profile |

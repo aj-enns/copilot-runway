@@ -29,6 +29,7 @@
       <span class="nav-eyebrow">ARCHITECT WORKSPACE</span>
       <nav aria-label="Primary">
         <button class="nav-button active" data-view="catalog" aria-current="page"><span data-icon="apps"></span>Flight deck<span class="nav-count">06</span></button>
+        <button class="nav-button" data-view="context"><span data-icon="people"></span>Account context<span class="nav-plan">Planned</span></button>
         <button class="nav-button" data-view="readiness"><span data-icon="shield-lock"></span>Readiness gates</button>
         <button class="nav-button" data-view="demos"><span data-icon="play"></span>Demo lab</button>
         <button class="nav-button" data-view="cost"><span data-icon="meter"></span>Cost lab</button>
@@ -75,6 +76,11 @@
             </div>
             <section class="kit-preview" id="hero-kit" aria-label="Featured enablement kit"></section>
           </div>
+          <section class="context-callout" aria-labelledby="context-callout-title">
+            <span class="context-callout-icon" data-icon="people"></span>
+            <div><span class="badge badge-experimental">Front-end concept</span><h2 id="context-callout-title">The right feature for your next account conversation.</h2><p>WorkIQ could connect recent account activity to these Copilot pilots. Explore the private handoff and fictional sample matches; no work data is connected.</p></div>
+            <button class="button" data-view="context"><span data-icon="people"></span>Pull your account context<span aria-hidden="true">&rarr;</span></button>
+          </section>
           <div class="metrics" id="metrics" aria-label="Catalog coverage"></div>
           <div class="section-heading">
             <div><span class="eyebrow">FEATURE EXPLORER</span><h2>Capabilities on the runway</h2><p>Find a capability. Review its controls. Enterprise uses below are illustrative, not approved customer deployments.</p></div>
@@ -92,6 +98,23 @@
           <div class="feature-grid" id="feature-grid"></div>
           <div class="coverage-note"><span data-icon="info"></span><p id="coverage-note"></p></div>
         </section>
+        <section id="view-context" class="view" hidden>
+          <div class="page-heading"><span class="eyebrow"><span data-icon="people"></span>PERSONALIZED ACCOUNT FIT &middot; VISION</span><h1>Your accounts. Relevant Copilot pilots.</h1><p>Connect account needs to potential feature use, without confusing a scenario match with enterprise readiness.</p></div>
+          <div class="notice notice-warning"><span data-icon="lock"></span><div><strong>WorkIQ is not connected. No sign-in or data retrieval happens here.</strong><p>This public prototype only shows fictional samples and prepares a prompt for your private Copilot session. Do not enter customer information or credentials into this site.</p></div></div>
+          <div class="context-layout">
+            <section class="connector-card" aria-labelledby="connector-title">
+              <div class="card-top"><span class="feature-icon"><span data-icon="people"></span></span><span class="badge badge-experimental">Backend planned</span></div>
+              <h2 id="connector-title">Pull your account context</h2><p>Start with a read-only WorkIQ handoff in an approved, user-authenticated Copilot session.</p>
+              <label for="context-window">Planned lookback<select id="context-window"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label>
+              <p class="context-hint">The lookback updates the handoff prompt, not the fictional samples.</p>
+              <div class="lab-actions"><button class="button button-primary" id="preview-account-context">Preview sample account matches</button><button class="button button-small" id="clear-account-context" disabled>Clear sample context</button></div>
+              <p id="context-status" role="status" aria-live="polite">Not connected. No account context has been retrieved.</p>
+              <details><summary>How authentication would work</summary><p>GitHub sign-in does not grant Microsoft 365 access. WorkIQ requires the viewer's Microsoft 365 identity, appropriate licensing, and tenant administrator consent.</p><p>The initial path is your approved local Copilot + WorkIQ session. A browser integration needs a separately approved private backend and a validated per-user delegated authentication flow. Public Actions must not impersonate viewers or hold their work-data tokens.</p><a href="https://github.com/microsoft/work-iq/blob/main/ADMIN-INSTRUCTIONS.md" target="_blank" rel="noopener noreferrer">Official WorkIQ administrator guidance &nearr;</a></details>
+            </section>
+            <section class="context-results" aria-labelledby="context-results-title"><div class="section-heading"><div><span class="eyebrow">ILLUSTRATIVE, NOT RETRIEVED</span><h2 id="context-results-title">Account-to-feature matches</h2><p>Every sample is fictional. Recommendations still inherit the catalog's real readiness verdict and caveats.</p></div></div><div id="account-matches"></div></section>
+          </div>
+          <section class="handoff-panel" aria-labelledby="handoff-title"><span class="eyebrow"><span data-icon="lock"></span>PRIVATE HANDOFF &middot; AVAILABLE NOW</span><h2 id="handoff-title">Take the prompt to your own Copilot session</h2><p>Copying does not launch Copilot, authenticate WorkIQ, or send anything. Run it only in an approved private session; keep the results there.</p><div id="workiq-handoff"></div><div class="lab-actions"><a class="button button-small" href="https://github.com/microsoft/work-iq" target="_blank" rel="noopener noreferrer">Official WorkIQ setup &nearr;</a><a class="button button-small" href="docs/integration-vision.md" download><span data-icon="download"></span>Integration blueprint (.md)</a></div></section>
+        </section>
         <section id="view-readiness" class="view" hidden>
           <div class="page-heading"><span class="eyebrow">THE NON-NEGOTIABLES</span><h1>Evidence is the gate.</h1><p>Ten minimum controls for a controlled enterprise pilot. A score cannot average away a blocking unknown.</p></div>
           <div class="policy-banner"><span data-icon="shield-lock"></span><div><strong id="policy-version"></strong><p>Fail, unknown, missing, or stale evidence blocks a required gate. A documented mechanism is not customer sign-off.</p></div><a class="button button-small" href="https://github.com/hammadorg93/copilot-runway/edit/main/readiness/gates.json" target="_blank" rel="noopener noreferrer">Propose a policy change</a></div>
@@ -104,9 +127,10 @@
           </section>
         </section>
         <section id="view-demos" class="view" hidden>
-          <div class="page-heading"><span class="eyebrow">REHEARSE THE STORY</span><h1>A demo with boundaries.</h1><p>Try the control story here, then use the real-feature runbook. Every kit has prerequisites, expected evidence, and scoped reset.</p></div>
+          <div class="page-heading"><span class="eyebrow">REHEARSE THE STORY</span><h1>A demo with boundaries.</h1><p>Try the control story here, then use the real-feature runbook. Every kit has prerequisites, expected evidence, and scoped reset.</p><div class="lab-actions"><button class="button button-small" id="show-demo-guide"><span data-icon="checklist"></span>Jump to illustrated guide</button><button class="button button-small" id="show-video-planner"><span data-icon="device-camera-video"></span>Plan a demo video</button></div></div>
           <div class="notice notice-warning"><span data-icon="info"></span><div><strong>Interactive rehearsal, not a live Copilot run.</strong><p>This page calls no model, controls no desktop app, stores no memory, creates no PR, and starts no cloud resource.</p></div></div>
           <div class="demo-layout"><div class="demo-chooser" id="demo-chooser" aria-label="Choose a rehearsal"></div><div id="demo-lab" class="demo-lab"></div></div>
+          <section class="demo-studio" id="demo-studio" aria-labelledby="demo-studio-title"></section>
         </section>
         <section id="view-cost" class="view" hidden>
           <div class="page-heading"><span class="eyebrow">NO HIDDEN RUNWAY FEES</span><h1>Make assumptions visible.</h1><p>Illustrate chargeable AI usage and cloud sandbox meters. This is a scenario estimate, not a tenant quote or spending guarantee.</p></div>
