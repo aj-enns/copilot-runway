@@ -22,6 +22,7 @@ test("flight deck renders, filters, links assets, and emits no browser/CSP error
   await expect(page.getByRole("heading", { name: "No capabilities match those filters." })).toBeVisible();
   await page.getByRole("button", { name: "Reset filters", exact: true }).click();
   await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.getByRole("searchbox", { name: "Search capabilities" })).toBeFocused();
   for (const path of ["/runbooks/computer-use.md", "/assessments/dynamic-workflows.md", "/artifacts/slides/copilot-runway.pptx", "/assets/copilot.svg", "/THIRD_PARTY_NOTICES.md"]) {
     expect((await request.get(path)).status()).toBe(200);
   }
@@ -117,6 +118,7 @@ test("comparison preserves experimental/public/technical distinctions", async ({
   await dialog.getByRole("button", { name: "Close comparison" }).click();
   await page.getByRole("button", { name: "Clear comparison", exact: true }).click();
   await expect(page.locator("#compare-rail")).not.toBeVisible();
+  await expect(page.getByRole("button", { name: "Compare Dynamic Workflows", exact: true })).toBeFocused();
 });
 
 test("local policy additions persist and export without becoming canonical findings or markup", async ({ page }) => {
@@ -183,9 +185,68 @@ test("mobile layout, dark theme, and reduced motion remain usable without horizo
   await page.locator('[data-feature="computer-use"] .feature-title').click();
   await expect(page.getByRole("dialog", { name: "Computer Use", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Close feature" }).click();
-  await page.getByRole("button", { name: "Switch color theme" }).click();
+  await page.getByRole("button", { name: "Switch color theme", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.getByRole("button", { name: "Switch color theme", exact: true })).toHaveAttribute("title", "Switch to dark theme");
   await page.screenshot({ path: "test-results/flight-deck-mobile.png", fullPage: true });
+});
+
+test("dashboard controls, result counts, and comparison remain usable across breakpoints", async ({ page }) => {
+  for (const width of [320, 390, 768, 1024, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/?clawpilotTheme=light");
+    await expect(page.locator("#result-count")).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    for (const selector of [".nav-button", ".filter-chip", ".card-actions .button", ".compare-toggle", "#theme-toggle"]) {
+      const heights = await page.locator(selector).evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().height));
+      expect(heights.every((height) => height >= 44)).toBe(true);
+    }
+    await page.getByRole("button", { name: "Public preview", exact: true }).click();
+    await expect(page.locator("#result-count")).toHaveText("3 of 6 capabilities");
+    await page.getByRole("button", { name: "Compare Computer Use", exact: true }).click();
+    await expect(page.locator("#compare-rail")).toBeInViewport();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.locator("footer").scrollIntoViewIfNeeded();
+    const footer = await page.locator("footer").boundingBox();
+    const rail = await page.locator("#compare-rail").boundingBox();
+    expect(footer.y + footer.height).toBeLessThanOrEqual(rail.y);
+  }
+});
+
+test("mobile navigation reveals the current view without scrolling the page", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/#view=radar");
+  const button = page.getByRole("button", { name: "Preview radar", exact: true });
+  await expect(button).toHaveAttribute("aria-current", "page");
+  const navigation = await page.getByRole("navigation", { name: "Primary" }).boundingBox();
+  const active = await button.boundingBox();
+  expect(active.x).toBeGreaterThanOrEqual(navigation.x);
+  expect(active.x + active.width).toBeLessThanOrEqual(navigation.x + navigation.width);
+  expect(await page.evaluate(() => scrollY)).toBe(0);
+});
+
+test("secondary dashboard text retains AA contrast in both themes", async ({ page }) => {
+  for (const theme of ["light", "dark"]) {
+    await page.goto(`/?clawpilotTheme=${theme}`);
+    const ratios = await page.evaluate(() => {
+      const luminance = (color) => {
+        const components = color.match(/[\d.]+/g).slice(0, 3).map((value) => {
+          const channel = Number(value) / 255;
+          return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+        });
+        return components[0] * 0.2126 + components[1] * 0.7152 + components[2] * 0.0722;
+      };
+      return [".hero-copy > p", ".section-heading p", ".metric small", ".feature-card .summary", ".card-kit", "#result-count"].map((selector) => {
+        const element = document.querySelector(selector);
+        let background = element;
+        while (getComputedStyle(background).backgroundColor === "rgba(0, 0, 0, 0)") background = background.parentElement;
+        const foregroundLuminance = luminance(getComputedStyle(element).color);
+        const backgroundLuminance = luminance(getComputedStyle(background).backgroundColor);
+        return (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) / (Math.min(foregroundLuminance, backgroundLuminance) + 0.05);
+      });
+    });
+    expect(ratios.every((ratio) => ratio >= 4.5)).toBe(true);
+  }
 });
 
 test("stale evidence blocks all required verdicts, even when the source scan is recent", async ({ page }) => {

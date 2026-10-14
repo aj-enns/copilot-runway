@@ -16,6 +16,8 @@ The Pages site and source repository are **public**. The flight deck, slides, as
 
 The portal is a responsive, accessible, self-contained static HTML artifact. Its Microsoft Fluent-inspired workspace and GitHub Primer-style feature explorer use Segoe typography, official Octicons, compact command bars, and source-backed kit previews. It makes no runtime API calls and uses no analytics, third-party fonts, or customer data. Light/dark themes retain the Clawpilot design tokens; `?clawpilotTheme=light` or `?clawpilotTheme=dark` selects a theme explicitly.
 
+Press `/` to focus capability search. Release-stage filters and result counts remain visible on mobile; the navigation scrolls to the selected view. The comparison tray stays available while scrolling and leaves space at the end of the page so it does not cover the final controls.
+
 ## First-wave catalog
 
 | Capability | Verified lifecycle | Pilot posture | Demo surface |
