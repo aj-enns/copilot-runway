@@ -88,6 +88,11 @@ function showView(name, focus = true) {
     if (button.dataset.view === name) button.setAttribute("aria-current", "page");
     else button.removeAttribute("aria-current");
   });
+  const navigation = $(".sidebar nav");
+  const activeButton = $(`.nav-button[data-view="${name}"]`);
+  if (navigation.scrollWidth > navigation.clientWidth) {
+    navigation.scrollLeft = activeButton.offsetLeft - navigation.offsetLeft - 4;
+  }
   $("#breadcrumb-view").textContent = viewNames[name];
   setHash(`#view=${name}`);
   if (focus) $("#main").focus({ preventScroll: true });
@@ -156,6 +161,7 @@ function clearFilters() {
   $("#readiness-filter").value = "";
   $("#surface-filter").value = "";
   renderCatalog();
+  $("#feature-search").focus();
 }
 
 function readinessContent(feature) {
@@ -397,7 +403,13 @@ $("#surface-filter").addEventListener("change", (event) => { filters.surface = e
 $("#ga-window").addEventListener("change", renderGa);
 $("#ga-kind").addEventListener("change", renderGa);
 $("#compare-open").addEventListener("click", openComparison);
-$("#compare-clear").addEventListener("click", () => { compared.clear(); renderComparison(); renderCatalog(); });
+$("#compare-clear").addEventListener("click", () => {
+  const firstSelected = [...compared][0];
+  compared.clear();
+  renderComparison();
+  renderCatalog();
+  ($(`[data-compare="${firstSelected}"]`) ?? $("#feature-search")).focus();
+});
 $("#feature-dialog").addEventListener("close", () => { currentFeature = undefined; setHash(`#view=${view}`); });
 
 $("#rule-form").addEventListener("submit", (event) => {
@@ -475,6 +487,7 @@ function route() {
 }
 
 hydrateIcons();
+renderThemeToggle();
 loadWorkshop();
 renderMetrics();
 renderHeroKit();

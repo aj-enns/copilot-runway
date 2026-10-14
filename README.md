@@ -2,19 +2,43 @@
 
 **Evaluate. Explain. Demo.**
 
-An independent enablement initiative for Cloud Solution Architects, turning GitHub Copilot preview features into evidence-backed enterprise assessments, clear value stories, and repeatable customer demos.
+[![Publish Runway Pages](https://github.com/hammadorg93/copilot-runway/actions/workflows/pages.yml/badge.svg)](https://github.com/hammadorg93/copilot-runway/actions/workflows/pages.yml)
+[![Runway quality](https://github.com/hammadorg93/copilot-runway/actions/workflows/ci.yml/badge.svg)](https://github.com/hammadorg93/copilot-runway/actions/workflows/ci.yml)
 
-## Why Runway?
+**[Open the public app](https://hammadorg93.github.io/copilot-runway/)** | **[Browse Recently GA](https://hammadorg93.github.io/copilot-runway/#view=ga)** | **[Presenter runbooks](demos/README.md)** | **[Enterprise policy](readiness/README.md)**
 
-A runway prepares you for takeoff. Copilot Runway helps architects understand what a preview feature does, what an enterprise needs to enable it, and how to demonstrate its value before recommending adoption.
+Copilot Runway is an independent workspace for Cloud Solution Architects preparing customer conversations about **GitHub Copilot preview features**. It connects the potential enterprise use, required controls, official-source evidence, value/cost story, and a repeatable demo in one place.
 
-## Start at the flight deck
+**Current kit:** 6 assessed capabilities | 10 required readiness gates | 6 demo kits | 12 sourced slides | a separate reviewed GA history.
 
-**[Open Copilot Runway](https://hammadorg93.github.io/copilot-runway/)** for searchable feature cards with concise enterprise use cases, release/readiness filters, side-by-side comparisons, full presenter kits, downloadable slides, an editable local policy workshop, a cost lab, the official-source Radar, and a Recently GA tracker.
+![Copilot Runway flight deck with feature search, lifecycle badges, enterprise use cases, readiness findings, and demo actions](docs/images/flight-deck.png)
 
-The Pages site and source repository are **public**. The flight deck, slides, assessments, and runbooks require no GitHub sign-in to view.
+*Flight deck snapshot, 14 October 2026. The counts and findings are curated evidence, not exhaustive product coverage or production certification.*
 
-The portal is a responsive, accessible, self-contained static HTML artifact. Its Microsoft Fluent-inspired workspace and GitHub Primer-style feature explorer use Segoe typography, official Octicons, compact command bars, and source-backed kit previews. It makes no runtime API calls and uses no analytics, third-party fonts, or customer data. Light/dark themes retain the Clawpilot design tokens; `?clawpilotTheme=light` or `?clawpilotTheme=dark` selects a theme explicitly.
+## What you can do in the app
+
+| Workspace | What it helps you do | What you leave with |
+| --- | --- | --- |
+| **Flight deck** | Search features and enterprise use cases; filter by lifecycle, surface, and readiness; compare up to three capabilities | A scoped feature shortlist with visible caveats |
+| **Readiness gates** | Inspect every non-negotiable and its owner, evidence, and test; propose local workshop requirements | A source-backed assessment and exportable proposed policy |
+| **Demo lab** | Rehearse a synthetic control story; open the real-feature presenter kit; copy setup, verify, and reset commands | A repeatable demo plan with expected evidence and cleanup boundaries |
+| **Cost lab** | Change AI-credit and cloud-sandbox assumptions and inspect the published meter arithmetic | An exportable illustrative estimate, not a tenant quote |
+| **Preview radar** | Review daily official-source preview, release, policy, billing, and lifecycle signals | Candidates to investigate, not automatically admitted features |
+| **Recently GA** | Filter reviewed announcements by date and feature/model type, and inspect primary sources | Durable GA history plus a separate queue of unverified new GA signals |
+
+The site, slides, assessments, and runbooks are **public** and need no GitHub sign-in to view. Opening issues or proposing repository changes requires the appropriate GitHub account and permissions.
+
+The portal uses a responsive Microsoft Fluent-inspired shell and GitHub Primer-style feature explorer, Segoe typography, official Octicons, and light/dark themes. It is a self-contained static app: **no runtime API or model calls, analytics, remote fonts, customer data, or live automation**. Runbooks explain how to exercise the real products separately.
+
+Press `/` to focus capability search. Release-stage filters and result counts remain visible on mobile; the navigation scrolls to the selected view. The comparison tray stays available while scrolling and leaves space at the end of the page so it does not cover the final controls.
+
+## A customer-session journey
+
+1. **Pick a business scenario.** Search for a use case such as `legacy support records` or choose a feature. The three short enterprise uses under each card are conversation starters, not customer references.
+2. **Evaluate before enabling.** Open **Assess**, inspect all ten gates, and identify missing tenant evidence and named owners. Compare capabilities without averaging away a blocking unknown.
+3. **Explain the value and cost.** Download the sourced feature slides, review the explicit assumptions, and use **Cost lab** to export a scenario.
+4. **Rehearse, then demo deliberately.** Use the offline rehearsal first. For a real Copilot run, follow the full runbook, approved prerequisites, expected output, verification, and scoped local/remote cleanup.
+5. **Keep the recommendation current.** Check **Preview radar** and **Recently GA**. A GA announcement does not grant tenant access or automatically satisfy enterprise controls.
 
 ## First-wave catalog
 
@@ -33,9 +57,22 @@ Official sources were reviewed on **2026-10-14**. This is a curated first wave, 
 
 ## Enterprise uses and GA history
 
-Every feature card and Overview includes three short **potential enterprise uses**, searchable alongside the feature's name and surfaces. These are illustrative recommendations, not verified customer deployments or policy approval. Maintain them in the portal-only `enterpriseUseCases` map in `catalog/features.json`; validation requires concise examples for every known feature. They do not change generated assessments, slide inputs, or readiness evidence.
+Every feature card and Overview includes three short **potential enterprise uses**, searchable alongside the feature's name and surfaces. These are illustrative recommendations, not verified customer deployments or policy approval.
+
+| Capability | Example enterprise conversation starter |
+| --- | --- |
+| Computer Use | Update GUI-only legacy support records |
+| Dynamic Workflows | Parallel application architecture assessments |
+| GitHub Agentic Workflows | Draft release and compliance evidence |
+| Cloud Sandboxes | Reproduce bugs in isolated environments |
+| Copilot Memory | Retain repository architecture conventions |
+| Autopilot Mode | Repair failures against acceptance tests |
 
 **[Recently GA](https://hammadorg93.github.io/copilot-runway/#view=ga)** defaults to announcements from the last 90 days, with 30-day/all-history and feature/model filters. The initial reviewed history includes local sandboxing (2026-10-07), Claude Haiku 5.5 model availability (2026-10-07), and Gemini 4 Argon model availability (2026-10-13). Local sandboxing's GA announcement does **not** graduate hosted Cloud Sandboxes.
+
+![Recently GA view with reviewed announcement dates, feature versus model filters, official sources, and enterprise-readiness caveats](docs/images/recently-ga.png)
+
+*GA tracker snapshot, 14 October 2026. Model availability is labeled separately from feature GA; neither implies customer-specific approval.*
 
 The human-reviewed archive in `catalog/ga.json` survives feed rollover. To add an entry, verify the primary announcement, register its source/review date in `catalog/sources.json`, and record its GA date, type, concise potential enterprise use, and scope caveat. Daily scans surface new GA-looking announcements as **review-pending signals**, excluding already tracked announcement URLs. Retirement, stable CLI releases, and historical GA mentions are not proof of a feature graduation. Coverage is curated and bounded, not exhaustive; **GA never automatically changes enterprise readiness or tenant eligibility**.
 
@@ -72,16 +109,18 @@ Reset is marker-checked, rejects unknown files and symlinks/junctions, and touch
 
 The Dynamic Workflows extension registers `runway-architecture-review` on a compatible CLI without starting it, requesting secrets, or declaring guessed limits. Its real workflow includes runtime input validation, distinct agent labels, an explicitly selected **tool-free specialist profile**, null/failure handling, an input-versioned journal, and a human review checkpoint. `demo:rehearse` uses deterministic adapters and incurs no inference.
 
-## Build and maintain
+## Run the app locally
 
 ```powershell
 npm ci
-npm run artifacts
-npm run build
 npm run dev
 ```
 
-`npm run dev` serves only the generated `dist` at `http://127.0.0.1:4173`. Open `dist\index.html` directly for an offline self-contained flight deck; keep its sibling folders for downloads.
+Use **Node.js 22 or later**. `npm run dev` builds the app and serves only generated `dist` content at **http://127.0.0.1:4173**. The committed assessment/slide artifacts are used as-is; regenerating them is unnecessary just to run the portal.
+
+For offline viewing, run `npm run build` and open `dist\index.html` directly. Keep its sibling folders for slide, assessment, and runbook downloads. `?clawpilotTheme=light` or `?clawpilotTheme=dark` selects an explicit theme.
+
+## Validate and maintain
 
 ```powershell
 npm run validate
@@ -93,7 +132,9 @@ npm run build
 npm run test:e2e
 ```
 
-Unit tests cover blocking verdicts, stale/invalid evidence, enterprise-use coverage/search, GA history/filtering/deduplication, cost arithmetic, discovery boundaries, workflow failure/resume, the original seeded symptom, exact output contracts, and reset safety. Browser tests cover all six workspace views, filtering, keyboard tabs, direct links, downloads, comparison, persistence, escaped input, demo/reset interaction, mobile overflow, dark theme, stale evidence, CSP, and offline operation.
+Unit tests cover blocking verdicts, stale/invalid evidence, enterprise-use coverage/search, GA history/filtering/deduplication, cost arithmetic, discovery boundaries, workflow failure/resume, the original seeded symptom, exact output contracts, and reset safety. Browser tests exercise all six workspace views and every feature's assessment/demo/slides actions, tabs, command-copy handlers, presenter downloads, offline rehearsal/stop/reset controls, plus filters, comparison limits, policy exports, cost exports, focus, mobile targets, contrast, themes, stale evidence, CSP, and offline operation. Clipboard success/denial paths are isolated in tests; they do not write the operator's desktop clipboard.
+
+Maintain portal recommendations in the `enterpriseUseCases` map in `catalog/features.json`. Validation requires concise examples for every known feature. They do not change generated assessments, slide inputs, or readiness evidence.
 
 After changing authoritative feature/rubric/referenced-source content, regenerate the decks and Markdown with `npm run artifacts`. Portal-only enterprise-use recommendations and GA archive entries do not require slide regeneration; the evidence fingerprints remain enforced. `artifacts:check` rejects stale fingerprints. On a Windows machine with PowerPoint, `scripts\render-slides.ps1` exports the actual combined deck to `qa-results\slides` for visual QA; it closes only the presentation it opened.
 
@@ -121,6 +162,7 @@ The official watchlist is in `catalog/watch.json`; `npm run sources:scan -- --up
 | `artifacts/slides/` | Generated, cited PowerPoint briefs |
 | `demos/` | Real-feature runbooks, synthetic fixtures, experimental orchestration logic |
 | `site/` | Static portal source and shared pure assessment/calculation model |
+| `docs/` | Automation trust boundaries and illustrative UI screenshots |
 | `scripts/` | Validation, build, discovery, scoped demo setup/reset, and artifact generation |
 | `.github/workflows/` | CI, Pages, discovery, and source/compiled agentic scout |
 | `.github/agents/` | Explicit tool-free Dynamic Workflows specialist profile |

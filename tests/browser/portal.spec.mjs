@@ -4,6 +4,16 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 
 const site = resolve(fileURLToPath(new URL("../../", import.meta.url)), "dist", "index.html");
+const catalog = JSON.parse(await readFile(new URL("../../catalog/features.json", import.meta.url), "utf8"));
+
+async function checkCopyButtons(scope, page) {
+  for (const button of await scope.locator("[data-copy]").all()) {
+    const command = await button.getAttribute("data-copy");
+    await button.click();
+    await expect(page.locator("#toast")).toContainText("Copied.");
+    expect(await page.evaluate(() => window.runwayCopiedCommands.at(-1))).toBe(command);
+  }
+}
 
 test("flight deck renders, filters, links assets, and emits no browser/CSP errors", async ({ page, request }) => {
   const errors = [];
@@ -22,6 +32,7 @@ test("flight deck renders, filters, links assets, and emits no browser/CSP error
   await expect(page.getByRole("heading", { name: "No capabilities match those filters." })).toBeVisible();
   await page.getByRole("button", { name: "Reset filters", exact: true }).click();
   await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.getByRole("searchbox", { name: "Search capabilities" })).toBeFocused();
   for (const path of ["/runbooks/computer-use.md", "/assessments/dynamic-workflows.md", "/artifacts/slides/copilot-runway.pptx", "/assets/copilot.svg", "/THIRD_PARTY_NOTICES.md"]) {
     expect((await request.get(path)).status()).toBe(200);
   }
@@ -89,6 +100,159 @@ test("workspace navigation, keyboard search, and theme controls expose their cur
   await page.getByRole("searchbox", { name: "Search capabilities" }).fill("cloud sandboxes");
   await expect(page.locator(".feature-card")).toHaveCount(1);
   await expect(page.locator(".feature-title")).toHaveText("Cloud Sandboxes");
+});
+
+test("start links, home navigation, Radar shortcuts, and shared downloads work", async ({ page }) => {
+  await page.goto("/?clawpilotTheme=light");
+  await page.getByRole("button", { name: "Start with Computer Use", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Computer Use", exact: true });
+  await expect(dialog.getByRole("tab", { name: "Demo", exact: true })).toHaveAttribute("aria-selected", "true");
+  await dialog.getByRole("button", { name: "Close feature" }).click();
+  for (const [name, filename] of [
+    ["Architect brief", "copilot-runway.pptx"],
+    [/Read the assessment policy/, "README.md"],
+    [/Branding & attribution/, "THIRD_PARTY_NOTICES.md"],
+  ]) {
+    const downloaded = page.waitForEvent("download");
+    await page.getByRole("link", { name }).click();
+    expect((await downloaded).suggestedFilename()).toBe(filename);
+  }
+  await expect(page.getByRole("link", { name: "Suggest a feature" })).toHaveAttribute("href",
+    "https://github.com/hammadorg93/copilot-runway/issues/new?template=feature-request.yml");
+  await expect(page.getByRole("link", { name: /Open repository/ })).toHaveAttribute("href",
+    "https://github.com/hammadorg93/copilot-runway");
+  await page.getByRole("button", { name: /See what's on radar/ }).click();
+  await expect(page.locator("#view-radar")).toBeVisible();
+  await page.getByRole("link", { name: "Copilot Runway home" }).click();
+  await expect(page.locator("#view-catalog")).toBeVisible();
+  await page.locator(".nav-button[data-view=ga]").click();
+  await page.getByRole("button", { name: "Open official-source Radar" }).click();
+  await expect(page.locator("#view-radar")).toBeVisible();
+});
+
+test("release, readiness, surface, and search filters compose and reset together", async ({ page }) => {
+  await page.clock.install({ time: new Date("2026-10-14T12:00:00Z") });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Technical preview", exact: true }).click();
+  await expect(page.locator(".feature-title")).toHaveText(["GitHub Agentic Workflows"]);
+  await page.getByRole("button", { name: "All capabilities", exact: true }).click();
+  await page.getByLabel("Filter by readiness").selectOption("blocked");
+  await expect(page.locator(".feature-title")).toHaveText(["Dynamic Workflows"]);
+  await page.getByRole("button", { name: "Experimental", exact: true }).click();
+  await page.getByLabel("Filter by surface").selectOption("Copilot SDK");
+  await expect(page.locator(".feature-title")).toHaveText(["Dynamic Workflows"]);
+  await page.getByRole("searchbox", { name: "Search capabilities" }).fill("legacy support records");
+  await expect(page.locator(".feature-card")).toHaveCount(0);
+  await page.getByRole("button", { name: "Reset filters", exact: true }).click();
+  await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.getByLabel("Filter by readiness")).toHaveValue("");
+  await expect(page.getByLabel("Filter by surface")).toHaveValue("");
+  await expect(page.getByRole("searchbox", { name: "Search capabilities" })).toHaveValue("");
+  await expect(page.getByRole("button", { name: "All capabilities", exact: true })).toHaveAttribute("aria-pressed", "true");
+});
+
+for (const feature of catalog.features) {
+  test(`every feature action and rehearsal control works for ${feature.name}`, async ({ page }) => {
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.addInitScript(() => {
+      window.runwayCopiedCommands = [];
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: async (command) => { window.runwayCopiedCommands.push(command); } },
+      });
+    });
+    await page.goto("/");
+    const card = page.locator(`[data-feature="${feature.id}"]`);
+    await card.getByRole("button", { name: "Assess", exact: true }).click();
+    const dialog = page.getByRole("dialog", { name: feature.name, exact: true });
+    await expect(dialog.getByRole("row")).toHaveCount(11);
+    const assessment = page.waitForEvent("download");
+    await dialog.getByRole("link", { name: "Download assessment (.md)" }).click();
+    expect((await assessment).suggestedFilename()).toBe(`${feature.id}.md`);
+    await dialog.getByRole("tab", { name: "Overview", exact: true }).click();
+    await expect(dialog.locator(".enterprise-uses li")).toHaveText(catalog.enterpriseUseCases[feature.id]);
+    await checkCopyButtons(dialog, page);
+    await dialog.getByRole("tab", { name: "Sources", exact: true }).click();
+    await expect(dialog.locator(".evidence-source")).not.toHaveCount(0);
+    for (const link of await dialog.locator(".evidence-source a").all()) {
+      const url = new URL(await link.getAttribute("href"));
+      expect(url.protocol).toBe("https:");
+      expect(["github.com", "docs.github.com", "github.blog", "github.github.io"]).toContain(url.hostname);
+    }
+    await dialog.getByRole("tab", { name: "Readiness", exact: true }).click();
+    await dialog.getByRole("button", { name: "Explore the non-negotiables" }).click();
+    await expect(dialog).not.toBeVisible();
+    await expect(page.locator("#view-readiness")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Propose a policy change" })).toHaveAttribute("href",
+      "https://github.com/hammadorg93/copilot-runway/edit/main/readiness/gates.json");
+    await page.locator(".nav-button[data-view=catalog]").click();
+    await card.getByRole("button", { name: "Demo", exact: true }).click();
+    await expect(dialog.getByRole("tab", { name: "Demo", exact: true })).toHaveAttribute("aria-selected", "true");
+    await checkCopyButtons(dialog, page);
+    const runbook = page.waitForEvent("download");
+    await dialog.getByRole("link", { name: "Download full runbook (.md)" }).click();
+    expect((await runbook).suggestedFilename()).toBe(`${feature.id}.md`);
+    await dialog.locator(".runbook-full summary").click();
+    await expect(dialog.locator(".runbook-full pre")).toBeVisible();
+    await dialog.getByRole("button", { name: "Open offline rehearsal" }).click();
+    await expect(dialog).not.toBeVisible();
+    await expect(page.locator("#view-demos")).toBeVisible();
+    await expect(page.locator(`.demo-choice[data-lab="${feature.id}"]`)).toHaveAttribute("aria-pressed", "true");
+    await checkCopyButtons(page.locator("#demo-lab"), page);
+    await page.getByRole("button", { name: "Inspect synthetic context" }).click();
+    await page.getByRole("button", { name: "Stop", exact: true }).click();
+    await expect(page.locator("#lab-advance")).toBeDisabled();
+    await page.getByRole("button", { name: "Reset rehearsal" }).click();
+    await page.getByRole("button", { name: "Inspect synthetic context" }).click();
+    await page.getByRole("button", { name: "Approve local rehearsal" }).click();
+    await page.getByRole("button", { name: "Verify fixture story" }).click();
+    await expect(page.locator("#demo-lab")).toContainText("Rehearsal checked");
+    await expect(page.locator("#lab-advance")).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Stop", exact: true })).toBeDisabled();
+    await page.getByRole("button", { name: "Reset rehearsal" }).click();
+    await expect(page.locator("#lab-advance")).toBeEnabled();
+    await page.getByRole("button", { name: "Open full presenter kit" }).click();
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toContainText("live feature validation: not-run");
+    await dialog.getByRole("button", { name: "Close feature" }).click();
+    await page.locator(".nav-button[data-view=catalog]").click();
+    const slides = page.waitForEvent("download");
+    await card.getByRole("link", { name: `Download ${feature.name} slides` }).click();
+    expect((await slides).suggestedFilename()).toBe(`${feature.id}.pptx`);
+    expect(errors).toEqual([]);
+  });
+}
+
+test("copy controls surface denied clipboard access without claiming success", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: async () => { throw new DOMException("Clipboard denied", "NotAllowedError"); } },
+    });
+  });
+  await page.goto("/#view=demos");
+  await page.getByRole("button", { name: "Copy command" }).click();
+  await expect(page.locator("#toast")).toContainText("Clipboard access is unavailable");
+  await expect(page.locator("#toast")).not.toContainText("Copied.");
+});
+
+test("comparison limits, selection toggles, opening, and clearing remain coherent", async ({ page }) => {
+  await page.goto("/");
+  const selection = catalog.features.slice(0, 4);
+  await page.getByRole("button", { name: `Compare ${selection[0].name}`, exact: true }).click();
+  await expect(page.getByRole("button", { name: "Compare capabilities", exact: true })).toBeDisabled();
+  for (const feature of selection.slice(1, 3)) await page.getByRole("button", { name: `Compare ${feature.name}`, exact: true }).click();
+  await page.getByRole("button", { name: `Compare ${selection[3].name}`, exact: true }).click();
+  await expect(page.locator("#toast")).toContainText("Compare up to three capabilities");
+  await expect(page.getByRole("button", { name: `Compare ${selection[3].name}`, exact: true })).toHaveAttribute("aria-pressed", "false");
+  await page.getByRole("button", { name: `Compare ${selection[1].name}`, exact: true }).click();
+  await page.getByRole("button", { name: `Compare ${selection[3].name}`, exact: true }).click();
+  await page.getByRole("button", { name: "Compare capabilities", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Compare the evidence" });
+  await expect(dialog.getByRole("columnheader")).toHaveCount(4);
+  await dialog.getByRole("button", { name: "Close comparison" }).click();
+  await page.getByRole("button", { name: "Clear comparison", exact: true }).click();
+  await expect(page.locator("#compare-rail")).not.toBeVisible();
+  await expect(page.locator(".compare-toggle[aria-pressed=true]")).toHaveCount(0);
 });
 
 for (const width of [320, 768, 1100, 1440]) {
@@ -206,6 +370,7 @@ test("comparison preserves experimental/public/technical distinctions", async ({
   await dialog.getByRole("button", { name: "Close comparison" }).click();
   await page.getByRole("button", { name: "Clear comparison", exact: true }).click();
   await expect(page.locator("#compare-rail")).not.toBeVisible();
+  await expect(page.getByRole("button", { name: "Compare Dynamic Workflows", exact: true })).toBeFocused();
 });
 
 test("local policy additions persist and export without becoming canonical findings or markup", async ({ page }) => {
@@ -272,9 +437,68 @@ test("mobile layout, dark theme, and reduced motion remain usable without horizo
   await page.locator('[data-feature="computer-use"] .feature-title').click();
   await expect(page.getByRole("dialog", { name: "Computer Use", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Close feature" }).click();
-  await page.getByRole("button", { name: "Switch color theme" }).click();
+  await page.getByRole("button", { name: "Switch color theme", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.getByRole("button", { name: "Switch color theme", exact: true })).toHaveAttribute("title", "Switch to dark theme");
   await page.screenshot({ path: "test-results/flight-deck-mobile.png", fullPage: true });
+});
+
+test("dashboard controls, result counts, and comparison remain usable across breakpoints", async ({ page }) => {
+  for (const width of [320, 390, 768, 1024, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/?clawpilotTheme=light");
+    await expect(page.locator("#result-count")).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    for (const selector of [".nav-button", ".filter-chip", ".card-actions .button", ".compare-toggle", "#theme-toggle"]) {
+      const heights = await page.locator(selector).evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().height));
+      expect(heights.every((height) => height >= 44)).toBe(true);
+    }
+    await page.getByRole("button", { name: "Public preview", exact: true }).click();
+    await expect(page.locator("#result-count")).toHaveText("3 of 6 capabilities");
+    await page.getByRole("button", { name: "Compare Computer Use", exact: true }).click();
+    await expect(page.locator("#compare-rail")).toBeInViewport();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.locator("footer").scrollIntoViewIfNeeded();
+    const footer = await page.locator("footer").boundingBox();
+    const rail = await page.locator("#compare-rail").boundingBox();
+    expect(footer.y + footer.height).toBeLessThanOrEqual(rail.y);
+  }
+});
+
+test("mobile navigation reveals the current view without scrolling the page", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/#view=radar");
+  const button = page.getByRole("button", { name: "Preview radar", exact: true });
+  await expect(button).toHaveAttribute("aria-current", "page");
+  const navigation = await page.getByRole("navigation", { name: "Primary" }).boundingBox();
+  const active = await button.boundingBox();
+  expect(active.x).toBeGreaterThanOrEqual(navigation.x);
+  expect(active.x + active.width).toBeLessThanOrEqual(navigation.x + navigation.width);
+  expect(await page.evaluate(() => scrollY)).toBe(0);
+});
+
+test("secondary dashboard text retains AA contrast in both themes", async ({ page }) => {
+  for (const theme of ["light", "dark"]) {
+    await page.goto(`/?clawpilotTheme=${theme}`);
+    const ratios = await page.evaluate(() => {
+      const luminance = (color) => {
+        const components = color.match(/[\d.]+/g).slice(0, 3).map((value) => {
+          const channel = Number(value) / 255;
+          return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+        });
+        return components[0] * 0.2126 + components[1] * 0.7152 + components[2] * 0.0722;
+      };
+      return [".hero-copy > p", ".section-heading p", ".metric small", ".feature-card .summary", ".card-kit", "#result-count"].map((selector) => {
+        const element = document.querySelector(selector);
+        let background = element;
+        while (getComputedStyle(background).backgroundColor === "rgba(0, 0, 0, 0)") background = background.parentElement;
+        const foregroundLuminance = luminance(getComputedStyle(element).color);
+        const backgroundLuminance = luminance(getComputedStyle(background).backgroundColor);
+        return (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) / (Math.min(foregroundLuminance, backgroundLuminance) + 0.05);
+      });
+    });
+    expect(ratios.every((ratio) => ratio >= 4.5)).toBe(true);
+  }
 });
 
 test("stale evidence blocks all required verdicts, even when the source scan is recent", async ({ page }) => {
