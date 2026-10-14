@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "lastSuccessfulScan": "2026-10-14T16:22:28.930Z",
+  "coverage": "All configured official feeds fetched successfully. Rolling feed windows are bounded, not exhaustive. Signals require review; no assessment or verification date was changed.",
+  "feeds": [
+    {
+      "id": "copilot-changelog",
+      "fetched": 10,
+      "limit": 30
+    },
+    {
+      "id": "copilot-cli-releases",
+      "fetched": 10,
+      "limit": 10
+    },
+    {
+      "id": "agentic-workflow-releases",
+      "fetched": 5,
+      "limit": 5
+    }
+  ],
+  "items": [
+    {
+      "id": "c5d83206a09d04ba",
+      "feed": "agentic-workflow-releases",
+      "title": "v0.91.12",
+      "url": "https://github.com/github/gh-aw/releases/tag/v0.91.12",
+      "publishedOn": "2026-10-14T04:49:11.000Z",
+      "summary": "## 🌟 Release Highlights This release hardens security for MCP and `pull_request_target` workflows, refines model routing, and adds Azure Entra OIDC support for Codex. ### ⚠️ Breaking Changes - **Strict mode now rejects unsafe `pull_request_target` role configurations** (#68554). Review such workflows before recompiling. - **Model routing policy simplified**: `models.allowed` / `models.blocked` are now the only request policy, and `allowed-models` are optional router candidates (#68495). Model-r",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "c06904a010bcf24f",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.98-2",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.98-2",
+      "publishedOn": "2026-10-14T04:26:49.000Z",
+      "summary": "**Improved** - Expand /ask answers with Ctrl+E, copy the entire answer with Ctrl+Y, and reopen the last usable completed answer in the session with /ask or /btw. **Fixed** - Command hooks complete reliably even when child-exit signals are lost under Node",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "1bdccbfd5a74ec06",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.98-1",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.98-1",
+      "publishedOn": "2026-10-14T00:46:57.000Z",
+      "summary": "**Added** - Add support for Gemini 4 Argon **Fixed** - MCP status and /mcp commands stay synced to the active session after split-view session switches - Resuming a session now respects abandoned pending-permission work and continues only active permission requests. - Keep ordinary characters typed while the input box is still coming up at startup, instead of dropping them",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "5a27d86a3cd69133",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.98-0",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.98-0",
+      "publishedOn": "2026-10-13T21:45:09.000Z",
+      "summary": "Fixes and changes",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "b6c920ec838dea5d",
+      "feed": "agentic-workflow-releases",
+      "title": "v0.91.11",
+      "url": "https://github.com/github/gh-aw/releases/tag/v0.91.11",
+      "publishedOn": "2026-10-13T19:56:50.000Z",
+      "summary": "## 🌟 Release Highlights This release focuses on reliability: sturdier safe outputs, better diagnostics, and fixes for Codex and Aider engines. ### ✨ What's New - **Claude Haiku 5.5 pricing** is now supported (#68424). - **Work-queue issues** now show work titles and descriptions (#68421), with unified Git ref resolution (#68425). - **`push_to_pull_request_branch`** accepts numeric targets and gives clearer errors (#68426). - **Unified session audit reports** now include AWF steering events (#68",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "a9bd65fdff304d4e",
+      "feed": "copilot-changelog",
+      "title": "Gemini 4 Argon in GitHub Copilot",
+      "url": "https://github.blog/changelog/2026-10-13-gemini-4-argon-in-github-copilot",
+      "publishedOn": "2026-10-13T18:39:56.000Z",
+      "summary": "Gemini 4 Argon, Google&#8217;s newest frontier model, is now generally available in GitHub Copilot. It is designed for complex coding, agentic, and reasoning tasks. In early testing, Gemini 4 Argon&#8230; The post Gemini 4 Argon in GitHub Copilot appeared first on The GitHub Blog .",
+      "signal": "lifecycle-signal"
+    },
+    {
+      "id": "991f08ca1d834379",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.97",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97",
+      "publishedOn": "2026-10-13T18:37:05.000Z",
+      "summary": "2026-10-13 - Add agent-scoped declarative hooks for custom agents - Remote plugin marketplace and plugin fetches retry once with your signed-in GitHub token after HTTPS auth fails. - Streamed responses behind TLS-intercepting proxies complete when close_notify is omitted - Fix parsing of GitHub SCP remotes with absolute paths so repository owner and name resolve correctly - Discover all custom agents even when repositories define more than 100 or nest agent files deeply. - Autopilot denies a pre",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "2f477edd59f06faa",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.97-3",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97-3",
+      "publishedOn": "2026-10-13T16:25:48.000Z",
+      "summary": "**Fixed** - Remote plugin marketplace and plugin fetches retry once with your signed-in GitHub token after HTTPS auth fails. - Streamed responses behind TLS-intercepting proxies complete when close_notify is omitted - Fix parsing of GitHub SCP remotes with absolute paths so repository owner and name resolve correctly",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "c7977af9b3d97741",
+      "feed": "copilot-changelog",
+      "title": "Enterprise managed settings enforcement updates",
+      "url": "https://github.blog/changelog/2026-10-13-enterprise-managed-settings-enforcement-updates",
+      "publishedOn": "2026-10-13T15:20:10.000Z",
+      "summary": "Enterprise administrators can now require supported GitHub Copilot clients to retrieve current server-managed settings at startup instead of relying on a cached policy. We are also adding minimum client version&#8230; The post Enterprise managed settings enforcement updates appeared first on The GitHub Blog .",
+      "signal": "lifecycle-signal"
+    },
+    {
+      "id": "b58c51008f7e8db5",
+      "feed": "agentic-workflow-releases",
+      "title": "v0.91.10",
+      "url": "https://github.com/github/gh-aw/releases/tag/v0.91.10",
+      "publishedOn": "2026-10-13T05:18:46.000Z",
+      "summary": "## 🌟 Release Highlights This release focuses on safer defaults, richer session provenance, and more reliable engines and smoke testing. ### ✨ What's New - **Read-only agent workflows default to no network access**, tightening the default security posture (#68047). - **Richer unified agent sessions**: plugin installations and privacy-preserving MCP configuration are now recorded (#68054, #68055), and execution provenance is preserved independently of safe-output footers (#68077). - **Explicit MC",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "f726472903eec600",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.97-2",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97-2",
+      "publishedOn": "2026-10-13T01:09:14.000Z",
+      "summary": "**Fixed** - Discover all custom agents even when repositories define more than 100 or nest agent files deeply.",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "75e8c7c242fb7aff",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.97-1",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97-1",
+      "publishedOn": "2026-10-12T22:56:58.000Z",
+      "summary": "Fixes and changes",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "23e33b55fee080cd",
+      "feed": "copilot-changelog",
+      "title": "Client telemetry user attribution and configurable capture",
+      "url": "https://github.blog/changelog/2026-10-12-client-telemetry-user-attribution-and-configurable-capture",
+      "publishedOn": "2026-10-12T22:38:00.000Z",
+      "summary": "Enterprise administrators can now use telemetry in managed settings to attribute GitHub Copilot activity to a user without collecting their prompts, responses, or tool content. The telemetry.capture.identity setting adds three&#8230; The post Client telemetry user attribution and configurable capture appeared first on The GitHub Blog .",
+      "signal": "update"
+    },
+    {
+      "id": "d21c72e9f2a4188a",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.97-0",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97-0",
+      "publishedOn": "2026-10-12T20:45:05.000Z",
+      "summary": "**Added** - Add agent-scoped declarative hooks for custom agents **Improved** - Inline images render by default on supported terminals without enabling experimental mode. Use `/settings inlineImages false` to turn them off **Fixed** - Autopilot denies a preToolUse hook's \"ask\" decision instead of stopping on a permission dialog nobody is watching - Keep Windows taskbar agent icons grouped across CLI updates by using a stable icon path - Keep saved settings such as dismissed prompts, trusted fold",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "fdf62b7d02cd900d",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.96",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.96",
+      "publishedOn": "2026-10-12T18:52:01.000Z",
+      "summary": "2026-10-12 - Interactive sandbox settings suggest possible environment secrets and let you add masking hosts before saving. - Make model IDs in /model and /config model case-insensitive and save canonical IDs - Keep /allow-all available during startup while enterprise policy is still resolving - /add-dir grants sandbox access to added directories for the current session - /user list shows the authentication source for each signed-in account - Show retry progress messages before recovered respons",
+      "signal": "release"
+    },
+    {
+      "id": "c90d0a0f60fdce5c",
+      "feed": "agentic-workflow-releases",
+      "title": "v0.91.9",
+      "url": "https://github.com/github/gh-aw/releases/tag/v0.91.9",
+      "publishedOn": "2026-10-12T17:41:31.000Z",
+      "summary": "## 🌟 Release Highlights This release focuses on safer, more diagnosable workflow runs: stronger privacy-preserving failure reporting, tighter credential/network scoping, and improved NVX Copilot and model-routing support. ### ✨ What's New - **In-place `add-comment` status updates**: status comments can be replaced rather than appended, reducing noise (#68013). - **GitHub Apps can check out PR branches after reviews** when allow-listed (#68012). - **Unified sessions record more context**: skill ",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "b63756a883df60bc",
+      "feed": "agentic-workflow-releases",
+      "title": "v0.91.8",
+      "url": "https://github.com/github/gh-aw/releases/tag/v0.91.8",
+      "publishedOn": "2026-10-11T22:33:56.000Z",
+      "summary": "## 🌟 Release Highlights This release focuses on richer, more reliable **unified agent sessions** across engines, stronger sandbox and security hardening, and better diagnostics for model routing and workflow failures. ### ✨ What's New - **Unified session timelines**: agent sessions now render as full elapsed-time timelines, with consistent trace normalization for Copilot, Codex, Claude, Gemini, Pi, Kiro, Aider and AGY, preserving native evidence and accounting. - **Built-in graders**: new `code",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "49b29b7cb1b7852d",
+      "feed": "copilot-changelog",
+      "title": "New controls and chat improvements in Copilot for JetBrains",
+      "url": "https://github.blog/changelog/2026-10-10-new-controls-and-chat-improvements-in-copilot-for-jetbrains",
+      "publishedOn": "2026-10-10T18:53:39.000Z",
+      "summary": "This update brings more control over default models and MCP server in GitHub Copilot for JetBrains. It also makes diagnostics easier to address, improves chat navigation and account controls, and&#8230; The post New controls and chat improvements in Copilot for JetBrains appeared first on The GitHub Blog .",
+      "signal": "lifecycle-signal"
+    },
+    {
+      "id": "0740ee17db627cdc",
+      "feed": "copilot-cli-releases",
+      "title": "1.0.96-2",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.96-2",
+      "publishedOn": "2026-10-10T02:13:47.000Z",
+      "summary": "**Fixed** - Make model IDs in /model and /config model case-insensitive and save canonical IDs",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "44cbc05af6527428",
+      "feed": "copilot-changelog",
+      "title": "GitHub Copilot weekly releases — October 5",
+      "url": "https://github.blog/changelog/2026-10-09-github-copilot-weekly-releases-october-5",
+      "publishedOn": "2026-10-09T22:58:23.000Z",
+      "summary": "This week&#8217;s updates make Copilot easier to use across accounts and environments, with more control over what agents can access and how you manage their work. GitHub Copilot Claude Haiku&#8230; The post GitHub Copilot weekly releases — October 5 appeared first on The GitHub Blog .",
+      "signal": "lifecycle-signal"
+    },
+    {
+      "id": "d6318166fc0ab0f9",
+      "feed": "copilot-changelog",
+      "title": "Copilot code review: New organization billing options and controls",
+      "url": "https://github.blog/changelog/2026-10-08-copilot-code-review-new-organization-billing-options-and-controls",
+      "publishedOn": "2026-10-08T19:43:05.000Z",
+      "summary": "This release adds new billing and license controls for Copilot code review admins: Billing: Organization owners can bill Copilot code reviews from members with a Copilot license to the organization&#8217;s&#8230; The post Copilot code review: New organization billing options and controls appeared first on The GitHub Blog .",
+      "signal": "update"
+    },
+    {
+      "id": "53862da388672719",
+      "feed": "copilot-changelog",
+      "title": "Claude Haiku 5.5 in GitHub Copilot",
+      "url": "https://github.blog/changelog/2026-10-07-claude-haiku-5-5-in-github-copilot",
+      "publishedOn": "2026-10-07T20:12:18.000Z",
+      "summary": "Claude Haiku 5.5, Anthropic&#8217;s newest lightweight model, is now generally available in GitHub Copilot. It is designed for fast, high-volume work like subagents, quick edits, and terminal tasks. In early&#8230; The post Claude Haiku 5.5 in GitHub Copilot appeared first on The GitHub Blog .",
+      "signal": "lifecycle-signal"
+    },
+    {
+      "id": "a7d2005232c1fd54",
+      "feed": "copilot-changelog",
+      "title": "Purpose-built model for leaked secret detection",
+      "url": "https://github.blog/changelog/2026-10-07-purpose-built-model-for-leaked-secret-detection",
+      "publishedOn": "2026-10-07T16:13:56.000Z",
+      "summary": "Secret protection should keep pace with the way you build software, whether you write code yourself or work with an AI agent. With our new purpose-built model, we&#8217;re bringing context-aware&#8230; The post Purpose-built model for leaked secret detection appeared first on The GitHub Blog .",
+      "signal": "preview-signal"
+    },
+    {
+      "id": "9ab6c97de83a1060",
+      "feed": "copilot-changelog",
+      "title": "Local sandboxing for GitHub Copilot now generally available",
+      "url": "https://github.blog/changelog/2026-10-07-local-sandboxing-for-github-copilot-now-generally-available",
+      "publishedOn": "2026-10-07T15:46:17.000Z",
+      "summary": "Local sandboxing for GitHub Copilot is now generally available in GitHub Copilot CLI, the GitHub Copilot app, and VS Code sessions using Agent Host. Local sandboxes give developers a secure&#8230; The post Local sandboxing for GitHub Copilot now generally available appeared first on The GitHub Blog .",
+      "signal": "lifecycle-signal"
+    },
+    {
+      "id": "71acf215ae3f8f41",
+      "feed": "copilot-changelog",
+      "title": "Discover local models in GitHub Copilot CLI",
+      "url": "https://github.blog/changelog/2026-10-07-discover-local-models-in-github-copilot-cli",
+      "publishedOn": "2026-10-07T15:46:13.000Z",
+      "summary": "GitHub Copilot CLI makes it easier to choose a local model without leaving your existing workflow. Starting in CLI version 1.0.94-0, use /model to discover supported models from a running&#8230; The post Discover local models in GitHub Copilot CLI appeared first on The GitHub Blog .",
+      "signal": "update"
+    }
+  ]
+}

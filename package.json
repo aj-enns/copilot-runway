@@ -1,0 +1,33 @@
+{
+  "name": "copilot-runway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Evidence-backed GitHub Copilot preview enablement for Cloud Solution Architects.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "npm run build && node scripts/serve.mjs",
+    "validate": "node scripts/validate.mjs",
+    "test": "node scripts/test.mjs",
+    "test:e2e": "playwright test",
+    "check": "npm run validate && npm test && npm run build && npm run test:e2e",
+    "artifacts": "node scripts/artifacts.mjs",
+    "artifacts:check": "node scripts/validate.mjs --artifacts",
+    "slides:verify": "python scripts/verify_pptx.py",
+    "demo:setup": "node scripts/demo.mjs setup",
+    "demo:verify": "node scripts/demo.mjs verify",
+    "demo:reset": "node scripts/demo.mjs reset",
+    "demo:rehearse": "node scripts/demo.mjs rehearse",
+    "sources:scan": "node scripts/discover.mjs",
+    "workflow:compile": "gh aw compile preview-scout --no-check-update"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@primer/octicons": "19.40.0",
+    "fast-xml-parser": "5.11.2",
+    "pptxgenjs": "4.0.1"
+  }
+}

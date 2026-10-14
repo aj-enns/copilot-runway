@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-10-14",
+  "sources": {
+    "cli": {
+      "title": "GitHub Copilot CLI",
+      "url": "https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-cli",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "cli-readme": {
+      "title": "Copilot CLI README: experimental mode",
+      "shortTitle": "CLI experimental-mode README",
+      "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+      "publisher": "GitHub",
+      "kind": "repository",
+      "verifiedOn": "2026-10-14"
+    },
+    "cli-release": {
+      "title": "Copilot CLI v1.0.97 release notes",
+      "shortTitle": "CLI v1.0.97 release",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97",
+      "publisher": "GitHub",
+      "kind": "release",
+      "verifiedOn": "2026-10-14"
+    },
+    "computer": {
+      "title": "About computer use in GitHub Copilot",
+      "shortTitle": "Computer Use documentation",
+      "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "computer-howto": {
+      "title": "Using Copilot CLI to interact with desktop applications",
+      "url": "https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/computer-use",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "managed-settings": {
+      "title": "Enterprise managed settings",
+      "url": "https://docs.github.com/en/copilot/reference/enterprise-administrators/enterprise-managed-settings",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "policies": {
+      "title": "Managing policies and features for Copilot in your enterprise",
+      "url": "https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-enterprise/manage-enterprise-policies",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "billing": {
+      "title": "Usage-based billing for organizations and enterprises",
+      "shortTitle": "Enterprise AI-credit billing",
+      "url": "https://docs.github.com/en/copilot/concepts/billing-and-usage/organizations-and-enterprises/billing",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "licenses": {
+      "title": "GitHub Copilot licenses",
+      "shortTitle": "Copilot licenses",
+      "url": "https://docs.github.com/en/billing/concepts/product-billing/github-copilot-licenses",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "dynamic": {
+      "title": "Copilot SDK: Dynamic Workflows (experimental API)",
+      "shortTitle": "SDK Dynamic Workflows guide",
+      "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+      "publisher": "GitHub",
+      "kind": "repository",
+      "verifiedOn": "2026-10-14"
+    },
+    "custom-agents": {
+      "title": "GitHub custom agents configuration and tool restrictions",
+      "shortTitle": "Custom-agent tools",
+      "url": "https://docs.github.com/en/copilot/reference/custom-agents-configuration",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "agentic-announcement": {
+      "title": "GitHub Agentic Workflows technical preview announcement",
+      "shortTitle": "Agentic Workflows announcement",
+      "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+      "publisher": "GitHub Changelog",
+      "kind": "announcement",
+      "verifiedOn": "2026-10-14"
+    },
+    "agentic": {
+      "title": "GitHub Agentic Workflows",
+      "shortTitle": "gh-aw repository",
+      "url": "https://github.com/github/gh-aw",
+      "publisher": "GitHub",
+      "kind": "repository",
+      "verifiedOn": "2026-10-14"
+    },
+    "agentic-quickstart": {
+      "title": "GitHub Agentic Workflows quick start and authentication",
+      "shortTitle": "gh-aw setup and authentication",
+      "url": "https://github.github.io/gh-aw/setup/quick-start/",
+      "publisher": "GitHub",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "agentic-safe-outputs": {
+      "title": "GitHub Agentic Workflows safe outputs",
+      "url": "https://github.github.io/gh-aw/reference/safe-outputs/",
+      "publisher": "GitHub",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "memory": {
+      "title": "About GitHub Copilot Memory",
+      "shortTitle": "Copilot Memory documentation",
+      "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "memory-settings": {
+      "title": "Managing Copilot Memory for your personal account",
+      "url": "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/copilot-memory/manage-for-yourself",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "sandboxes": {
+      "title": "About cloud and local sandboxes for GitHub Copilot",
+      "shortTitle": "Cloud Sandbox documentation",
+      "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "sandbox-billing": {
+      "title": "Billing for cloud and local sandboxes for GitHub Copilot",
+      "shortTitle": "Sandbox billing meters",
+      "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+      "publisher": "GitHub Docs",
+      "kind": "documentation",
+      "verifiedOn": "2026-10-14"
+    },
+    "changelog": {
+      "title": "GitHub Copilot changelog",
+      "url": "https://github.blog/changelog/label/copilot/",
+      "publisher": "GitHub Changelog",
+      "kind": "feed",
+      "verifiedOn": "2026-10-14"
+    }
+  }
+}

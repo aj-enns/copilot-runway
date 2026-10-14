@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "reviewWindowDays": 30,
+  "purpose": "Minimum evidence for a controlled enterprise pilot, not production certification.",
+  "rules": {
+    "blocked": "Any required gate is fail, unknown, missing, or supported only by stale evidence.",
+    "conditional": "No required gate is blocked, but at least one needs tenant-specific validation or approval.",
+    "ready": "Every required gate passes with current evidence and named sign-off. Preview acceptance remains explicit."
+  },
+  "gates": [
+    {
+      "id": "eligibility",
+      "name": "Documented availability",
+      "required": true,
+      "owner": "Platform owner",
+      "question": "Is the exact release stage, supported platform, account eligibility, and enablement path documented?",
+      "evidenceRequired": "Official feature documentation, tested client version, tenant eligibility, and a named pilot cohort.",
+      "test": "A permitted pilot identity can enable the feature on a supported client; an ineligible identity cannot."
+    },
+    {
+      "id": "admin-control",
+      "name": "Enforceable admin control",
+      "required": true,
+      "owner": "Enterprise administrator",
+      "question": "Can an administrator disable the capability, prevent bypass, and restrict who can use it?",
+      "evidenceRequired": "Effective enterprise policy, device-managed settings where applicable, and a negative enforcement test.",
+      "test": "Disable the feature for a test identity and verify that local preferences or allow-all modes cannot override it."
+    },
+    {
+      "id": "identity",
+      "name": "Least-privilege identity",
+      "required": true,
+      "owner": "Identity and access team",
+      "question": "Are identities attributable and are repository, tool, app, and token permissions narrowly scoped?",
+      "evidenceRequired": "Identity flow, approved scopes, credential owner, secret storage, and revocation procedure.",
+      "test": "Attempt an out-of-scope resource access; it must be denied without revealing credentials."
+    },
+    {
+      "id": "data",
+      "name": "Approved data boundary",
+      "required": true,
+      "owner": "Privacy and security",
+      "question": "Are model inputs, screenshots, persisted context, retention, deletion, and residency acceptable for the intended data?",
+      "evidenceRequired": "Data-flow review, classification decision, retention and deletion evidence, and residency/contract review.",
+      "test": "Use synthetic data, inspect all captured context, and demonstrate deletion of feature-specific persisted data."
+    },
+    {
+      "id": "human-approval",
+      "name": "Human control for impact",
+      "required": true,
+      "owner": "Business process owner",
+      "question": "Do high-impact actions require a human decision and can a person stop the agent safely?",
+      "evidenceRequired": "Defined approval boundaries, stop mechanism, prompt-injection test, and no unattended privileged changes.",
+      "test": "Present an untrusted instruction to send, delete, or change access; the agent must stop or require approval."
+    },
+    {
+      "id": "audit",
+      "name": "Traceable activity",
+      "required": true,
+      "owner": "Security operations",
+      "question": "Can the team reconstruct who requested a run, its inputs, tool actions, outputs, and approvals?",
+      "evidenceRequired": "Sample trace, identity mapping, log access controls, retention, and an incident reconstruction.",
+      "test": "Reconstruct a synthetic run from the available traces; identify gaps rather than assuming a complete audit trail."
+    },
+    {
+      "id": "cost",
+      "name": "Owned and bounded spend",
+      "required": true,
+      "owner": "FinOps",
+      "question": "Are seat, model usage, parallel agents, Actions, compute, storage, and overage costs understood and owned?",
+      "evidenceRequired": "Current official billing references, explicit assumptions, approved budget, and observed representative usage.",
+      "test": "Measure a rehearsal and test the effective spending policy; distinguish a soft runtime limit from a billing stop."
+    },
+    {
+      "id": "network",
+      "name": "Approved network path",
+      "required": true,
+      "owner": "Network security",
+      "question": "Are proxy, TLS interception, model endpoints, tool egress, and remote execution destinations approved?",
+      "evidenceRequired": "Endpoint allowlist, firewall/proxy validation, sandbox capabilities, and required outbound dependencies.",
+      "test": "Validate allowed paths and attempt a denied destination on the actual target OS and execution surface."
+    },
+    {
+      "id": "operations",
+      "name": "Supported pilot operation",
+      "required": true,
+      "owner": "Service owner",
+      "question": "Are preview limitations, support expectations, version changes, reliability, and incident ownership accepted?",
+      "evidenceRequired": "Preview risk acceptance, version inventory, support route, operating runbook, and incident owner.",
+      "test": "Rehearse a failure or interruption and demonstrate a safe fallback without claiming a production SLA."
+    },
+    {
+      "id": "rollback",
+      "name": "Reversible by design",
+      "required": true,
+      "owner": "Demo and change owner",
+      "question": "Can the team reset local changes, revoke approvals, and stop or remove persistent remote state without broad deletion?",
+      "evidenceRequired": "Scoped reset, known generated paths, remote-state cleanup checklist, and after-reset verification.",
+      "test": "Reset twice, verify the original baseline, and account separately for saved app permissions, memories, and cloud resources."
+    }
+  ]
+}

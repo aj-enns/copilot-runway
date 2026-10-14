@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.demo-workspaces/
+test-results/
+qa-results/
+playwright-report/
+.env
+.env.*
+*.log
+catalog/.candidate-scan.json

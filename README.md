@@ -8,28 +8,113 @@ An independent enablement initiative for Cloud Solution Architects, turning GitH
 
 A runway prepares you for takeoff. Copilot Runway helps architects understand what a preview feature does, what an enterprise needs to enable it, and how to demonstrate its value before recommending adoption.
 
-## Three pillars
+## Start at the flight deck
 
-| Pillar | Planned deliverable |
+**[Open Copilot Runway](https://literate-doodle-2mz1mgr.pages.github.io/)** for searchable feature cards, release/readiness filters, side-by-side comparisons, full presenter kits, downloadable slides, an editable local policy workshop, a cost lab, and the official-source Radar.
+
+The provisioned enterprise Pages site is **private** and requires authorized GitHub access. The repository remains private; no visibility or access restriction was relaxed.
+
+The portal is a responsive, accessible, self-contained static HTML artifact. It makes no runtime API calls and uses no analytics, third-party fonts, or customer data. Light/dark themes follow the Clawpilot design system. `?clawpilotTheme=light` or `?clawpilotTheme=dark` selects a theme explicitly.
+
+## First-wave catalog
+
+| Capability | Verified lifecycle | Pilot posture | Demo surface |
+| --- | --- | --- | --- |
+| [Computer Use](features/computer-use/assessment.md) | Public preview | Pilot with conditions | Native Windows/macOS app |
+| [Dynamic Workflows](features/dynamic-workflows/assessment.md) | Experimental SDK API | Hold: admin-control and persisted-data evidence gaps | Session-scoped SDK extension |
+| [GitHub Agentic Workflows](features/agentic-workflows/assessment.md) | Technical preview | Pilot with conditions | GitHub Actions / `gh aw` |
+| [Cloud Sandboxes](features/cloud-sandboxes/assessment.md) | Public preview; experimental CLI flag | Pilot with conditions | Interactive cloud Linux |
+| [Copilot Memory](features/copilot-memory/assessment.md) | Public preview | Pilot with conditions | Cited repository context |
+| [Autopilot Mode](features/autopilot/assessment.md) | Experimental | Pilot with conditions | Bounded local repair/test task |
+
+Official sources were reviewed on **2026-10-14**. This is a curated first wave, **not an exhaustive list of all Copilot previews**. Lifecycle, policy, pricing, and eligibility can change. The UI treats evidence older than 30 days as stale and blocks required gates pending re-review.
+
+**Kit-tested is not live-feature-tested.** Fixtures, acceptance checks, offline orchestration, and repeatable reset are exercised by repository tests. Live account access, native app automation, paid SDK/Actions inference, cloud execution, server-side Memory, and tenant-specific policy enforcement are not claimed from those checks.
+
+## Enterprise non-negotiables
+
+Use [the readiness policy](readiness/README.md), [versioned gate definitions](readiness/gates.json), and [customer assessment template](readiness/assessment-template.md). Every feature is assessed against availability, admin control, least privilege, data boundaries, human approval, audit, cost, network, operations, and rollback.
+
+Required unknown, failed, missing, or stale evidence blocks readiness. Conditions require a named owner and actual tenant evidence. No weighted score or marketing badge can override a blocking gate. **Pilot gates satisfied never means production-certified.**
+
+The Pages workshop can add local proposed requirements and export JSON. Repository policy changes require review, a rubric version change where appropriate, and an assessment for every feature.
+
+## Value, cost, and official branding
+
+[Download the combined 12-slide architect brief](artifacts/slides/copilot-runway.pptx), or open the two-slide deck linked from each feature. Briefs cover value, control story, readiness, cost assumptions, and how to start the demo; primary-source hyperlinks and detailed notes are embedded.
+
+Enterprise Copilot usage is measured in **AI credits** under the reviewed current billing documentation. Do not reuse legacy premium-request assumptions as current enterprise pricing. Cloud sandbox compute, allocated memory, and snapshot storage are separate meters. The Cost lab is explicitly illustrative and excludes seats, Actions, taxes, and other services.
+
+Official Copilot/GitHub icons come from pinned Primer Octicons. [Attribution and brand guidance](THIRD_PARTY_NOTICES.md) are included with the site and decks.
+
+## Run and reset a demo
+
+Use Node.js 22 or later:
+
+```powershell
+npm ci
+npm run demo:setup -- computer-use
+npm run demo:verify -- computer-use
+npm run demo:reset -- computer-use
+```
+
+Follow the [presenter runbooks](demos/README.md) for real-feature prerequisites and steps. Setup prints an absolute path under `.demo-workspaces\<feature-id>`. Verification intentionally fails until the specified result exists. Autopilot's seeded acceptance tests fail again after reset.
+
+Reset is marker-checked, rejects unknown files and symlinks/junctions, and touches only known synthetic files. **It does not revoke app permissions, delete memories/journals, stop cloud sessions, remove snapshots, close PRs, or reset account settings.** Those are separate, specifically authorized steps in the runbook.
+
+The Dynamic Workflows extension registers `runway-architecture-review` on a compatible CLI without starting it, requesting secrets, or declaring guessed limits. Its real workflow includes runtime input validation, distinct agent labels, an explicitly selected **tool-free specialist profile**, null/failure handling, an input-versioned journal, and a human review checkpoint. `demo:rehearse` uses deterministic adapters and incurs no inference.
+
+## Build and maintain
+
+```powershell
+npm ci
+npm run artifacts
+npm run build
+npm run dev
+```
+
+`npm run dev` serves only the generated `dist` at `http://127.0.0.1:4173`. Open `dist\index.html` directly for an offline self-contained flight deck; keep its sibling folders for downloads.
+
+```powershell
+npm run validate
+npm test
+npm run artifacts:check
+python scripts\verify_pptx.py
+npx playwright install chromium
+npm run build
+npm run test:e2e
+```
+
+Unit tests cover blocking verdicts, stale/invalid evidence, cost arithmetic, discovery boundaries, workflow failure/resume, the original seeded symptom, exact output contracts, and reset safety. Browser tests cover filtering, keyboard tabs, direct links, downloads, comparison, persistence, escaped input, demo/reset interaction, mobile overflow, dark theme, stale evidence, CSP, and offline operation.
+
+After changing authoritative feature/rubric/source content, regenerate the decks and Markdown with `npm run artifacts`. `artifacts:check` rejects stale fingerprints. On a Windows machine with PowerPoint, `scripts\render-slides.ps1` exports the actual combined deck to `qa-results\slides` for visual QA; it closes only the presentation it opened.
+
+## Staying current
+
+| Automation | Schedule | Actual behavior |
+| --- | --- | --- |
+| `preview-discovery.yml` | Daily 09:17 UTC + manual | Fetches official Copilot RSS and CLI/gh-aw releases, preserves a bounded snapshot, and updates one deduplicated bot-owned issue digest. No model required. |
+| `pages.yml` | Main push, daily 09:47 UTC, manual | Validates reviewed content, refreshes candidate-only Radar, builds and deploys Pages. Failed ingestion fails the run and does not replace the last deployed site. |
+| `preview-scout.md` + `.lock.yml` | Weekly Monday + manual, **opt-in** | Uses a read-only agent and restricted safe outputs to propose one draft candidate-review PR. It cannot admit a feature, promote readiness, merge, or deploy. |
+| `ci.yml` | Main push + PR + manual | Checks data, tests, artifact evidence, browser behavior, and matching compiled workflow source. |
+| Dependabot | Weekly | Proposes npm and Actions pin updates for review. Compiler upgrades need explicit source/lock review. |
+
+The official watchlist is in `catalog/watch.json`; `npm run sources:scan -- --update` refreshes only `catalog/monitor.json`. Responses and redirects are host-allowlisted, size/time bounded, parsed as inert data, and fail explicitly. RSS is a rolling window, not complete history. Signals include GA, retirement, policy, billing, and release changes as well as previews.
+
+**Agentic authentication is not configured by this repository.** An administrator must approve the engine/budget, configure the documented `COPILOT_GITHUB_TOKEN` secret securely, and set `RUNWAY_AGENTIC_ENABLED=true`. Until then, the reasoning workflow is intentionally skipped; deterministic discovery and Pages still operate. Do not put tokens in source, screenshots, logs, or command history. See [automation setup](docs/automation.md).
+
+## Repository map
+
+| Path | Source of truth / purpose |
 | --- | --- |
-| Enterprise readiness | A reusable Markdown assessment covering eligibility, enterprise policies and enablement, identity and access, security and data handling, network requirements, governance, support, and preview limitations. |
-| Value and cost | One or two slides per feature, grounded in official sources, explaining capabilities, customer value, licensing prerequisites, and cost implications with explicit assumptions. |
-| Customer demos | A repeatable demo per feature with prerequisites, safe sample data, setup, a walkthrough, expected outcomes, limitations, and cleanup. |
+| `catalog/` | Structured feature evidence, verified sources, watchlist, discovery-only snapshot, candidate proposals |
+| `readiness/` | Versioned required gates and assessment template |
+| `features/` | Generated Markdown assessments |
+| `artifacts/slides/` | Generated, cited PowerPoint briefs |
+| `demos/` | Real-feature runbooks, synthetic fixtures, experimental orchestration logic |
+| `site/` | Static portal source and shared pure assessment/calculation model |
+| `scripts/` | Validation, build, discovery, scoped demo setup/reset, and artifact generation |
+| `.github/workflows/` | CI, Pages, discovery, and source/compiled agentic scout |
+| `.github/agents/` | Explicit tool-free Dynamic Workflows specialist profile |
 
-## Evidence first
-
-The intended scope is a maintained catalog of GitHub Copilot preview features. Each feature entry will record its preview status, supported surfaces, source links, and last-verified date; coverage gaps will be explicit.
-
-Use official sources as the foundation:
-
-- [GitHub Copilot documentation](https://docs.github.com/en/copilot)
-- [GitHub Copilot changelog](https://github.blog/changelog/label/copilot/)
-- [GitHub Copilot plans](https://github.com/features/copilot/plans)
-
-Separate verified facts from recommendations and assumptions. Recheck availability, enterprise controls, and pricing before a customer engagement. A preview feature is not automatically suitable for production.
-
-## Current status
-
-Repository bootstrap only: project identity and charter. The feature catalog, assessment rubric, slides, and demos have not been implemented yet.
-
-This is not an official GitHub or Microsoft product. Keep credentials, customer data, and confidential material out of the repository.
+Keep credentials, customer data, personal information, and confidential material out of the repository and generated Pages assets. Source and Pages access currently remain private. Publish only non-confidential, synthetic enablement material, and do not relax visibility to work around deployment constraints.

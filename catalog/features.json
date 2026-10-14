@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "updatedOn": "2026-10-14",
+  "repository": "hammadorg93/copilot-runway",
+  "scope": "Six priority capabilities for architects. This is a curated starting catalog, not an exhaustive inventory of every Copilot preview. Discovery candidates require review before admission.",
+  "features": [
+    {
+      "id": "computer-use",
+      "name": "Computer Use",
+      "tagline": "Give legacy desktop workflows an agent-assisted runway.",
+      "summary": "Copilot can inspect and operate desktop application controls when an API, MCP server, filesystem tool, or dedicated browser tool is not a better fit.",
+      "category": "Desktop automation",
+      "icon": "device-desktop",
+      "featured": true,
+      "lifecycle": { "status": "public-preview", "source": "computer", "note": "Public preview in local Copilot CLI and Copilot app sessions on Windows and macOS." },
+      "surfaces": ["Copilot CLI", "Copilot app", "Windows", "macOS"],
+      "tags": ["GUI", "accessibility", "human approval", "legacy apps"],
+      "verifiedOn": "2026-10-14",
+      "value": [
+        "Assist with GUI-only tasks in legacy software without building an integration first.",
+        "Turn a narrowly scoped natural-language request into an observable sequence of app actions.",
+        "Demonstrate a permission boundary before discussing broader automation."
+      ],
+      "enablement": [
+        { "title": "Confirm enterprise policy", "detail": "The platform owner must permit computer use. Managed features.computerUse can block it; local preferences cannot override that block.", "command": "", "sources": ["computer", "managed-settings"] },
+        { "title": "Inspect and enable in a local session", "detail": "Use an approved Copilot CLI version on Windows or macOS. Review permissions and grant access only for the synthetic demo app and current session.", "command": "/computer show\n/computer on\n/permissions show", "sources": ["computer-howto"] },
+        { "title": "Bound the target and stopping condition", "detail": "Name the exact app and synthetic document. On macOS, OS Accessibility and Screen Recording permission may be required. Esc twice interrupts CLI activity.", "command": "", "sources": ["computer", "computer-howto"] }
+      ],
+      "cost": {
+        "headline": "Copilot license + model usage; do not assume GUI actions are free.",
+        "detail": "Enterprise Copilot CLI model interactions consume AI credits. The reviewed computer-use documentation does not quote a separate computer-use tariff. Check the actual tenant and model usage before quoting a demo cost.",
+        "assumptions": ["Existing approved Copilot seat.", "Synthetic local document; no paid external application transaction.", "AI credits are usage-based; one enterprise AI credit equals USD 0.01."],
+        "sources": ["billing", "licenses", "computer"]
+      },
+      "limitations": [
+        "Application versions, focus, timing, accessibility quality, and dynamic controls can change results.",
+        "Visible content or screenshots can include sensitive data; close unrelated windows.",
+        "Saved Always allow app approval persists across CLI and app; removing it does not revoke an already active session.",
+        "A successful fixture test is not a live test of Computer Use or enterprise policy enforcement."
+      ],
+      "readiness": [
+        { "gate": "eligibility", "status": "pass", "reason": "Public preview, supported platforms, and enablement commands are documented.", "sources": ["computer", "computer-howto"], "next": "Record the exact client version and eligible pilot identity." },
+        { "gate": "admin-control", "status": "conditional", "reason": "Managed features.computerUse and tool deny rules are documented, but the customer's enforcement has not been tested.", "sources": ["computer", "managed-settings"], "next": "Demonstrate a policy denial on a separate test identity." },
+        { "gate": "identity", "status": "conditional", "reason": "App access follows the active permission mode; desktop actions can inherit the signed-in user's app rights.", "sources": ["computer"], "next": "Use an isolated OS profile, minimal app rights, and session-only consent." },
+        { "gate": "data", "status": "conditional", "reason": "Accessible content and visual context may expose information in application windows.", "sources": ["computer"], "next": "Approve data classification and screen capture; use synthetic data only for the demo." },
+        { "gate": "human-approval", "status": "conditional", "reason": "Session approvals and interruption are available; permission mode and saved approvals affect prompting.", "sources": ["computer", "computer-howto"], "next": "Test interruption and deny high-impact actions; do not use allow-all." },
+        { "gate": "audit", "status": "conditional", "reason": "Tool activity is visible in the session, not evidence of a complete enterprise audit log.", "sources": ["computer"], "next": "Capture a permitted trace and map retention, export, identity, and audit gaps." },
+        { "gate": "cost", "status": "conditional", "reason": "AI-credit billing is documented; scenario-specific usage has not been measured.", "sources": ["billing", "licenses"], "next": "Measure the rehearsal and approve a tenant budget." },
+        { "gate": "network", "status": "conditional", "reason": "CLI model access and connected desktop apps can cross different network boundaries.", "sources": ["cli", "computer"], "next": "Validate proxy and app egress separately; do not treat app consent as a network boundary." },
+        { "gate": "operations", "status": "conditional", "reason": "Public-preview risks and UI variability are explicit.", "sources": ["computer"], "next": "Name a pilot owner and demonstrate a manual fallback after interruption." },
+        { "gate": "rollback", "status": "conditional", "reason": "CLI disable and scoped local reset are available; saved app approvals require separate review.", "sources": ["computer", "computer-howto"], "next": "Close the synthetic app, reset the fixture, disable computer use, and review saved approvals." }
+      ],
+      "demo": {
+        "title": "A safer service-desk handoff",
+        "minutes": 8,
+        "mode": "Native desktop",
+        "status": "kit-tested",
+        "liveStatus": "not-run",
+        "runbook": "demos/computer-use/README.md",
+        "prompt": "Use Computer Use to interact with the native text editor containing support-brief.txt. Inspect the document first. Change only 'Status: Draft' to 'Status: Ready for pilot' and 'Next step: Unassigned' to 'Next step: Validate policy in test tenant.' Save only this synthetic document to its existing path. Do not access other apps, send anything, change permissions, or use shell/filesystem tools to perform the edits. Stop if the target app or document is ambiguous.",
+        "expected": "Two exact text changes in the synthetic document, visible app/tool activity, and no external side effect.",
+        "remoteCleanup": "Disable /computer; review any saved app approvals separately. A local reset cannot revoke permissions in an active session."
+      }
+    },
+    {
+      "id": "dynamic-workflows",
+      "name": "Dynamic Workflows",
+      "tagline": "Coordinate specialist agents with durable, inspectable steps.",
+      "summary": "An experimental Copilot SDK API for extension-authored, session-scoped workflows using subagents, pipelines, journaled steps, pause/resume, and observable run state.",
+      "category": "Agent orchestration",
+      "icon": "workflow",
+      "featured": true,
+      "lifecycle": { "status": "experimental", "source": "dynamic", "note": "Official SDK documentation calls the API experimental. This is not GitHub Actions or a verified public-preview SKU." },
+      "surfaces": ["Copilot CLI", "Copilot SDK", "Session extensions"],
+      "tags": ["subagents", "pipeline", "durable steps", "pause and resume"],
+      "verifiedOn": "2026-10-14",
+      "value": [
+        "Split a bounded architecture review into independent, specialist assessments.",
+        "Pipeline each item without waiting for a barrier between every stage.",
+        "Inspect a run and resume from durable checkpoints rather than starting over."
+      ],
+      "enablement": [
+        { "title": "Verify experimental execution eligibility", "detail": "The SDK guide states that execution requires eligible credentials, such as token-based billing or trusted HMAC authentication. Registration alone is not proof that a run is allowed.", "command": "", "sources": ["dynamic"] },
+        { "title": "Load the included extension", "detail": "The .github/extensions/runway-demo extension registers runway-architecture-review using defineWorkflow and joinSession. It does not start an agent or request a secret on load.", "command": "copilot", "sources": ["dynamic"] },
+        { "title": "Inspect the tool-free specialist profile", "detail": "The workflow explicitly selects .github/agents/runway-assessor.agent.md with tools: []. Confirm the profile is loaded and its effective tools are disabled before a live run; a prompt alone is not a tool-access boundary.", "command": "", "sources": ["dynamic", "custom-agents"] },
+        { "title": "Request a bounded demo run explicitly", "detail": "Use the runbook's two synthetic applications. Choose and approve runtime/spend limits before an AI run. If dynamic_workflows_unavailable is returned, stop and use the clearly labelled offline rehearsal.", "command": "", "sources": ["dynamic"] }
+      ],
+      "cost": {
+        "headline": "Subagent model usage is real spend, including retries.",
+        "detail": "AI credits cover the workflow subagent tree. The documented maxAiCredits ceiling is soft and post-paid, so parallel work can settle above it. Schema retries count as additional admitted subagents. No guessed runtime budget is declared in the demo extension.",
+        "assumptions": ["An execution-eligible account and compatible SDK.", "Two synthetic application inputs; no nested workflows.", "Presenter chooses an approved per-run limit; limits are not an enterprise billing hard stop."],
+        "sources": ["dynamic", "billing"]
+      },
+      "limitations": [
+        "Experimental API; do not call it public preview solely because the SDK documents it.",
+        "Workflow-owned agents use workflow observability rather than ordinary read_agent/write_agent tools.",
+        "Ordinary failed agent results can be null; hard runtime failures reject the run.",
+        "Journaled steps are best-effort at-least-once; stable keys must include input identity and semantic version."
+      ],
+      "readiness": [
+        { "gate": "eligibility", "status": "conditional", "reason": "The official SDK documents an experimental API and credential-based execution eligibility.", "sources": ["dynamic"], "next": "Record a compatible client/SDK and demonstrate admission with the pilot identity." },
+        { "gate": "admin-control", "status": "unknown", "reason": "The reviewed workflow guide does not establish a dedicated enterprise disable/rollout policy for this API.", "sources": ["dynamic", "managed-settings"], "next": "Obtain an enforceable control and test it; generic CLI policy is not proof of feature-specific governance." },
+        { "gate": "identity", "status": "conditional", "reason": "Execution eligibility is checked. Without a restrictive profile, subagents can inherit tools/context; this demo explicitly selects a tool-free specialist.", "sources": ["dynamic", "cli", "custom-agents"], "next": "Review extension provenance, verify the effective tools: [] profile, and inspect credentials/context before a live run." },
+        { "gate": "data", "status": "unknown", "reason": "Durable SQLite-backed workflow storage is described; the reviewed guide does not resolve customer retention, deletion, or residency obligations.", "sources": ["dynamic"], "next": "Document journal data flow, storage location, retention, and authorized deletion before customer data." },
+        { "gate": "human-approval", "status": "conditional", "reason": "Durable pause checkpoints are available. SDK-initiated runs do not themselves request permission.", "sources": ["dynamic"], "next": "Keep explicit run authorization, a review checkpoint, and no high-impact side effects." },
+        { "gate": "audit", "status": "pass", "reason": "Run, phase, progress, and failure observation APIs are documented.", "sources": ["dynamic"], "next": "Validate retention, redaction, and incident reconstruction in the target tenant." },
+        { "gate": "cost", "status": "conditional", "reason": "Cumulative limits and soft AI-credit ceilings are documented, not a guarantee of capped billed spend.", "sources": ["dynamic", "billing"], "next": "Approve per-run ceilings and test tenant-level cost controls." },
+        { "gate": "network", "status": "conditional", "reason": "A workflow can coordinate agents that use session tools; its DSL is not an egress boundary.", "sources": ["dynamic", "cli"], "next": "Use the approved sandbox and verify each tool's destinations." },
+        { "gate": "operations", "status": "conditional", "reason": "Resume, cancellation, admission errors, and storage failure are described; the API remains experimental.", "sources": ["dynamic"], "next": "Accept experimental support risk and rehearse failure, null-result, and resume cases." },
+        { "gate": "rollback", "status": "conditional", "reason": "Cancel and pause APIs are documented; local fixture reset does not erase durable workflow history.", "sources": ["dynamic"], "next": "Cancel active runs and review journal cleanup separately; never delete the whole session store." }
+      ],
+      "demo": {
+        "title": "Parallel architecture triage, then human review",
+        "minutes": 10,
+        "mode": "Experimental SDK",
+        "status": "kit-tested",
+        "liveStatus": "not-run",
+        "runbook": "demos/dynamic-workflows/README.md",
+        "prompt": "Inspect the registered runway-architecture-review workflow and demos/dynamic-workflows/README.md. Use only the two synthetic applications in the runbook. Explain the exact run arguments, account eligibility, and requested limits; do not start it until I approve this specific run. Stop on dynamic_workflows_unavailable. Pause at the human-review checkpoint, show the run ID and assessments, and do not resume until I approve.",
+        "expected": "Two independently labelled assessments; the unaudited app is blocked. A paused run resumes with the same ID and cached assessments.",
+        "remoteCleanup": "Cancel any active workflow by its exact run ID. Reset only local fixture files; retained workflow journals are separate state."
+      }
+    },
+    {
+      "id": "agentic-workflows",
+      "name": "GitHub Agentic Workflows",
+      "tagline": "Repository automation that reasons, with reviewable outputs.",
+      "summary": "Write agent instructions in Markdown with YAML frontmatter; gh aw compiles them into GitHub Actions workflows with read-only agent jobs and scoped safe outputs.",
+      "category": "Repository automation",
+      "icon": "git-pull-request",
+      "featured": false,
+      "lifecycle": { "status": "technical-preview", "source": "agentic-announcement", "note": "The official announcement names a technical preview. Recheck current lifecycle before adoption." },
+      "surfaces": ["GitHub Actions", "gh aw", "Copilot CLI engine"],
+      "tags": ["scheduled discovery", "safe outputs", "pull requests", "CI"],
+      "verifiedOn": "2026-10-14",
+      "value": [
+        "Keep official preview discovery on a repeatable schedule.",
+        "Use an agent for interpretation while deterministic CI builds and deploys the site.",
+        "Propose new evidence in a pull request without allowing the agent to publish or merge."
+      ],
+      "enablement": [
+        { "title": "Review Actions and engine prerequisites", "detail": "Enable approved Actions and review the compiled lock file. Use an approved gh-aw version; this repository pins and checks v0.86.2.", "command": "gh aw --version", "sources": ["agentic", "agentic-quickstart"] },
+        { "title": "Compile the checked-in source", "detail": "The Markdown and generated lock file are both versioned. Deterministic discovery does not need an AI-engine credential.", "command": "npm run workflow:compile", "sources": ["agentic", "agentic-quickstart"] },
+        { "title": "Opt in to the paid reasoning step", "detail": "An administrator configures approved engine authentication and RUNWAY_AGENTIC_ENABLED=true. The included workflow is intentionally inactive until that opt-in; no secrets are created by setup.", "command": "", "sources": ["agentic-quickstart"] }
+      ],
+      "cost": {
+        "headline": "Actions runtime + the selected AI engine's usage.",
+        "detail": "Copilot-engine inference is governed by its billing entity; other engines have their own provider charges. Private-repository Actions usage can consume included minutes and incur overage. The deterministic daily scan does not call an AI model.",
+        "assumptions": ["GitHub Actions is allowed for this repository.", "AI-engine authentication and budget are administrator-owned.", "No claim that a scheduled workflow is free or that a PAT supplies unlimited usage."],
+        "sources": ["agentic-quickstart", "billing", "agentic"]
+      },
+      "limitations": [
+        "Dynamic Workflows and GitHub Agentic Workflows are different execution systems.",
+        "Safe outputs reduce risk but do not replace review of tools, network access, and compiled YAML.",
+        "The agentic step is opt-in; its presence in source is not evidence of a successful paid live run.",
+        "Automated discovery never promotes a gate to pass or silently advances a last-verified date."
+      ],
+      "readiness": [
+        { "gate": "eligibility", "status": "pass", "reason": "Technical-preview announcement, compiler, and setup are public.", "sources": ["agentic-announcement", "agentic-quickstart"], "next": "Verify supported compiler and engine versions." },
+        { "gate": "admin-control", "status": "conditional", "reason": "Repository Actions policy and workflow conditions can control operation.", "sources": ["agentic", "agentic-quickstart"], "next": "Approve Actions policy, engine access, PR creation, and the explicit opt-in variable." },
+        { "gate": "identity", "status": "conditional", "reason": "Read-only agent access and separate permission-scoped safe outputs are documented.", "sources": ["agentic", "agentic-safe-outputs"], "next": "Review engine authentication, token permissions, and credential rotation." },
+        { "gate": "data", "status": "conditional", "reason": "Tools and engine receive selected repository context; inputs can be untrusted.", "sources": ["agentic"], "next": "Limit the workflow to public source metadata; approve engine data terms and forbid secrets." },
+        { "gate": "human-approval", "status": "pass", "reason": "The included safe output is a draft PR, not merge or deployment.", "sources": ["agentic-safe-outputs"], "next": "Keep required human review and branch protection appropriate to the tenant." },
+        { "gate": "audit", "status": "pass", "reason": "Actions run logs and reviewable PR output provide traceable workflow artifacts.", "sources": ["agentic", "agentic-quickstart"], "next": "Configure log and artifact retention and reconstruct a synthetic run." },
+        { "gate": "cost", "status": "conditional", "reason": "Actions and inference are separate cost surfaces; a live run has not been metered.", "sources": ["agentic-quickstart", "billing"], "next": "Approve Actions and engine budgets before enabling the reasoning step." },
+        { "gate": "network", "status": "conditional", "reason": "The sandboxed workflow supports explicit network allowlists.", "sources": ["agentic"], "next": "Review the allowed GitHub domains and any engine infrastructure destinations." },
+        { "gate": "operations", "status": "conditional", "reason": "The workflow is versioned and compiled; the capability remains a technical preview.", "sources": ["agentic-announcement", "agentic"], "next": "Assign a workflow owner and monitor failed schedules and retired compiler releases." },
+        { "gate": "rollback", "status": "conditional", "reason": "Disable the workflow/opt-in to stop future runs; produced drafts require separate cleanup.", "sources": ["agentic-quickstart"], "next": "Cancel exact active runs and close only the synthetic demo PR after approval." }
+      ],
+      "demo": {
+        "title": "Preview scout: official sources to a draft PR",
+        "minutes": 10,
+        "mode": "GitHub Actions",
+        "status": "kit-tested",
+        "liveStatus": "not-run",
+        "runbook": "demos/agentic-workflows/README.md",
+        "prompt": "Explain .github/workflows/preview-scout.md and its compiled lock file. Show the read-only permissions, allowed source domains, draft-PR-only safe output, deduplication rule, and explicit enablement gate. Do not configure credentials, change permissions, dispatch a paid workflow, or merge anything. Use the local rehearsal unless I separately approve a live run.",
+        "expected": "Official-source candidates and an explicitly non-authoritative proposed review document. No automatic gate promotion, main-branch write, merge, or deployment.",
+        "remoteCleanup": "Disable the opt-in and cancel only exact demo runs; draft PRs and Actions logs are not removed by a local reset."
+      }
+    },
+    {
+      "id": "cloud-sandboxes",
+      "name": "Cloud Sandboxes",
+      "tagline": "Move the execution environment, not your laptop's blast radius.",
+      "summary": "Run an interactive Copilot session in a GitHub-hosted isolated Linux environment, with identity, policy, lifecycle, and usage billing managed by GitHub.",
+      "category": "Execution governance",
+      "icon": "shield-lock",
+      "featured": false,
+      "lifecycle": { "status": "public-preview", "source": "sandboxes", "note": "Cloud sandboxes are public preview and currently require experimental CLI features." },
+      "surfaces": ["Copilot CLI", "Copilot app", "Cloud Linux"],
+      "tags": ["isolation", "egress", "cloud compute", "snapshots"],
+      "verifiedOn": "2026-10-14",
+      "value": [
+        "Offload a bounded task to an isolated execution environment.",
+        "Separate remote agent execution from the local workstation.",
+        "Reuse cloud-agent governance and explicitly account for compute and retained snapshots."
+      ],
+      "enablement": [
+        { "title": "Obtain explicit cloud-sandbox access", "detail": "Organization-managed access is disabled by default and must be enabled by the organization or enterprise owner.", "command": "", "sources": ["sandboxes"] },
+        { "title": "Start an interactive cloud session", "detail": "Use an approved identity and experimental features. Programmatic -p/-i execution is not supported for a cloud sandbox.", "command": "copilot --cloud --experimental", "sources": ["sandboxes"] },
+        { "title": "Verify execution and lifecycle", "detail": "Use only a synthetic task, confirm the remote Linux environment, review network policy, then stop the session and account for its snapshot.", "command": "", "sources": ["sandboxes"] }
+      ],
+      "cost": {
+        "headline": "AI credits + compute + allocated memory + stopped-session storage.",
+        "detail": "The reviewed official prices are USD 0.000024 per compute second, USD 0.000003 per GiB-second of allocated memory, and USD 0.005 per GiB-month of snapshot storage. A one-hour run assuming 4 GiB costs USD 0.1296 for compute plus memory, before AI usage, storage, taxes, or other charges.",
+        "assumptions": ["4 GiB is an illustrative allocation, not a promised session size.", "Inside a Git repository, its owner is billed; outside a repository, select an approved billable owner.", "Cloud product/SKU budgets are separate from bundled AI-credit budgets.", "The documented preview trial entitlement ended in July 2026; do not assume a current free allowance.", "Stopping execution and deleting a stored snapshot are different lifecycle actions."],
+        "sources": ["sandboxes", "sandbox-billing", "billing"]
+      },
+      "limitations": [
+        "Cloud sandboxing is distinct from lighter-weight local OS sandboxing.",
+        "CLI cloud sessions are interactive only and currently experimental.",
+        "Stopped sessions retain snapshots and can incur storage charges.",
+        "A local cleanup cannot stop or delete a remote sandbox."
+      ],
+      "readiness": [
+        { "gate": "eligibility", "status": "pass", "reason": "Public-preview stage, interactive command, and cloud Linux execution are documented.", "sources": ["sandboxes"], "next": "Verify the pilot identity and compatible client." },
+        { "gate": "admin-control", "status": "conditional", "reason": "Cloud Sandbox access is an organization/enterprise policy and is disabled by default for managed users.", "sources": ["sandboxes"], "next": "Test disabled access and inherited cloud-agent policy with a pilot identity." },
+        { "gate": "identity", "status": "conditional", "reason": "Existing Copilot authentication is used; no separate cloud API key is required.", "sources": ["sandboxes"], "next": "Approve the billing entity, repository access, and exposed environment variables." },
+        { "gate": "data", "status": "conditional", "reason": "Stopping saves files and environment state in a snapshot; deletion is a separate action.", "sources": ["sandboxes"], "next": "Approve data residency, snapshot retention, and deletion for the intended data class." },
+        { "gate": "human-approval", "status": "conditional", "reason": "Isolation is not approval for high-impact agent actions.", "sources": ["sandboxes", "cli"], "next": "Keep explicit human approval for writes outside the synthetic task and cloud cleanup." },
+        { "gate": "audit", "status": "conditional", "reason": "Session lifecycle is documented; complete customer audit export and retention are not established by this assessment.", "sources": ["sandboxes"], "next": "Reconstruct a remote run and validate required audit export." },
+        { "gate": "cost", "status": "pass", "reason": "Compute, memory, snapshot prices, and separate AI-credit usage are documented.", "sources": ["sandboxes", "sandbox-billing", "billing"], "next": "Measure the actual allocation and set an approved billing budget." },
+        { "gate": "network", "status": "conditional", "reason": "Cloud sandbox policies share cloud-agent controls.", "sources": ["sandboxes"], "next": "Validate allow/deny behavior inside the actual remote session." },
+        { "gate": "operations", "status": "conditional", "reason": "Active, stopped, and deleted lifecycle states are defined; preview limits remain.", "sources": ["sandboxes"], "next": "Assign an owner and rehearse stop/resume and failure handling." },
+        { "gate": "rollback", "status": "conditional", "reason": "Session deletion removes running state and snapshot, but is an explicit remote action.", "sources": ["sandboxes"], "next": "Stop the exact demo session; delete its snapshot only with authorization." }
+      ],
+      "demo": {
+        "title": "Prove where the agent actually executes",
+        "minutes": 8,
+        "mode": "Interactive cloud",
+        "status": "kit-tested",
+        "liveStatus": "not-run",
+        "runbook": "demos/cloud-sandboxes/README.md",
+        "prompt": "In this cloud sandbox, create a synthetic sandbox-proof.json containing platform, a note that this is remote execution, and the result of summing [2, 3, 5]. Use no secrets, private repository, network downloads, or external service. Show the environment and the file. Do not stop, delete, or change cloud resources until I explicitly approve cleanup.",
+        "expected": "Remote Linux execution, a sum of 10, and an explicitly reviewed active/stopped/snapshot lifecycle.",
+        "remoteCleanup": "Stop the exact cloud session and separately review its stored snapshot. The local reset cannot perform cloud cleanup."
+      }
+    },
+    {
+      "id": "copilot-memory",
+      "name": "Copilot Memory",
+      "tagline": "Make repository context reusable, without hiding its governance.",
+      "summary": "Copilot stores cited repository facts and user preferences that can inform later supported interactions. Scope, billing-entity ownership, validation, retention, and deletion matter.",
+      "category": "Persistent context",
+      "icon": "database",
+      "featured": false,
+      "lifecycle": { "status": "public-preview", "source": "memory", "note": "Public preview across supported Copilot surfaces; repository facts and user preferences have different scopes." },
+      "surfaces": ["Copilot CLI", "Copilot cloud agent", "Copilot code review", "Agentic autofix"],
+      "tags": ["citations", "retention", "repository facts", "privacy"],
+      "verifiedOn": "2026-10-14",
+      "value": [
+        "Reduce repeated explanations of verified repository conventions.",
+        "Reuse repository facts across supported Copilot surfaces.",
+        "Make context ownership and deletion a visible part of the adoption story."
+      ],
+      "enablement": [
+        { "title": "Confirm the policy and account preference", "detail": "Managed plans require administrator enablement; individual users can opt out. Enablement is per user, not per repository.", "command": "/memory", "sources": ["memory", "memory-settings"] },
+        { "title": "Choose the correct scope", "detail": "Use a non-sensitive synthetic repository convention with a real code citation. Do not create a user preference as part of this demo.", "command": "", "sources": ["memory"] },
+        { "title": "Inspect before reusing", "detail": "Repository facts must be validated against the current branch. Code review uses repository facts, not user preferences.", "command": "", "sources": ["memory"] }
+      ],
+      "cost": {
+        "headline": "AI usage applies; no separate Memory price verified.",
+        "detail": "The reviewed Memory documentation does not specify a standalone memory-storage tariff. The underlying CLI, cloud-agent, and other model interactions still follow their billing model. Do not describe memory as unlimited or free because no separate price is listed.",
+        "assumptions": ["An eligible account with Memory allowed.", "One non-sensitive repository fact in a throwaway demo repository.", "No personal information, customer information, or user-scoped preference is stored."],
+        "sources": ["memory", "billing", "licenses"]
+      },
+      "limitations": [
+        "Enablement applies to a user's supported work across repositories, not only a single demo folder.",
+        "Repository facts are shared with eligible users of the same repository.",
+        "Unused entries expire after 28 days; successful validation/use may reset that timer.",
+        "Local reset does not delete server-side memories; delete only the exact demo fact through authorized settings."
+      ],
+      "readiness": [
+        { "gate": "eligibility", "status": "pass", "reason": "Public-preview stage, supported surfaces, and account enablement are documented.", "sources": ["memory", "memory-settings"], "next": "Verify the account policy, plan, and billing entity." },
+        { "gate": "admin-control", "status": "conditional", "reason": "Managed plans require administrator enablement; a user can opt out.", "sources": ["memory"], "next": "Test policy disable and verify scope across the user's supported surfaces." },
+        { "gate": "identity", "status": "conditional", "reason": "Repository facts and user preferences have different access and ownership rules.", "sources": ["memory"], "next": "Verify repository permissions and the active billing entity's ownership." },
+        { "gate": "data", "status": "conditional", "reason": "Citations, 28-day unused-entry expiry, and deletion are documented; active use can renew retention.", "sources": ["memory", "memory-settings"], "next": "Approve allowed fact classes and inspect export/deletion; never store sensitive personal data." },
+        { "gate": "human-approval", "status": "conditional", "reason": "Facts may be captured from user-initiated interactions; owner review and deletion are available.", "sources": ["memory"], "next": "Define review responsibility and correct invalid facts before reuse." },
+        { "gate": "audit", "status": "conditional", "reason": "Stored facts have citations and can be reviewed; this is not proof of a complete immutable audit trail.", "sources": ["memory", "memory-settings"], "next": "Validate the required export, access, and audit evidence." },
+        { "gate": "cost", "status": "conditional", "reason": "Underlying AI usage is priced; no standalone memory tariff is established by the reviewed source.", "sources": ["billing", "memory"], "next": "Measure supported interactions and confirm pricing before customer quotation." },
+        { "gate": "network", "status": "conditional", "reason": "Persistent context is a server-side capability used by multiple supported surfaces.", "sources": ["memory"], "next": "Approve the required service path and enterprise data boundary." },
+        { "gate": "operations", "status": "conditional", "reason": "Validation and expiry behavior are documented; public preview can change.", "sources": ["memory"], "next": "Assign a fact owner and demonstrate invalid-citation handling." },
+        { "gate": "rollback", "status": "conditional", "reason": "Authorized owners can delete specific facts; local fixture reset cannot remove them.", "sources": ["memory-settings"], "next": "Delete only the synthetic demo fact and confirm it is absent after cleanup." }
+      ],
+      "demo": {
+        "title": "A convention survives a new session",
+        "minutes": 8,
+        "mode": "Facilitated context",
+        "status": "kit-tested",
+        "liveStatus": "not-run",
+        "runbook": "demos/copilot-memory/README.md",
+        "prompt": "In the throwaway demo repository, inspect normalize-ticket.mjs. The repository convention is that ticket IDs are lowercase and hyphenated. If Memory is enabled and allowed, capture only that non-sensitive repository fact with a citation to the code. Do not create a user-level preference. Show what was captured. In a new session, use the validated convention to produce ticket.json for the synthetic title 'Demo Ticket'.",
+        "expected": "A cited, repository-scoped synthetic convention and a generated ticket ID of demo-ticket in a later session.",
+        "remoteCleanup": "With the repository owner's authorization, delete only this demo fact in repository Settings > Copilot > Memory. Never clear all memories."
+      }
+    },
+    {
+      "id": "autopilot",
+      "name": "Autopilot Mode",
+      "tagline": "Stay on a bounded objective until the result is verified.",
+      "summary": "An experimental CLI mode that encourages the agent to continue toward a completed objective. Autonomy is not a replacement for permissions, sandboxing, budgets, or output review.",
+      "category": "Agent autonomy",
+      "icon": "rocket",
+      "featured": false,
+      "lifecycle": { "status": "experimental", "source": "cli-readme", "note": "The official CLI README lists Autopilot under experimental features; client behavior and limits should be rechecked." },
+      "surfaces": ["Copilot CLI"],
+      "tags": ["bounded objectives", "tests", "agent permissions", "verification"],
+      "verifiedOn": "2026-10-14",
+      "value": [
+        "Keep a small repair task moving through implementation and verification.",
+        "Show the difference between an agent saying done and a measurable passing result.",
+        "Demonstrate sandbox and permission boundaries alongside autonomy."
+      ],
+      "enablement": [
+        { "title": "Use the disposable fixture workspace", "detail": "Never start this demo from the home folder, customer repository, or a directory containing secrets. Review effective permissions and sandbox support.", "command": "npm run demo:setup -- autopilot", "sources": ["cli", "sandboxes"] },
+        { "title": "Start and inspect experimental mode", "detail": "Enable experimental features and inspect available modes. Shift+Tab cycles modes; /autopilot is available in the verified CLI help/release lineage.", "command": "copilot --experimental\n/permissions show\n/sandbox enable", "sources": ["cli-readme", "cli-release", "sandboxes"] },
+        { "title": "Give a narrow objective and review the result", "detail": "Use only the seeded discount function and its tests. Do not grant allow-all or permission bypass; stop if the host cannot enforce the required sandbox.", "command": "", "sources": ["cli", "sandboxes"] }
+      ],
+      "cost": {
+        "headline": "Longer autonomous sessions can consume more model usage.",
+        "detail": "Current enterprise billing is token-based AI credits, not a fixed promise of one billable request per task. Autonomous work, retries, and frontier models change cost. The README's legacy premium-request text is not used as enterprise pricing evidence.",
+        "assumptions": ["One synthetic task with a measurable test suite.", "Approved model, effective tenant budget, and no permission bypass.", "A continuation or runtime limit is not evidence of a hard billed-spend cap."],
+        "sources": ["billing", "cli-readme", "cli-release"]
+      },
+      "limitations": [
+        "Experimental behavior can vary by version.",
+        "Autonomy can broaden tool activity unless the environment and objective are bounded.",
+        "Do not use a completion message as a substitute for running the required tests.",
+        "Sandbox availability and enforcement differ by OS; fail closed when required controls cannot be applied."
+      ],
+      "readiness": [
+        { "gate": "eligibility", "status": "conditional", "reason": "Experimental mode and Autopilot are documented, but the target client behavior must be verified.", "sources": ["cli-readme", "cli-release"], "next": "Record /version and /experimental output for the rehearsal." },
+        { "gate": "admin-control", "status": "conditional", "reason": "Managed settings can restrict permission bypass and enforce sandbox configuration.", "sources": ["managed-settings", "sandboxes"], "next": "Prove effective deny rules and fail-closed sandboxing on the target device." },
+        { "gate": "identity", "status": "conditional", "reason": "The CLI can run commands with the user's available credentials unless constrained.", "sources": ["cli", "sandboxes"], "next": "Use a synthetic workspace and mask or withhold unnecessary credentials." },
+        { "gate": "data", "status": "conditional", "reason": "Trusted-directory and sandbox boundaries require deliberate configuration.", "sources": ["cli", "sandboxes"], "next": "Keep only synthetic fixtures in the demo directory and review actual context." },
+        { "gate": "human-approval", "status": "conditional", "reason": "Autonomous continuation can affect prompting; stop controls and effective deny rules remain necessary.", "sources": ["cli-release", "cli"], "next": "Disallow high-impact operations, demonstrate interruption, and require review before promotion." },
+        { "gate": "audit", "status": "conditional", "reason": "Session tool activity and measurable tests are available, but complete enterprise audit coverage is not established.", "sources": ["cli"], "next": "Capture allowed traces and record test evidence for the exact output." },
+        { "gate": "cost", "status": "conditional", "reason": "AI-credit billing and tenant budgets are documented; actual autonomous-session usage varies.", "sources": ["billing"], "next": "Meter a bounded rehearsal and approve an effective budget." },
+        { "gate": "network", "status": "conditional", "reason": "Sandbox network capabilities and proxy enforcement differ by operating system.", "sources": ["sandboxes"], "next": "Test the effective deny path on the actual target OS." },
+        { "gate": "operations", "status": "conditional", "reason": "The mode is experimental and requires a verified completion contract.", "sources": ["cli-readme", "cli-release"], "next": "Use the included tests, check failure behavior, and maintain a manual repair fallback." },
+        { "gate": "rollback", "status": "pass", "reason": "This demo edits only known local synthetic files and has a marker-checked, repeatable reset.", "sources": ["cli"], "next": "Stop the CLI session before resetting; preserve all unrelated files." }
+      ],
+      "demo": {
+        "title": "Fix the discount bug, not the test",
+        "minutes": 6,
+        "mode": "Bounded CLI task",
+        "status": "kit-tested",
+        "liveStatus": "not-run",
+        "runbook": "demos/autopilot/README.md",
+        "prompt": "Work only in this synthetic demo workspace. Fix discount.mjs so discount(120, 25) is 90, discount(40, 0) is 40, and discount(40, 100) is 0. Reject non-finite or negative prices and percentages outside 0..100. Do not modify discount.test.mjs, install dependencies, access the network, use other directories, or commit/push. Run node --test discount.test.mjs and stop only when all tests pass. If effective policy or required sandboxing blocks a step, stop and explain rather than bypass it.",
+        "expected": "The seeded tests fail before the repair and pass afterward, with the original test file unchanged.",
+        "remoteCleanup": "No remote state is created by this kit. Stop the session before local reset and return the CLI to the prior mode/settings."
+      }
+    }
+  ]
+}
