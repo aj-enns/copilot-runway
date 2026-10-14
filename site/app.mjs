@@ -87,6 +87,11 @@ function showView(name, focus = true) {
     if (button.dataset.view === name) button.setAttribute("aria-current", "page");
     else button.removeAttribute("aria-current");
   });
+  const navigation = $(".sidebar nav");
+  const activeButton = $(`.nav-button[data-view="${name}"]`);
+  if (navigation.scrollWidth > navigation.clientWidth) {
+    navigation.scrollLeft = activeButton.offsetLeft - navigation.offsetLeft - 4;
+  }
   $("#breadcrumb-view").textContent = viewNames[name];
   setHash(`#view=${name}`);
   if (focus) $("#main").focus({ preventScroll: true });
@@ -101,7 +106,7 @@ function renderMetrics() {
     ["shield-lock", data.rubric.gates.length, "Readiness gates", "Unknowns block adoption"],
   ];
   $("#metrics").innerHTML = metrics.map(([name, number, label, detail]) =>
-    `<div class="metric"><span class="metric-icon">${icon(name)}</span><strong>${String(number).padStart(2, "0")}</strong><label>${html(label)}</label><small>${html(detail)}</small></div>`).join("");
+    `<div class="metric"><span class="metric-icon">${icon(name)}</span><strong>${String(number).padStart(2, "0")}</strong><span class="metric-label">${html(label)}</span><small>${html(detail)}</small></div>`).join("");
   $(".nav-count").textContent = String(data.features.length).padStart(2, "0");
   $("#coverage-note").textContent = data.scope;
   $(".topbar-date").innerHTML = `Evidence reviewed <time datetime="${html(data.updatedOn)}">${date(data.updatedOn)}</time>`;
@@ -141,6 +146,7 @@ function clearFilters() {
   $("#readiness-filter").value = "";
   $("#surface-filter").value = "";
   renderCatalog();
+  $("#feature-search").focus();
 }
 
 function readinessContent(feature) {
@@ -363,7 +369,13 @@ $("#feature-search").addEventListener("input", (event) => { filters.search = eve
 $("#readiness-filter").addEventListener("change", (event) => { filters.readiness = event.target.value; renderCatalog(); });
 $("#surface-filter").addEventListener("change", (event) => { filters.surface = event.target.value; renderCatalog(); });
 $("#compare-open").addEventListener("click", openComparison);
-$("#compare-clear").addEventListener("click", () => { compared.clear(); renderComparison(); renderCatalog(); });
+$("#compare-clear").addEventListener("click", () => {
+  const firstSelected = [...compared][0];
+  compared.clear();
+  renderComparison();
+  renderCatalog();
+  ($(`[data-compare="${firstSelected}"]`) ?? $("#feature-search")).focus();
+});
 $("#feature-dialog").addEventListener("close", () => { currentFeature = undefined; setHash(`#view=${view}`); });
 
 $("#rule-form").addEventListener("submit", (event) => {
@@ -400,11 +412,15 @@ $("#export-cost").addEventListener("click", () => {
     `Official sources reviewed ${data.updatedOn}:\n${["billing", "sandbox-billing", "sandboxes"].map((id) => `- ${data.sources[id].url}`).join("\n")}\n`);
 });
 
+function renderThemeToggle() {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  $("#theme-toggle").setAttribute("aria-label", `Switch to ${nextTheme} theme`);
+  $("#theme-toggle").innerHTML = icon(nextTheme === "light" ? "sun" : "moon");
+}
+
 $("#theme-toggle").addEventListener("click", () => {
-  const theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-  document.documentElement.dataset.theme = theme;
-  $("#theme-toggle").setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} theme`);
-  $("#theme-toggle").innerHTML = icon(theme === "dark" ? "sun" : "moon");
+  document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  renderThemeToggle();
 });
 
 document.addEventListener("keydown", (event) => {
@@ -436,6 +452,7 @@ function route() {
 }
 
 hydrateIcons();
+renderThemeToggle();
 loadWorkshop();
 renderMetrics();
 renderCatalog();
