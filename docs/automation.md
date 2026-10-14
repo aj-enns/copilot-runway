@@ -8,7 +8,7 @@ The [Pages pipeline](../.github/workflows/pages.yml) runs on pushes to `main`, a
 
 GitHub Pages availability and private-site access depend on the organization's plan and policy. A private repository does not automatically mean its Pages site is private. Publish only this repository's public, synthetic enablement artifacts; keep customer-specific assessments in the customer's approved system.
 
-The daily Pages run refreshes Radar candidates at build time without writing authoritative source files back to main. A source-fetch failure stops publication rather than silently serving an empty "all current" result.
+The daily Pages run refreshes Radar and review-pending GA candidates at build time without writing authoritative source files back to main. A source-fetch failure stops publication rather than silently serving an empty "all current" result.
 
 ## Deterministic preview discovery
 
@@ -17,6 +17,12 @@ The daily Pages run refreshes Radar candidates at build time without writing aut
 The scanner does not forward a GitHub token to public sources. HTTPS hosts and redirect destinations are allowlisted, response size is capped, publication dates are checked, RSS entities are restricted, content is flattened, and failures are explicit. Titles/bodies are data, never commands.
 
 GitHub Actions writes are governed by repository/enterprise policy. If issue creation is disabled, the successful scan artifact is still available, but the digest job must show its failure; it must not claim a posted report.
+
+## GA tracking boundaries
+
+`catalog/ga.json` is a durable, human-reviewed archive, not an automatically inferred lifecycle. Entries distinguish feature GA from model availability, cite reviewed primary announcements in `catalog/sources.json`, and include dated scope caveats. GA is historical announcement evidence, not proof that rollout is complete, a tenant is eligible, or enterprise gates have passed.
+
+Daily ingestion marks Copilot announcements with explicit GA wording in the headline or opening sentence as candidate signals; later historical mentions in policy updates or roundups do not qualify. The Recently GA view excludes already archived announcement URLs, shows other signals separately as **Review pending**, and never treats every lifecycle signal or stable product release as GA. Feed windows remain bounded; the reviewed archive is preserved when announcements leave RSS. A maintainer must verify scope/date and add a reviewed entry. Preview feature records, verification dates, assessments, and pricing are unchanged by either discovery or GA filtering.
 
 ## Optional agentic interpretation
 

@@ -3,6 +3,38 @@
   "updatedOn": "2026-10-14",
   "repository": "hammadorg93/copilot-runway",
   "scope": "Six priority capabilities for architects. This is a curated starting catalog, not an exhaustive inventory of every Copilot preview. Discovery candidates require review before admission.",
+  "enterpriseUseCases": {
+    "computer-use": [
+      "Update GUI-only legacy support records",
+      "Prepare operational handoff documents",
+      "Assist approved desktop data-entry tasks"
+    ],
+    "dynamic-workflows": [
+      "Parallel application architecture assessments",
+      "Coordinate migration-planning specialists",
+      "Pause complex reviews for human approval"
+    ],
+    "agentic-workflows": [
+      "Triage and summarize repository issues",
+      "Draft release and compliance evidence",
+      "Monitor developer-platform change announcements"
+    ],
+    "cloud-sandboxes": [
+      "Reproduce bugs in isolated environments",
+      "Run short-lived agent-assisted repair tasks",
+      "Standardize onboarding for distributed developers"
+    ],
+    "copilot-memory": [
+      "Retain repository architecture conventions",
+      "Reduce repeat onboarding explanations",
+      "Reuse cited context across code reviews"
+    ],
+    "autopilot": [
+      "Repair failures against acceptance tests",
+      "Handle repetitive refactors in a sandbox",
+      "Iterate on a task before human review"
+    ]
+  },
   "features": [
     {
       "id": "computer-use",

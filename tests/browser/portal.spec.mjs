@@ -92,11 +92,11 @@ test("workspace navigation, keyboard search, and theme controls expose their cur
 });
 
 for (const width of [320, 768, 1100, 1440]) {
-  test(`workspace and all five views fit a ${width}px viewport in both themes`, async ({ page }) => {
+  test(`workspace and all six views fit a ${width}px viewport in both themes`, async ({ page }) => {
     await page.setViewportSize({ width, height: 960 });
     for (const theme of ["light", "dark"]) {
       await page.goto(`/?clawpilotTheme=${theme}`);
-      for (const view of ["catalog", "readiness", "demos", "cost", "radar"]) {
+      for (const view of ["catalog", "readiness", "demos", "cost", "radar", "ga"]) {
         await page.locator(`.nav-button[data-view="${view}"]`).click();
         await expect(page.locator(`#view-${view}`)).toBeVisible();
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${theme} ${view} overflows`).toBe(true);
@@ -104,6 +104,95 @@ for (const width of [320, 768, 1100, 1440]) {
     }
   });
 }
+
+test("concise enterprise use cases appear in every card, detail view, and search", async ({ page }) => {
+  await page.goto("/?clawpilotTheme=light");
+  const cards = page.locator(".feature-card");
+  await expect(cards).toHaveCount(6);
+  for (const card of await cards.all()) {
+    await expect(card.locator(".enterprise-uses li")).toHaveCount(3);
+    await expect(card).toContainText("Potential enterprise uses");
+    await card.locator(".feature-title").click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog.locator(".enterprise-uses li")).toHaveCount(3);
+    await expect(dialog).toContainText("not verified customer deployments");
+    await dialog.getByRole("button", { name: "Close feature" }).click();
+  }
+  await page.getByRole("searchbox", { name: "Search capabilities" }).fill("legacy support records");
+  await expect(cards).toHaveCount(1);
+  await expect(cards).toContainText("Computer Use");
+});
+
+test("Recently GA has reviewed dates, official links, feature/model filters, and separate preview status", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
+  await page.clock.install({ time: new Date("2026-10-14T12:00:00Z") });
+  await page.goto("/?clawpilotTheme=light#view=ga");
+  await expect(page.locator("#view-ga")).toBeVisible();
+  await expect(page.locator(".nav-button[data-view=ga]")).toHaveAttribute("aria-current", "page");
+  await expect(page.locator(".ga-card")).toHaveCount(3);
+  await expect(page.locator(".ga-card h2")).toHaveText(["Gemini 4 Argon", "Claude Haiku 5.5", "Local sandboxing"]);
+  await expect(page.locator("[data-ga=gemini-4-argon] time")).toHaveAttribute("datetime", "2026-10-13");
+  await expect(page.locator("[data-ga=local-sandboxing] time")).toHaveAttribute("datetime", "2026-10-07");
+  await expect(page.locator("#view-ga")).toContainText("GA does not mean enterprise-ready");
+  await expect(page.locator("#ga-coverage")).toContainText("not exhaustive coverage");
+  for (const link of await page.locator(".ga-card a").all()) {
+    await expect(link).toHaveAttribute("href", /^https:\/\/github\.blog\/changelog\/2026-10-/);
+    await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  }
+  await page.getByLabel("Announcement type").selectOption("feature");
+  await expect(page.locator(".ga-card")).toHaveCount(1);
+  await expect(page.locator(".ga-card")).toContainText("not GA for hosted Cloud Sandboxes");
+  await page.getByLabel("Announcement type").selectOption("model");
+  await expect(page.locator(".ga-card")).toHaveCount(2);
+  await expect(page.locator(".ga-card .category-label")).toHaveText(["Model availability", "Model availability"]);
+  await page.locator(".nav-button[data-view=catalog]").click();
+  await expect(page.locator("[data-feature=cloud-sandboxes] .badge-preview")).toHaveText("Public preview");
+  await expect(page.locator(".feature-card")).toHaveCount(6);
+  expect(errors).toEqual([]);
+});
+
+test("GA history survives the recent window and explains an empty filtered result", async ({ page }) => {
+  await page.clock.install({ time: new Date("2027-03-01T12:00:00Z") });
+  await page.goto("/?clawpilotTheme=dark#view=ga");
+  await expect(page.locator(".ga-card")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "No reviewed GA announcements match these filters." })).toBeVisible();
+  await expect(page.locator("#view-ga")).toContainText("not evidence that no feature went GA");
+  await page.getByLabel("Announcement window").selectOption("0");
+  await expect(page.locator(".ga-card")).toHaveCount(3);
+  await page.getByLabel("Announcement type").selectOption("feature");
+  await expect(page.locator(".ga-card")).toHaveCount(1);
+  await page.getByLabel("Announcement window").selectOption("30");
+  await expect(page.locator(".ga-card")).toHaveCount(0);
+});
+
+test("unreviewed GA signals are escaped and deduplicated without entering reviewed history", async ({ page }) => {
+  await page.clock.install({ time: new Date("2026-10-14T12:00:00Z") });
+  let document = await readFile(site, "utf8");
+  const match = document.match(/<script type="application\/json" id="runway-data">([\s\S]*?)<\/script>/);
+  const catalog = JSON.parse(match[1]);
+  const pending = { id: "pending", feed: "copilot-changelog", title: "New GA signal <img src=x onerror=alert(1)>",
+    url: "https://github.blog/changelog/pending/", publishedOn: "2026-10-14T00:00:00Z", signal: "lifecycle-signal", gaSignal: true };
+  catalog.monitor.items = [
+    pending, { ...pending, id: "alias", url: pending.url + "?utm_source=feed#details" },
+    { ...pending, id: "reviewed", url: catalog.sources["local-sandbox-ga"].url + "#details" },
+    { ...pending, id: "retired", url: "https://github.blog/changelog/retired/", gaSignal: false },
+    { ...pending, id: "release", feed: "copilot-cli-releases" },
+  ];
+  document = document.replace(match[1], () => JSON.stringify(catalog).replace(/</g, "\\u003c"));
+  await page.route("http://127.0.0.1:4173/", (route) => route.fulfill({ contentType: "text/html", body: document }));
+  await page.goto("/#view=ga");
+  await expect(page.locator("#ga-pending")).toBeVisible();
+  await expect(page.locator(".ga-pending-item")).toHaveCount(1);
+  await expect(page.locator(".ga-pending-item")).toContainText("Review pending");
+  await expect(page.locator(".ga-pending-item img")).toHaveCount(0);
+  await expect(page.locator(".ga-card")).toHaveCount(3);
+  await expect(page.locator("#ga-grid")).not.toContainText("New GA signal");
+  await page.setViewportSize({ width: 320, height: 960 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await expect(page.locator("[data-feature=cloud-sandboxes] .badge-preview")).toHaveText("Public preview");
+});
 
 test("comparison preserves experimental/public/technical distinctions", async ({ page }) => {
   await page.goto("/");
@@ -217,5 +306,8 @@ test("built portal works from a file URL without any network dependency", async 
   await expect(page.locator(".feature-card")).toHaveCount(6);
   await page.getByRole("button", { name: "Experimental", exact: true }).click();
   await expect(page.locator(".feature-card")).toHaveCount(2);
+  await page.locator(".nav-button[data-view=ga]").click();
+  await page.getByLabel("Announcement window").selectOption("0");
+  await expect(page.locator(".ga-card")).toHaveCount(3);
   expect(network).toEqual([]);
 });

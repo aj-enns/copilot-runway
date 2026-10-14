@@ -10,7 +10,7 @@ A runway prepares you for takeoff. Copilot Runway helps architects understand wh
 
 ## Start at the flight deck
 
-**[Open Copilot Runway](https://hammadorg93.github.io/copilot-runway/)** for searchable feature cards, release/readiness filters, side-by-side comparisons, full presenter kits, downloadable slides, an editable local policy workshop, a cost lab, and the official-source Radar.
+**[Open Copilot Runway](https://hammadorg93.github.io/copilot-runway/)** for searchable feature cards with concise enterprise use cases, release/readiness filters, side-by-side comparisons, full presenter kits, downloadable slides, an editable local policy workshop, a cost lab, the official-source Radar, and a Recently GA tracker.
 
 The Pages site and source repository are **public**. The flight deck, slides, assessments, and runbooks require no GitHub sign-in to view.
 
@@ -30,6 +30,14 @@ The portal is a responsive, accessible, self-contained static HTML artifact. Its
 Official sources were reviewed on **2026-10-14**. This is a curated first wave, **not an exhaustive list of all Copilot previews**. Lifecycle, policy, pricing, and eligibility can change. The UI treats evidence older than 30 days as stale and blocks required gates pending re-review.
 
 **Kit-tested is not live-feature-tested.** Fixtures, acceptance checks, offline orchestration, and repeatable reset are exercised by repository tests. Live account access, native app automation, paid SDK/Actions inference, cloud execution, server-side Memory, and tenant-specific policy enforcement are not claimed from those checks.
+
+## Enterprise uses and GA history
+
+Every feature card and Overview includes three short **potential enterprise uses**, searchable alongside the feature's name and surfaces. These are illustrative recommendations, not verified customer deployments or policy approval. Maintain them in the portal-only `enterpriseUseCases` map in `catalog/features.json`; validation requires concise examples for every known feature. They do not change generated assessments, slide inputs, or readiness evidence.
+
+**[Recently GA](https://hammadorg93.github.io/copilot-runway/#view=ga)** defaults to announcements from the last 90 days, with 30-day/all-history and feature/model filters. The initial reviewed history includes local sandboxing (2026-10-07), Claude Haiku 5.5 model availability (2026-10-07), and Gemini 4 Argon model availability (2026-10-13). Local sandboxing's GA announcement does **not** graduate hosted Cloud Sandboxes.
+
+The human-reviewed archive in `catalog/ga.json` survives feed rollover. To add an entry, verify the primary announcement, register its source/review date in `catalog/sources.json`, and record its GA date, type, concise potential enterprise use, and scope caveat. Daily scans surface new GA-looking announcements as **review-pending signals**, excluding already tracked announcement URLs. Retirement, stable CLI releases, and historical GA mentions are not proof of a feature graduation. Coverage is curated and bounded, not exhaustive; **GA never automatically changes enterprise readiness or tenant eligibility**.
 
 ## Enterprise non-negotiables
 
@@ -85,9 +93,9 @@ npm run build
 npm run test:e2e
 ```
 
-Unit tests cover blocking verdicts, stale/invalid evidence, cost arithmetic, discovery boundaries, workflow failure/resume, the original seeded symptom, exact output contracts, and reset safety. Browser tests cover filtering, keyboard tabs, direct links, downloads, comparison, persistence, escaped input, demo/reset interaction, mobile overflow, dark theme, stale evidence, CSP, and offline operation.
+Unit tests cover blocking verdicts, stale/invalid evidence, enterprise-use coverage/search, GA history/filtering/deduplication, cost arithmetic, discovery boundaries, workflow failure/resume, the original seeded symptom, exact output contracts, and reset safety. Browser tests cover all six workspace views, filtering, keyboard tabs, direct links, downloads, comparison, persistence, escaped input, demo/reset interaction, mobile overflow, dark theme, stale evidence, CSP, and offline operation.
 
-After changing authoritative feature/rubric/source content, regenerate the decks and Markdown with `npm run artifacts`. `artifacts:check` rejects stale fingerprints. On a Windows machine with PowerPoint, `scripts\render-slides.ps1` exports the actual combined deck to `qa-results\slides` for visual QA; it closes only the presentation it opened.
+After changing authoritative feature/rubric/referenced-source content, regenerate the decks and Markdown with `npm run artifacts`. Portal-only enterprise-use recommendations and GA archive entries do not require slide regeneration; the evidence fingerprints remain enforced. `artifacts:check` rejects stale fingerprints. On a Windows machine with PowerPoint, `scripts\render-slides.ps1` exports the actual combined deck to `qa-results\slides` for visual QA; it closes only the presentation it opened.
 
 ## Staying current
 
@@ -107,7 +115,7 @@ The official watchlist is in `catalog/watch.json`; `npm run sources:scan -- --up
 
 | Path | Source of truth / purpose |
 | --- | --- |
-| `catalog/` | Structured feature evidence, verified sources, watchlist, discovery-only snapshot, candidate proposals |
+| `catalog/` | Structured feature evidence, portal use cases, reviewed GA history, verified sources, watchlist, discovery-only snapshot, candidate proposals |
 | `readiness/` | Versioned required gates and assessment template |
 | `features/` | Generated Markdown assessments |
 | `artifacts/slides/` | Generated, cited PowerPoint briefs |

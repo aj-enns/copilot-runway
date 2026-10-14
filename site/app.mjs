@@ -1,4 +1,4 @@
-import { lifecycleLabels, verdictLabels, freshness, featureSourceIds, evidenceIsStale, verdict, filterFeatures, calculateCost, validateWorkshop, policyExport, rehearsalScenario } from "./model.mjs";
+import { lifecycleLabels, verdictLabels, freshness, featureSourceIds, evidenceIsStale, verdict, filterFeatures, filterGaEntries, gaCandidates, calculateCost, validateWorkshop, policyExport, rehearsalScenario } from "./model.mjs";
 
 const data = JSON.parse(document.getElementById("runway-data").textContent);
 const $ = (selector) => document.querySelector(selector);
@@ -6,7 +6,7 @@ const $$ = (selector) => [...document.querySelectorAll(selector)];
 const html = (value) => String(value).replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 const icon = (name) => data.icons[name] ?? data.icons.info;
 const storageKey = "copilot-runway.workshop.v1";
-const viewNames = { catalog: "Flight deck", readiness: "Readiness gates", demos: "Demo lab", cost: "Cost lab", radar: "Preview radar" };
+const viewNames = { catalog: "Flight deck", readiness: "Readiness gates", demos: "Demo lab", cost: "Cost lab", radar: "Preview radar", ga: "Recently GA" };
 const tabNames = { overview: "Overview", readiness: "Readiness", demo: "Demo", sources: "Sources" };
 let toastTimer;
 let view = "catalog";
@@ -26,6 +26,7 @@ const sourceLinks = (ids) => `<div class="source-links">${[...new Set(ids)].map(
 const lifecycleBadge = (feature) => `<span class="badge ${feature.lifecycle.status === "experimental" ? "badge-experimental" : "badge-preview"}">${html(lifecycleLabels[feature.lifecycle.status])}</span>`;
 const resultBadge = (feature) => `<span class="badge badge-${resultFor(feature)}">${verdictLabels[resultFor(feature)]}</span>`;
 const commandBox = (command) => `<div class="command-box"><pre>${html(command)}</pre><button class="icon-button" data-copy="${html(command)}" aria-label="Copy command">${icon("copy")}</button></div>`;
+const useCaseContent = (feature) => `<section class="enterprise-uses" aria-label="Potential enterprise use cases for ${html(feature.name)}"><span class="use-case-label">Potential enterprise uses</span><ul>${data.enterpriseUseCases[feature.id].map((example) => `<li>${html(example)}</li>`).join("")}</ul></section>`;
 
 function hydrateIcons(scope = document) {
   scope.querySelectorAll("[data-icon]").forEach((element) => { element.innerHTML = icon(element.dataset.icon); });
@@ -129,6 +130,7 @@ function card(feature) {
     <h3><button class="feature-title" data-open="${feature.id}">${html(feature.name)}</button></h3>
     <div class="card-badges">${lifecycleBadge(feature)}${feature.featured ? '<span class="badge badge-neutral">Start here</span>' : ""}</div>
     <p class="summary">${html(feature.summary)}</p>
+    ${useCaseContent(feature)}
     <div class="surface-tags">${feature.surfaces.slice(0, 3).map((surface) => `<span class="surface-tag">${html(surface)}</span>`).join("")}</div>
     <div class="card-readiness" data-verdict="${result}"><span>${icon(result === "blocked" ? "alert" : "shield-lock")}</span><strong>${verdictLabels[result]}</strong><small>${isStale ? "Re-review overdue" : `${passed}/${data.rubric.gates.length} recorded passes`}</small></div>
     <div class="card-kit"><span>${icon("play")}${feature.demo.minutes}-min kit</span><span>Live: ${html(feature.demo.liveStatus)}</span></div>
@@ -137,7 +139,7 @@ function card(feature) {
 }
 
 function renderCatalog() {
-  const features = filterFeatures(data.features, filters, data.rubric, data.sources);
+  const features = filterFeatures(data.features, filters, data.rubric, data.sources, new Date(), data.enterpriseUseCases);
   $("#feature-grid").innerHTML = features.length ? features.map(card).join("") :
     `<div class="empty-state"><h3>No capabilities match those filters.</h3><p>Try a different term or reset the filters. Discovery candidates live on Radar.</p><button class="button" data-clear-filters>Reset filters</button></div>`;
   $("#result-count").textContent = `${features.length} of ${data.features.length} capabilities`;
@@ -168,7 +170,7 @@ function readinessContent(feature) {
 }
 
 function overviewContent(feature) {
-  return `<p>${html(feature.summary)}</p><div class="value-grid">${feature.value.map((value, index) => `<div class="value-card"><b>VALUE ${String(index + 1).padStart(2, "0")}</b>${html(value)}</div>`).join("")}</div>
+  return `<p>${html(feature.summary)}</p>${useCaseContent(feature)}<p class="use-case-note">Illustrative enterprise scenarios, not verified customer deployments or policy approval.</p><div class="value-grid">${feature.value.map((value, index) => `<div class="value-card"><b>VALUE ${String(index + 1).padStart(2, "0")}</b>${html(value)}</div>`).join("")}</div>
     <h3>What it takes to enable</h3>${feature.enablement.map((step, index) => `<div class="enablement-step"><strong>${index + 1}. ${html(step.title)}</strong><p>${html(step.detail)}</p>${step.command ? commandBox(step.command) : ""}${sourceLinks(step.sources)}</div>`).join("")}
     <div class="notice"><div><h3>${html(feature.cost.headline)}</h3><p>${html(feature.cost.detail)}</p><ul>${feature.cost.assumptions.map((assumption) => `<li>${html(assumption)}</li>`).join("")}</ul>${sourceLinks(feature.cost.sources)}</div></div>
     <h3>Limitations to say out loud</h3><ul>${feature.limitations.map((limit) => `<li>${html(limit)}</li>`).join("")}</ul>`;
@@ -282,6 +284,23 @@ function renderRadar() {
     '<div class="empty-state"><h3>No successful scan recorded yet.</h3><p>The scheduled workflow must fetch all configured official sources successfully before publishing a snapshot.</p></div>';
 }
 
+function renderGa() {
+  const entries = filterGaEntries(data.ga.entries, { windowDays: Number($("#ga-window").value), kind: $("#ga-kind").value });
+  $("#ga-count").textContent = String(filterGaEntries(data.ga.entries).length).padStart(2, "0");
+  $("#ga-result-count").textContent = `${entries.length} reviewed GA announcement${entries.length === 1 ? "" : "s"} shown`;
+  $("#ga-coverage").textContent = data.ga.scope;
+  $("#ga-grid").innerHTML = entries.length ? entries.map((entry) => {
+    const source = data.sources[entry.source];
+    return `<article class="ga-card" data-ga="${html(entry.id)}"><div class="card-top"><span class="feature-icon">${icon(entry.kind === "feature" ? "shield-lock" : "copilot")}</span><span class="badge badge-ready">GA announced</span></div>
+      <span class="category-label">${entry.kind === "model" ? "Model availability" : "Copilot feature"}</span><h2>${html(entry.name)}</h2><p>${html(entry.summary)}</p>
+      <div class="ga-enterprise-use"><strong>Potential enterprise use</strong><p>${html(entry.enterpriseUse)}</p></div><p class="ga-scope">${html(entry.scopeNote)}</p>
+      <div class="ga-card-footer"><span><strong>GA announced <time datetime="${entry.gaOn}">${date(entry.gaOn)}</time></strong><small>Source reviewed ${date(source.verifiedOn)}</small></span><a href="${html(source.url)}" target="_blank" rel="noopener noreferrer">Official announcement &nearr;</a></div></article>`;
+  }).join("") : '<div class="empty-state"><h3>No reviewed GA announcements match these filters.</h3><p>Expand the time window or choose all types. A missing entry is not evidence that no feature went GA.</p></div>';
+  const pending = gaCandidates(data.monitor.items, data.ga.entries, data.sources);
+  $("#ga-pending").hidden = pending.length === 0;
+  $("#ga-pending-items").innerHTML = pending.map((item) => `<article class="ga-pending-item"><span class="badge badge-experimental">Review pending</span><div><a href="${html(item.url)}" target="_blank" rel="noopener noreferrer">${html(item.title)} &nearr;</a><small>Published ${date(item.publishedOn)} &middot; GA signal only, scope/date not yet verified</small></div></article>`).join("");
+}
+
 function renderComparison() {
   $("#compare-rail").hidden = compared.size === 0;
   $("#compare-open").disabled = compared.size < 2;
@@ -375,6 +394,8 @@ document.addEventListener("click", async (event) => {
 $("#feature-search").addEventListener("input", (event) => { filters.search = event.target.value; renderCatalog(); });
 $("#readiness-filter").addEventListener("change", (event) => { filters.readiness = event.target.value; renderCatalog(); });
 $("#surface-filter").addEventListener("change", (event) => { filters.surface = event.target.value; renderCatalog(); });
+$("#ga-window").addEventListener("change", renderGa);
+$("#ga-kind").addEventListener("change", renderGa);
 $("#compare-open").addEventListener("click", openComparison);
 $("#compare-clear").addEventListener("click", () => { compared.clear(); renderComparison(); renderCatalog(); });
 $("#feature-dialog").addEventListener("close", () => { currentFeature = undefined; setHash(`#view=${view}`); });
@@ -462,6 +483,7 @@ renderReadiness();
 renderLab();
 renderCost();
 renderRadar();
+renderGa();
 renderComparison();
 renderThemeToggle();
 $("#cost-sources").innerHTML = sourceLinks(["billing", "sandbox-billing", "sandboxes"]);

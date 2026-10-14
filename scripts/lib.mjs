@@ -17,13 +17,14 @@ export async function write(path, content) {
 }
 
 export async function loadCatalog() {
-  const [catalog, sourceDocument, rubric, monitor] = await Promise.all([
+  const [catalog, sourceDocument, rubric, monitor, ga] = await Promise.all([
     readJson(fromRoot("catalog", "features.json")),
     readJson(fromRoot("catalog", "sources.json")),
     readJson(fromRoot("readiness", "gates.json")),
     readJson(fromRoot("catalog", "monitor.json")),
+    readJson(fromRoot("catalog", "ga.json")),
   ]);
-  return { ...catalog, sources: sourceDocument.sources, rubric, monitor };
+  return { ...catalog, sources: sourceDocument.sources, rubric, monitor, ga };
 }
 
 export function escapeHtml(value) {

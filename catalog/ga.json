@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "updatedOn": "2026-10-14",
+  "scope": "Human-reviewed GitHub Copilot GA announcements. Feature releases and model availability are distinguished. This is a curated history, not exhaustive coverage or a guarantee of current tenant availability.",
+  "entries": [
+    {
+      "id": "gemini-4-argon",
+      "name": "Gemini 4 Argon",
+      "kind": "model",
+      "gaOn": "2026-10-13",
+      "source": "gemini-4-argon-ga",
+      "summary": "GA model availability for complex coding, agentic, and reasoning tasks.",
+      "enterpriseUse": "Complex code changes and architecture-focused reasoning.",
+      "scopeNote": "Model availability, not a new Copilot feature. Business/Enterprise model policy, gradual rollout, and usage-based billing still apply."
+    },
+    {
+      "id": "claude-haiku-5-5",
+      "name": "Claude Haiku 5.5",
+      "kind": "model",
+      "gaOn": "2026-10-07",
+      "source": "claude-haiku-5-5-ga",
+      "summary": "GA model availability for quick edits, subagents, and terminal tasks.",
+      "enterpriseUse": "Fast developer assistance and high-volume coding tasks.",
+      "scopeNote": "Model availability, not a new Copilot feature. Business/Enterprise model policy, gradual rollout, and usage-based billing still apply."
+    },
+    {
+      "id": "local-sandboxing",
+      "name": "Local sandboxing",
+      "kind": "feature",
+      "gaOn": "2026-10-07",
+      "source": "local-sandbox-ga",
+      "summary": "Restrict local agent tools with filesystem, network, and credential boundaries.",
+      "enterpriseUse": "Run local agent tasks within approved developer-machine policies.",
+      "scopeNote": "Local tool isolation in Copilot CLI, the Copilot app, and VS Code Agent Host. This announcement is not GA for hosted Cloud Sandboxes."
+    }
+  ]
+}

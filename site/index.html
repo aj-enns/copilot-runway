@@ -33,6 +33,7 @@
         <button class="nav-button" data-view="demos"><span data-icon="play"></span>Demo lab</button>
         <button class="nav-button" data-view="cost"><span data-icon="meter"></span>Cost lab</button>
         <button class="nav-button" data-view="radar"><span data-icon="broadcast"></span>Preview radar<span class="live-dot" aria-hidden="true"></span></button>
+        <button class="nav-button" data-view="ga"><span data-icon="verified"></span>Recently GA<span class="nav-count" id="ga-count"></span></button>
       </nav>
       <div class="sidebar-note">
         <span class="small-icon" data-icon="verified"></span>
@@ -76,7 +77,7 @@
           </div>
           <div class="metrics" id="metrics" aria-label="Catalog coverage"></div>
           <div class="section-heading">
-            <div><span class="eyebrow">FEATURE EXPLORER</span><h2>Capabilities on the runway</h2><p>Find a capability. Review its controls. Pick up the complete demo kit.</p></div>
+            <div><span class="eyebrow">FEATURE EXPLORER</span><h2>Capabilities on the runway</h2><p>Find a capability. Review its controls. Enterprise uses below are illustrative, not approved customer deployments.</p></div>
             <button class="text-link" data-view="radar">See what's on radar <span aria-hidden="true">&rarr;</span></button>
           </div>
           <div class="catalog-controls">
@@ -118,6 +119,19 @@
           <div class="section-heading"><div><h2>Latest official-source signals</h2><p>Includes lifecycle, governance, billing, and release changes, not just new previews.</p></div><a class="text-link" href="https://github.com/hammadorg93/copilot-runway/actions" target="_blank" rel="noopener noreferrer">View scheduled runs <span aria-hidden="true">&nearr;</span></a></div>
           <div id="radar-items" class="radar-items"></div>
           <div class="notice"><span data-icon="info"></span><p>The RSS feed is a rolling window, not a complete history. Older or unannounced features can be missed. Review failed scans and stale assessments; no automated scan can prove exhaustive preview coverage.</p></div>
+        </section>
+        <section id="view-ga" class="view" hidden>
+          <div class="page-heading"><span class="eyebrow">AFTER PREVIEW, KEEP TRACKING</span><h1>Recently generally available.</h1><p>Reviewed GA announcements, their dates, and a concise enterprise use. Feature releases and model availability are tracked separately.</p></div>
+          <div class="notice notice-warning"><span data-icon="shield-lock"></span><div><strong>GA does not mean enterprise-ready.</strong><p>These are historical announcements, not tenant access or production approval. Continue reviewing eligibility, policy, data, cost, and all required pilot gates.</p></div></div>
+          <div class="ga-controls">
+            <label for="ga-window">Announcement window<select id="ga-window"><option value="90">Last 90 days</option><option value="30">Last 30 days</option><option value="0">All tracked history</option></select></label>
+            <label for="ga-kind">Announcement type<select id="ga-kind"><option value="">Features and models</option><option value="feature">Features only</option><option value="model">Model availability only</option></select></label>
+            <span id="ga-result-count" role="status" aria-live="polite"></span>
+          </div>
+          <div id="ga-grid" class="ga-grid"></div>
+          <div class="coverage-note"><span data-icon="info"></span><p id="ga-coverage"></p></div>
+          <section id="ga-pending" class="ga-pending" hidden aria-labelledby="ga-pending-title"><h2 id="ga-pending-title">New GA signals to review</h2><p>Daily official-source scans surface candidates here. A maintainer must verify the scope and date before adding a reviewed GA record; preview assessments are never promoted automatically.</p><div id="ga-pending-items"></div></section>
+          <div class="lab-actions"><button class="button button-small" data-view="radar"><span data-icon="broadcast"></span>Open official-source Radar</button><a class="button button-small" href="https://github.com/hammadorg93/copilot-runway/blob/main/catalog/ga.json" target="_blank" rel="noopener noreferrer">View tracked GA history <span aria-hidden="true">&nearr;</span></a></div>
         </section>
         <footer><span><strong>Copilot Runway</strong> &middot; Evaluate. Explain. Demo.<small>Independent initiative. Not a GitHub or Microsoft product.</small></span><a href="THIRD_PARTY_NOTICES.md" download>Branding &amp; attribution <span aria-hidden="true">&nearr;</span></a></footer>
         <noscript><div class="notice">The interactive flight deck requires JavaScript. Download the <a href="artifacts/slides/copilot-runway.pptx">architect brief</a>, <a href="readiness/README.md">readiness policy</a>, or browse the <a href="https://github.com/hammadorg93/copilot-runway">repository</a>.</div></noscript>

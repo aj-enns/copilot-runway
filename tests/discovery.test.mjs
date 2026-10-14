@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { parseFeed, fetchOfficial, scan, signalFor, plainText } from "../scripts/discover.mjs";
+import { parseFeed, fetchOfficial, scan, signalFor, gaSignalFor, plainText } from "../scripts/discover.mjs";
 import { fromRoot, readJson } from "../scripts/lib.mjs";
 
 const watch = await readJson(fromRoot("catalog", "watch.json"));
@@ -30,6 +30,7 @@ test("official RSS is parsed as inert, bounded candidate metadata", () => {
   const items = parseFeed(feed, rss, watch.allowedHosts);
   assert.equal(items.length, 1);
   assert.equal(items[0].signal, "preview-signal");
+  assert.equal(items[0].gaSignal, false);
   assert.equal(items[0].summary, "Review enterprise controls.");
   assert.equal(items[0].id.length, 16);
   assert.equal(items[0].publishedOn, "2026-10-13T18:39:56.000Z");
@@ -42,7 +43,9 @@ test("release, preview, GA, and retirement signals remain distinct", () => {
     { name: "v2", html_url: "https://github.com/github/copilot-cli/releases/tag/v2", published_at: "2026-10-13T00:00:00Z", body: "Experimental workflow API", prerelease: true },
     { name: "draft", draft: true },
   ]);
-  assert.deepEqual(parseFeed(feed, body, watch.allowedHosts).map((item) => item.signal), ["release", "preview-signal"]);
+  const releases = parseFeed(feed, body, watch.allowedHosts);
+  assert.deepEqual(releases.map((item) => item.signal), ["release", "preview-signal"]);
+  assert.ok(releases.every((item) => item.gaSignal === false));
   assert.equal(signalFor("Feature is generally available"), "lifecycle-signal");
   assert.equal(signalFor("Retired compiler version"), "lifecycle-signal");
   assert.equal(signalFor("Updated policy"), "update");
@@ -53,6 +56,29 @@ test("headline lifecycle signals take precedence over historical preview languag
   assert.equal(parseFeed(watch.feeds[0], titleOnly, watch.allowedHosts)[0].signal, "preview-signal");
   const graduation = rss.replace("Computer Use public preview", "Computer Use is generally available");
   assert.equal(parseFeed(watch.feeds[0], graduation, watch.allowedHosts)[0].signal, "lifecycle-signal");
+  assert.equal(parseFeed(watch.feeds[0], graduation, watch.allowedHosts)[0].gaSignal, true);
+});
+
+test("GA-looking signals remain candidates and do not conflate previews, retirement, or historical mentions", () => {
+  assert.equal(gaSignalFor("Local sandboxing now generally available", "Previously in public preview."), true);
+  assert.equal(gaSignalFor("Model X in GitHub Copilot", "Model X is generally available."), true);
+  assert.equal(gaSignalFor("Claude Haiku 5.5 in Copilot", "Claude Haiku 5.5 is now generally available. More details."), true);
+  assert.equal(gaSignalFor("Feature in public preview", "Other features are generally available."), false);
+  assert.equal(gaSignalFor("Retirement of model X", "Model X was generally available."), false);
+  assert.equal(gaSignalFor("Policy update", "Model X was generally available and is now retired."), false);
+  assert.equal(gaSignalFor("Policy update", "Enterprise settings enforcement has changed. Local sandboxing became generally available last week."), false);
+  assert.equal(gaSignalFor("Copilot weekly releases", "This week's changes improve Copilot. Model X is now generally available."), false);
+  assert.equal(gaSignalFor("Feature not yet generally available", "Release notes."), false);
+  assert.equal(gaSignalFor("Feature is no longer generally available", ""), false);
+  const bodyOnly = rss.replace("Computer Use public preview", "Model X in Copilot")
+    .replace("Public preview; review required.", "Model X is generally available.");
+  const item = parseFeed(watch.feeds[0], bodyOnly, watch.allowedHosts)[0];
+  assert.equal(item.gaSignal, true);
+  assert.equal(item.verifiedOn, undefined);
+  assert.equal(item.gaOn, undefined);
+  const release = JSON.stringify([{ name: "v1", html_url: "https://github.com/github/copilot-cli/releases/tag/v1",
+    published_at: "2026-10-13T00:00:00Z", body: "Another model is generally available." }]);
+  assert.equal(parseFeed(watch.feeds[1], release, watch.allowedHosts)[0].gaSignal, false);
 });
 
 test("malformed XML, missing dates, empty releases, external links, and entity declarations fail", () => {

@@ -19,6 +19,14 @@ export function signalFor(text) {
   return "update";
 }
 
+export function gaSignalFor(title, body = "") {
+  const openingSentence = body.split(/(?<=[.!?])\s+/)[0];
+  const text = signalFor(title) === "update" ? openingSentence : title;
+  return signalFor(text) === "lifecycle-signal" && /\bgenerally available\b/i.test(text) &&
+    !/\b(?:not|no longer|isn't|aren't|won't)\s+(?:yet\s+|be\s+)?generally available\b/i.test(text) &&
+    !/\bdeprecat(?:ed|ion|ing)\b|\bretir(?:ed|ing|ement)\b|\bsunset\b/i.test(text);
+}
+
 function candidate(feed, title, url, published, summary, signalText, allowedHosts, release = false) {
   const titleText = plainText(title, 240);
   if (typeof title !== "string" || !titleText || !isOfficialUrl(url, allowedHosts)) throw new Error(`${feed.id}: missing title or unapproved item URL`);
@@ -38,6 +46,7 @@ function candidate(feed, title, url, published, summary, signalText, allowedHost
     publishedOn: date.toISOString(),
     summary: plainText(summary, 500),
     signal: signal === "update" && release ? "release" : signal,
+    gaSignal: !release && gaSignalFor(titleText, signalText),
   };
 }
 

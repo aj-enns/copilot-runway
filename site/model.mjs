@@ -42,16 +42,42 @@ export function verdict(feature, rubric, now = new Date(), sources = {}) {
   return "ready";
 }
 
-export function filterFeatures(features, filters, rubric, sources, now = new Date()) {
+export function filterFeatures(features, filters, rubric, sources, now = new Date(), enterpriseUseCases = {}) {
   const search = (filters.search ?? "").trim().toLowerCase();
   const words = search.split(/\s+/).filter(Boolean);
   return features.filter((feature) => {
-    const haystack = [feature.id, feature.name, feature.summary, feature.category, ...feature.tags, ...feature.surfaces].join(" ").toLowerCase();
+    const haystack = [feature.id, feature.name, feature.summary, feature.category, ...feature.tags, ...feature.surfaces,
+      ...(enterpriseUseCases[feature.id] ?? [])].join(" ").toLowerCase();
     return words.every((word) => haystack.includes(word)) &&
       (!filters.lifecycle || feature.lifecycle.status === filters.lifecycle) &&
       (!filters.readiness || verdict(feature, rubric, now, sources) === filters.readiness) &&
       (!filters.surface || feature.surfaces.includes(filters.surface));
   });
+}
+
+export function filterGaEntries(entries, { windowDays = 90, kind = "" } = {}, now = new Date()) {
+  if (![0, 30, 90].includes(windowDays) || !["", "feature", "model"].includes(kind)) throw new Error("Unsupported GA tracker filter");
+  return entries.filter((entry) => {
+    const state = freshness(entry.gaOn, windowDays, now);
+    return Number.isFinite(state.age) && state.age >= 0 && (!windowDays || !state.stale) && (!kind || entry.kind === kind);
+  }).sort((a, b) => b.gaOn.localeCompare(a.gaOn) || a.name.localeCompare(b.name));
+}
+
+export function gaCandidates(items, entries, sources) {
+  const canonical = (value) => {
+    const url = new URL(value);
+    url.hash = "";
+    url.search = "";
+    return url.href.replace(/\/$/, "");
+  };
+  const reviewed = new Set(entries.map((entry) => canonical(sources[entry.source].url)));
+  const candidates = new Map();
+  for (const item of items) {
+    if (item.feed !== "copilot-changelog" || item.gaSignal !== true) continue;
+    const url = canonical(item.url);
+    if (!reviewed.has(url) && !candidates.has(url)) candidates.set(url, item);
+  }
+  return [...candidates.values()].sort((a, b) => b.publishedOn.localeCompare(a.publishedOn) || a.id.localeCompare(b.id));
 }
 
 export const costRates = {

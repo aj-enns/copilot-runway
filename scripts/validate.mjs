@@ -36,6 +36,7 @@ export function validateCatalog(data, watch, today = new Date().toISOString().sl
     for (const id of ids ?? []) check(sourceIds.has(id), `${label}: unknown source ${id}`);
   };
   const featureIds = new Set();
+  const conciseText = (value, maximum) => typeof value === "string" && value.trim().length > 0 && value.length <= maximum;
   for (const feature of data.features) {
     check(idPattern.test(feature.id) && !featureIds.has(feature.id), `Invalid or duplicate feature: ${feature.id}`);
     featureIds.add(feature.id);
@@ -68,9 +69,41 @@ export function validateCatalog(data, watch, today = new Date().toISOString().sl
     check(["rss", "releases"].includes(feed.type), `${feed.id}: unsupported feed type`);
     check(Number.isInteger(feed.limit) && feed.limit > 0 && feed.limit <= 100, `${feed.id}: invalid feed limit`);
   }
+  check(data.enterpriseUseCases && typeof data.enterpriseUseCases === "object" && !Array.isArray(data.enterpriseUseCases), "Enterprise use cases must be keyed by feature ID");
+  for (const id of featureIds) {
+    const examples = data.enterpriseUseCases?.[id];
+    check(Array.isArray(examples) && examples.length >= 1 && examples.length <= 3 &&
+      examples.every((example) => conciseText(example, 80)) &&
+      new Set(examples).size === examples.length, `${id}: one to three concise, distinct enterprise use cases required`);
+  }
+  for (const id of Object.keys(data.enterpriseUseCases ?? {})) check(featureIds.has(id), `Enterprise use cases: unknown feature ${id}`);
+  check(data.ga?.schemaVersion === 1 && Array.isArray(data.ga.entries), "Unsupported GA tracker schema");
+  validDate(data.ga?.updatedOn, "GA tracker updatedOn");
+  check(conciseText(data.ga?.scope, 500), "GA tracker requires an explicit coverage statement");
+  const gaIds = new Set();
+  const gaSources = new Set();
+  for (const entry of Array.isArray(data.ga?.entries) ? data.ga.entries : []) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      check(false, "GA tracker: each entry must be an object");
+      continue;
+    }
+    check(idPattern.test(entry.id) && !gaIds.has(entry.id), `Invalid or duplicate GA entry: ${entry.id}`);
+    gaIds.add(entry.id);
+    check(["feature", "model"].includes(entry.kind), `${entry.id}: distinguish GA features from model availability`);
+    validDate(entry.gaOn, `${entry.id} GA date`);
+    refs([entry.source], `${entry.id} GA announcement`);
+    const source = data.sources[entry.source];
+    check(source?.kind === "announcement" && entry.gaOn <= source.verifiedOn && entry.gaOn <= data.ga.updatedOn, `${entry.id}: reviewed primary GA announcement required`);
+    check(!gaSources.has(entry.source), `${entry.id}: duplicate GA announcement`);
+    gaSources.add(entry.source);
+    for (const field of ["name", "summary", "enterpriseUse", "scopeNote"]) {
+      check(conciseText(entry[field], field === "name" ? 80 : 240), `${entry.id}: missing or oversized ${field}`);
+    }
+  }
   for (const item of data.monitor.items) {
     check(isOfficialUrl(item.url, watch.allowedHosts), `Monitor: untrusted URL ${item.url}`);
     check(["preview-signal", "lifecycle-signal", "release", "update"].includes(item.signal), `Monitor: unknown signal ${item.signal}`);
+    check(!Object.hasOwn(item, "gaSignal") || typeof item.gaSignal === "boolean", "Monitor: gaSignal must be boolean");
   }
   if (errors.length) throw new Error(`Catalog validation failed:\n${errors.map((error) => `- ${error}`).join("\n")}`);
 }

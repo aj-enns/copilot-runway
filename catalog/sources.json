@@ -148,6 +148,27 @@
       "kind": "documentation",
       "verifiedOn": "2026-10-14"
     },
+    "local-sandbox-ga": {
+      "title": "Local sandboxing for GitHub Copilot now generally available",
+      "url": "https://github.blog/changelog/2026-10-07-local-sandboxing-for-github-copilot-now-generally-available/",
+      "publisher": "GitHub Changelog",
+      "kind": "announcement",
+      "verifiedOn": "2026-10-14"
+    },
+    "gemini-4-argon-ga": {
+      "title": "Gemini 4 Argon in GitHub Copilot",
+      "url": "https://github.blog/changelog/2026-10-13-gemini-4-argon-in-github-copilot/",
+      "publisher": "GitHub Changelog",
+      "kind": "announcement",
+      "verifiedOn": "2026-10-14"
+    },
+    "claude-haiku-5-5-ga": {
+      "title": "Claude Haiku 5.5 in GitHub Copilot",
+      "url": "https://github.blog/changelog/2026-10-07-claude-haiku-5-5-in-github-copilot/",
+      "publisher": "GitHub Changelog",
+      "kind": "announcement",
+      "verifiedOn": "2026-10-14"
+    },
     "changelog": {
       "title": "GitHub Copilot changelog",
       "url": "https://github.blog/changelog/label/copilot/",
