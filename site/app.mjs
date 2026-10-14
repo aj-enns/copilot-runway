@@ -27,6 +27,7 @@ const lifecycleBadge = (feature) => `<span class="badge ${feature.lifecycle.stat
 const resultBadge = (feature) => `<span class="badge badge-${resultFor(feature)}">${verdictLabels[resultFor(feature)]}</span>`;
 const commandBox = (command) => `<div class="command-box"><pre>${html(command)}</pre><button class="icon-button" data-copy="${html(command)}" aria-label="Copy command">${icon("copy")}</button></div>`;
 const useCaseContent = (feature) => `<section class="enterprise-uses" aria-label="Potential enterprise use cases for ${html(feature.name)}"><span class="use-case-label">Potential enterprise uses</span><ul>${data.enterpriseUseCases[feature.id].map((example) => `<li>${html(example)}</li>`).join("")}</ul></section>`;
+const visualCover = (feature) => `<button class="feature-cover" data-open="${feature.id}" aria-label="Open illustrated overview of ${html(feature.name)}">${data.visuals[feature.id].svg}<span class="visual-label">Concept illustration</span></button>`;
 
 function hydrateIcons(scope = document) {
   scope.querySelectorAll("[data-icon]").forEach((element) => { element.innerHTML = icon(element.dataset.icon); });
@@ -116,6 +117,7 @@ function renderMetrics() {
 function renderHeroKit() {
   const feature = data.features.find((entry) => entry.id === "computer-use");
   $("#hero-kit").innerHTML = `<div class="kit-titlebar"><span>${icon("copilot")}<strong>Featured enablement kit</strong></span>${lifecycleBadge(feature)}</div>
+    <div class="kit-visual">${data.visuals[feature.id].svg}</div>
     <div class="kit-heading"><span class="feature-icon">${icon(feature.icon)}</span><div><span class="kit-path">runway / ${html(feature.id)}</span><h2>${html(feature.name)}</h2></div></div>
     <div class="kit-files">
       <button class="kit-file" data-open="${feature.id}" data-tab="readiness"><span class="kit-file-icon">${icon("shield-lock")}</span><span><strong>Enterprise assessment</strong><small>${verdictLabels[resultFor(feature)]}</small></span>${icon("arrow-right")}</button>
@@ -130,6 +132,7 @@ function card(feature) {
   const passed = feature.readiness.filter((assessment) => assessment.status === "pass").length;
   const isStale = evidenceIsStale(feature, data.rubric, data.sources);
   return `<article class="feature-card ${feature.featured ? "featured" : ""}" data-feature="${feature.id}">
+    ${visualCover(feature)}
     <div class="card-top"><span class="feature-icon">${icon(feature.icon)}</span><button class="compare-toggle" data-compare="${feature.id}" aria-pressed="${compared.has(feature.id)}" aria-label="Compare ${html(feature.name)}">${icon(compared.has(feature.id) ? "check" : "diff")}Compare</button></div>
     <div class="category-label">${html(feature.category)}</div>
     <h3><button class="feature-title" data-open="${feature.id}">${html(feature.name)}</button></h3>
@@ -176,7 +179,8 @@ function readinessContent(feature) {
 }
 
 function overviewContent(feature) {
-  return `<p>${html(feature.summary)}</p>${useCaseContent(feature)}<p class="use-case-note">Illustrative enterprise scenarios, not verified customer deployments or policy approval.</p><div class="value-grid">${feature.value.map((value, index) => `<div class="value-card"><b>VALUE ${String(index + 1).padStart(2, "0")}</b>${html(value)}</div>`).join("")}</div>
+  const visual = data.visuals[feature.id];
+  return `<figure class="feature-story">${visual.svg}<figcaption><strong>${html(visual.title)}</strong><p>${html(visual.caption)}</p><small>Original Runway illustration, not a product screenshot or live run.</small><a class="button button-small" href="artifacts/visuals/${feature.id}.svg" download>${icon("download")}Download feature visual (.svg)</a></figcaption></figure><p>${html(feature.summary)}</p>${useCaseContent(feature)}<p class="use-case-note">Illustrative enterprise scenarios, not verified customer deployments or policy approval.</p><div class="value-grid">${feature.value.map((value, index) => `<div class="value-card"><b>VALUE ${String(index + 1).padStart(2, "0")}</b>${html(value)}</div>`).join("")}</div>
     <h3>What it takes to enable</h3>${feature.enablement.map((step, index) => `<div class="enablement-step"><strong>${index + 1}. ${html(step.title)}</strong><p>${html(step.detail)}</p>${step.command ? commandBox(step.command) : ""}${sourceLinks(step.sources)}</div>`).join("")}
     <div class="notice"><div><h3>${html(feature.cost.headline)}</h3><p>${html(feature.cost.detail)}</p><ul>${feature.cost.assumptions.map((assumption) => `<li>${html(assumption)}</li>`).join("")}</ul>${sourceLinks(feature.cost.sources)}</div></div>
     <h3>Limitations to say out loud</h3><ul>${feature.limitations.map((limit) => `<li>${html(limit)}</li>`).join("")}</ul>`;

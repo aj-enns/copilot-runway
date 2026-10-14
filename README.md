@@ -30,6 +30,8 @@ The site, slides, assessments, and runbooks are **public** and need no GitHub si
 
 The portal uses a responsive Microsoft Fluent-inspired shell and GitHub Primer-style feature explorer, Segoe typography, official Octicons, and light/dark themes. It is a self-contained static app: **no runtime API or model calls, analytics, remote fonts, customer data, or live automation**. Runbooks explain how to exercise the real products separately.
 
+Each feature now has an original, theme-aware **concept illustration**: a GUI service-desk edit, specialist journal, governed workflow draft, isolated cloud session, cited repository context, or bounded test-repair cycle. Click the illustrated cover for its control story and download a self-contained SVG for customer conversations. These are clearly labeled illustrations, not official product screenshots or evidence of a live run. Maintain them in `site/feature-visuals.mjs`; the build embeds them offline and exports `dist\artifacts\visuals\<feature-id>.svg` without changing assessed feature evidence or slide fingerprints.
+
 Press `/` to focus capability search. Release-stage filters and result counts remain visible on mobile; the navigation scrolls to the selected view. The comparison tray stays available while scrolling and leaves space at the end of the page so it does not cover the final controls.
 
 ## A customer-session journey

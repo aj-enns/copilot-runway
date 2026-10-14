@@ -186,6 +186,17 @@ kbd { border: 1px solid var(--cp-border); border-radius: 4px; padding: 0 6px; fo
 .feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .feature-card { min-width: 0; border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface); padding: 24px; display: flex; flex-direction: column; transition: border-color .18s; }
 .feature-card:hover, .feature-card:focus-within { border-color: var(--cp-border-strong); }
+.feature-art { display: block; width: 100%; height: auto; }
+.feature-cover { position: relative; display: block; width: calc(100% + 48px); margin: -24px -24px 20px; padding: 0; border: 0; border-bottom: 1px solid var(--cp-border); border-radius: 15px 15px 0 0; overflow: hidden; background: var(--cp-surface-soft); text-align: left; }
+.feature-cover:hover { box-shadow: inset 0 -3px var(--cp-accent); }
+.visual-label { position: absolute; bottom: 8px; right: 12px; font-size: 10px; padding: 2px 8px; color: var(--cp-text-soft); background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 4px; }
+.kit-visual { border-bottom: 1px solid var(--cp-border); }
+.feature-story { margin: 0 0 24px; overflow: hidden; border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface-soft); }
+.feature-story > .feature-art { max-height: 320px; }
+.feature-story figcaption { padding: 20px; border-top: 1px solid var(--cp-border); background: var(--cp-surface); }
+.feature-story figcaption strong { display: block; font-size: 20px; margin-bottom: 12px; }
+.feature-story figcaption p { margin-bottom: 8px; }
+.feature-story figcaption small { display: block; color: var(--cp-text-soft); font-size: 11px; margin-bottom: 16px; }
 .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
 .feature-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid var(--cp-border); border-radius: .625rem; color: var(--cp-text); background: var(--cp-surface-soft); flex: 0 0 auto; }
 .card-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
@@ -407,6 +418,7 @@ td .source-links { font-size: 9px; margin: 8px 0 0; }
   .hero h1 { font-size: 40px; }
   .hero-actions { gap: 8px; }
   .feature-card { padding: 20px; }
+  .feature-cover { width: calc(100% + 40px); margin: -20px -20px 20px; }
   .metric { padding: 16px; }
   .metric-icon { display: none; }
   .demo-layout { grid-template-columns: 200px minmax(0, 1fr); }

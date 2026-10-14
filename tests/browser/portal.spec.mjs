@@ -15,6 +15,30 @@ async function checkCopyButtons(scope, page) {
   }
 }
 
+test("all feature illustrations render in both themes, open details, and download as self-contained SVG", async ({ page }) => {
+  for (const theme of ["light", "dark"]) {
+    await page.goto(`/?clawpilotTheme=${theme}`);
+    await expect(page.locator(".feature-cover .feature-art")).toHaveCount(6);
+    for (const feature of catalog.features) {
+      await page.getByRole("button", { name: `Open illustrated overview of ${feature.name}`, exact: true }).click();
+      const dialog = page.getByRole("dialog", { name: feature.name, exact: true });
+      await expect(dialog.locator(".feature-story .feature-art")).toBeVisible();
+      await expect(dialog.locator(".feature-story")).toContainText("not a product screenshot or live run");
+      if (theme === "light") {
+        const downloaded = page.waitForEvent("download");
+        await dialog.getByRole("link", { name: "Download feature visual (.svg)" }).click();
+        const artifact = await downloaded;
+        expect(artifact.suggestedFilename()).toBe(`${feature.id}.svg`);
+        const svg = await readFile(await artifact.path(), "utf8");
+        expect(svg).toContain("<style>:root");
+        expect(svg).toContain(feature.name);
+        expect(svg).not.toMatch(/<script|<foreignObject|<image|\son\w+=/i);
+      }
+      await dialog.getByRole("button", { name: "Close feature" }).click();
+    }
+  }
+});
+
 test("flight deck renders, filters, links assets, and emits no browser/CSP errors", async ({ page, request }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));

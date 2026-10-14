@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import octicons from "@primer/octicons";
 import { fromRoot, loadCatalog, readJson, write } from "./lib.mjs";
 import { validateCatalog, validateFiles } from "./validate.mjs";
+import { featureVisual } from "../site/feature-visuals.mjs";
 
 const data = await loadCatalog();
 validateCatalog(data, await readJson(fromRoot("catalog", "watch.json")));
@@ -27,6 +28,15 @@ const [template, styles, model, app] = await Promise.all([
   readFile(fromRoot("site", "model.mjs"), "utf8"),
   readFile(fromRoot("site", "app.mjs"), "utf8"),
 ]);
+const lightTokens = styles.match(/^:root \{[\s\S]*?\n\}/)?.[0];
+if (!lightTokens) throw new Error("Illustration exports require the portal theme tokens");
+data.visuals = {};
+for (const feature of data.features) {
+  const visual = featureVisual(feature, data.icons);
+  data.visuals[feature.id] = visual;
+  await write(fromRoot("dist", "artifacts", "visuals", `${feature.id}.svg`),
+    visual.svg.replace("<title>", `<style>${lightTokens}</style><title>`));
+}
 const combinedScript = `${model.replace(/^export (?=(?:const|function|async function) )/gm, "")}\n${app.replace(/^import[^\n]*\n/gm, "")}`;
 if (/<\/script/i.test(combinedScript) || /<\/style/i.test(styles)) throw new Error("Unexpected HTML terminator in embedded source");
 let output = template
