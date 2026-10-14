@@ -14,7 +14,7 @@ A runway prepares you for takeoff. Copilot Runway helps architects understand wh
 
 The Pages site and source repository are **public**. The flight deck, slides, assessments, and runbooks require no GitHub sign-in to view.
 
-The portal is a responsive, accessible, self-contained static HTML artifact. It makes no runtime API calls and uses no analytics, third-party fonts, or customer data. Light/dark themes follow the Clawpilot design system. `?clawpilotTheme=light` or `?clawpilotTheme=dark` selects a theme explicitly.
+The portal is a responsive, accessible, self-contained static HTML artifact. Its Microsoft Fluent-inspired workspace and GitHub Primer-style feature explorer use Segoe typography, official Octicons, compact command bars, and source-backed kit previews. It makes no runtime API calls and uses no analytics, third-party fonts, or customer data. Light/dark themes retain the Clawpilot design tokens; `?clawpilotTheme=light` or `?clawpilotTheme=dark` selects a theme explicitly.
 
 ## First-wave catalog
 
@@ -94,7 +94,7 @@ After changing authoritative feature/rubric/source content, regenerate the decks
 | Automation | Schedule | Actual behavior |
 | --- | --- | --- |
 | `preview-discovery.yml` | Daily 09:17 UTC + manual | Fetches official Copilot RSS and CLI/gh-aw releases, preserves a bounded snapshot, and updates one deduplicated bot-owned issue digest. No model required. |
-| `pages.yml` | Main push, daily 09:47 UTC, manual | Validates reviewed content, refreshes candidate-only Radar, builds and deploys Pages. Failed ingestion fails the run and does not replace the last deployed site. |
+| `pages.yml` | Main push, daily 09:47 UTC, manual | Validates reviewed content, refreshes candidate-only Radar, builds, browser-tests, and deploys Pages. Failed ingestion or browser checks stop publication and do not replace the last deployed site. |
 | `preview-scout.md` + `.lock.yml` | Weekly Monday + manual, **opt-in** | Uses a read-only agent and restricted safe outputs to propose one draft candidate-review PR. It cannot admit a feature, promote readiness, merge, or deploy. |
 | `ci.yml` | Main push + PR + manual | Checks data, tests, artifact evidence, browser behavior, and matching compiled workflow source. |
 | Dependabot | Weekly | Proposes npm and Actions pin updates for review. Compiler upgrades need explicit source/lock review. |

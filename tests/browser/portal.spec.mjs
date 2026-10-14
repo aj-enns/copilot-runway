@@ -49,6 +49,62 @@ test("feature details support direct links, all gates, keyboard tabs, downloads,
   await expect(dialog).not.toBeVisible();
 });
 
+test("featured kit links open the real assessment, presenter kit, and sourced deck", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/?clawpilotTheme=light");
+  const kit = page.getByRole("region", { name: "Featured enablement kit" });
+  await expect(kit).toContainText("Kit: kit-tested");
+  await expect(kit).toContainText("Live: not-run");
+  await kit.getByRole("button", { name: /Enterprise assessment/ }).click();
+  const dialog = page.getByRole("dialog", { name: "Computer Use", exact: true });
+  await expect(dialog.getByRole("tab", { name: "Readiness", exact: true })).toHaveAttribute("aria-selected", "true");
+  await expect(dialog.getByRole("row")).toHaveCount(11);
+  await dialog.getByRole("button", { name: "Close feature" }).click();
+  await kit.getByRole("button", { name: /Presenter runbook/ }).click();
+  await expect(dialog.getByRole("tab", { name: "Demo", exact: true })).toHaveAttribute("aria-selected", "true");
+  await expect(dialog).toContainText("live feature validation: not-run");
+  await dialog.getByRole("button", { name: "Close feature" }).click();
+  const download = page.waitForEvent("download");
+  await kit.getByRole("link", { name: /Value & cost brief/ }).click();
+  expect((await download).suggestedFilename()).toBe("computer-use.pptx");
+});
+
+test("workspace navigation, keyboard search, and theme controls expose their current state", async ({ page }) => {
+  await page.goto("/?clawpilotTheme=light");
+  const navigation = page.getByRole("navigation", { name: "Primary" });
+  const theme = page.getByRole("button", { name: "Switch color theme", exact: true });
+  await expect(theme).toHaveAttribute("aria-pressed", "false");
+  await expect(theme).toHaveAttribute("title", "Switch to dark theme");
+  await theme.click();
+  await expect(theme).toHaveAttribute("aria-pressed", "true");
+  await expect(theme).toHaveAttribute("title", "Switch to light theme");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await theme.click();
+  await expect(theme).toHaveAttribute("aria-pressed", "false");
+  await navigation.getByRole("button", { name: "Cost lab", exact: true }).click();
+  await expect(navigation.getByRole("button", { name: "Cost lab", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(navigation.locator("[aria-current=page]")).toHaveCount(1);
+  await page.keyboard.press("/");
+  await expect(page.getByRole("searchbox", { name: "Search capabilities" })).toBeFocused();
+  await page.getByRole("searchbox", { name: "Search capabilities" }).fill("cloud sandboxes");
+  await expect(page.locator(".feature-card")).toHaveCount(1);
+  await expect(page.locator(".feature-title")).toHaveText("Cloud Sandboxes");
+});
+
+for (const width of [320, 768, 1100, 1440]) {
+  test(`workspace and all five views fit a ${width}px viewport in both themes`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 960 });
+    for (const theme of ["light", "dark"]) {
+      await page.goto(`/?clawpilotTheme=${theme}`);
+      for (const view of ["catalog", "readiness", "demos", "cost", "radar"]) {
+        await page.locator(`.nav-button[data-view="${view}"]`).click();
+        await expect(page.locator(`#view-${view}`)).toBeVisible();
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${theme} ${view} overflows`).toBe(true);
+      }
+    }
+  });
+}
+
 test("comparison preserves experimental/public/technical distinctions", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Compare Dynamic Workflows", exact: true }).click();
@@ -137,6 +193,7 @@ test("stale evidence blocks all required verdicts, even when the source scan is 
   await page.goto("/");
   await expect(page.locator("#global-warning")).toContainText("past the 30-day evidence window");
   await expect(page.locator(".card-readiness strong")).toHaveText(Array(6).fill("Hold for evidence"));
+  await expect(page.locator("#hero-kit")).toContainText("Hold for evidence");
 });
 
 test("a stale underlying source blocks current-looking feature assessments and surfaces a warning", async ({ page }) => {

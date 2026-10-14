@@ -36,6 +36,10 @@ jobs:
         run: npm run sources:scan -- --update
       - name: Build reviewed catalog with a fresh discovery-only Radar
         run: npm run build
+      - name: Install the portal test browser
+        run: npx playwright install --with-deps chromium
+      - name: Verify portal behavior before publication
+        run: npm run test:e2e
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
