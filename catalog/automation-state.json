@@ -1,5 +1,20 @@
 {
   "schemaVersion": 1,
   "signals": {},
-  "reviews": {}
+  "reviews": {
+    "agentic-workflows": {
+      "assessedOn": "2026-10-18",
+      "sourceHashes": [
+        {
+          "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+          "sha256": "f18f2b589ff15a4405cf8dfc4a2aabaef9cb78a5c860eec3929060d59891769e"
+        }
+      ],
+      "revision": "4d389991040e8a4a39b01ac3b0830735033f7f5b5cc0496f22b0a3eea2db1698",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The 2026-02-13 changelog says technical preview. No newer lifecycle change is in the fetched evidence. Every gate stays unknown; this does not renew human dates.",
+      "attemptedOn": "2026-10-18",
+      "runId": "39170904897"
+    }
+  }
 }
