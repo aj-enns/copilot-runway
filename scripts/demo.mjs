@@ -115,8 +115,8 @@ export async function verifyDemo(id, repositoryRoot = root) {
   } else if (id === "agentic-workflows") {
     const evidence = await readOutput(directory, "candidate-review.json");
     if (evidence.classification !== "candidate" || evidence.adopted !== false ||
-      !/^https:\/\/github\.com\/hammadorg93\/copilot-runway\/actions\/runs\/\d+$/.test(evidence.workflowRunUrl) ||
-      !/^https:\/\/github\.com\/hammadorg93\/copilot-runway\/pull\/\d+$/.test(evidence.draftPullRequestUrl)) {
+      !/^https:\/\/github\.com\/aj-enns\/copilot-runway\/actions\/runs\/\d+$/.test(evidence.workflowRunUrl) ||
+      !/^https:\/\/github\.com\/aj-enns\/copilot-runway\/pull\/\d+$/.test(evidence.draftPullRequestUrl)) {
       throw new Error("Expected candidate-only evidence with exact-repository run and draft-PR links");
     }
   }

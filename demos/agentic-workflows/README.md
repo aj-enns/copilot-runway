@@ -33,9 +33,9 @@ Set repository variable `RUNWAY_AGENTIC_ENABLED=true` only after approval. The w
 After the operator explicitly approves the paid run:
 
 ```powershell
-gh workflow run preview-scout.lock.yml --repo hammadorg93/copilot-runway
-gh run list --repo hammadorg93/copilot-runway --workflow preview-scout.lock.yml --limit 3
-gh run watch RUN_ID --repo hammadorg93/copilot-runway --exit-status
+gh workflow run preview-scout.lock.yml --repo aj-enns/copilot-runway
+gh run list --repo aj-enns/copilot-runway --workflow preview-scout.lock.yml --limit 3
+gh run watch RUN_ID --repo aj-enns/copilot-runway --exit-status
 gh aw audit RUN_ID
 ```
 
@@ -49,8 +49,8 @@ If a draft PR was produced, record its exact links in `.demo-workspaces\agentic-
 {
   "classification": "candidate",
   "adopted": false,
-  "workflowRunUrl": "https://github.com/hammadorg93/copilot-runway/actions/runs/REPLACE_WITH_RUN_NUMBER",
-  "draftPullRequestUrl": "https://github.com/hammadorg93/copilot-runway/pull/REPLACE_WITH_PR_NUMBER"
+  "workflowRunUrl": "https://github.com/aj-enns/copilot-runway/actions/runs/REPLACE_WITH_RUN_NUMBER",
+  "draftPullRequestUrl": "https://github.com/aj-enns/copilot-runway/pull/REPLACE_WITH_PR_NUMBER"
 }
 ```
 

@@ -3,7 +3,7 @@ import { fromRoot, readJson } from "./lib.mjs";
 
 const repository = process.env.GITHUB_REPOSITORY;
 const token = process.env.GITHUB_TOKEN;
-if (repository !== "hammadorg93/copilot-runway" || !token) {
+if (repository !== "aj-enns/copilot-runway" || !token) {
   throw new Error("Digest writes require the exact Runway repository and a scoped Actions token");
 }
 const monitor = await readJson(fromRoot("catalog", "monitor.json"));

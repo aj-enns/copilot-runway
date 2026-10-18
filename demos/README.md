@@ -1,6 +1,6 @@
 # Customer demo kits
 
-Start from the [Runway flight deck](https://hammadorg93.github.io/copilot-runway/) and choose a feature's **Demo** tab. The site and source repository are public. All inputs in this repository are synthetic.
+Start from the [Runway flight deck](https://aj-enns.github.io/copilot-runway/) and choose a feature's **Demo** tab. The site and source repository are public. All inputs in this repository are synthetic.
 
 Each kit provides an actual feature walkthrough, prerequisites, a presenter prompt, expected evidence, local output verification, failure handling, and a scoped reset. The browser flight lab and `demo:rehearse` are **offline rehearsals**, not Copilot implementations.
 
