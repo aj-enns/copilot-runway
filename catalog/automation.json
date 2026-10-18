@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "enabled": false,
-  "publicationEnabled": true,
+  "enabled": true,
+  "publicationEnabled": false,
   "billingApproved": true,
   "maxItemsPerRun": 1,
   "maxResearchDocuments": 15,
