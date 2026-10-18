@@ -76,8 +76,8 @@ export function assessmentMarkdown(feature, data) {
     `# ${feature.name}: enterprise readiness\n\n` +
     `**${verdictLabels[result]}** | ${feature.lifecycle.status} | Verified ${feature.verifiedOn} | Rubric ${data.rubric.version}\n\n` +
     `${feature.summary}\n\n${feature.lifecycle.note}\n\n` +
-    `This is a minimum assessment for a controlled pilot, not a production certification or customer-specific approval. ` +
-    `Unknowns block adoption; conditions require named tenant evidence. Evidence older than ${data.rubric.reviewWindowDays} days is stale.\n\n` +
+    `Minimum evidence for a controlled pilot, not a production certification or customer approval. ` +
+    `Unknowns block adoption; conditions need tenant evidence. Evidence older than ${data.rubric.reviewWindowDays} days is stale.\n\n` +
     `## Non-negotiable gates\n\n| Gate | Finding | Evidence and gap | Required next action |\n| --- | --- | --- | --- |\n` +
     feature.readiness.map((assessment) => {
       const gate = data.rubric.gates.find((candidate) => candidate.id === assessment.gate);

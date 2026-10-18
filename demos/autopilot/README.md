@@ -1,10 +1,10 @@
 # Autopilot: fix the bug, not the test
 
-**6 minutes | Experimental mode | Disposable local code | Kit-tested; live agent not run**
+**6 minutes | Experimental mode | Disposable local code | Kit-tested; not live-tested**
 
 ## Prerequisites
 
-An approved current CLI, experimental mode allowed, effective least-privilege permissions, and supported local sandboxing. Do not use a home directory, real customer repository, or permission-bypass/allow-all mode.
+Use an approved current CLI, permitted experimental mode, least-privilege permissions, and supported local sandboxing. Never use a home directory, customer repo, or allow-all/bypass mode.
 
 ## Reproduce the symptom
 
@@ -15,11 +15,11 @@ npm run demo:setup -- autopilot
 npm run demo:verify -- autopilot
 ```
 
-The second command must **fail**: the seeded implementation subtracts the percentage as a currency value and accepts invalid inputs. This intentional failure belongs only to the disposable fixture, not the repository test suite.
+The second command must **fail**: the fixture subtracts a percentage as currency and accepts invalid inputs. This intentional failure is isolated from repository tests.
 
 ## Present
 
-Copy the printed absolute workspace path, change to it, and start:
+Change to the printed workspace path and start:
 
 ```powershell
 copilot --experimental
@@ -32,7 +32,7 @@ Inside the CLI:
 /sandbox enable
 ```
 
-Record previous settings. If required sandboxing cannot be enforced on this host, stop; do not bypass it. Use Shift+Tab to inspect modes and choose Autopilot, or use `/autopilot` on the verified client.
+Record prior settings. Stop if the host cannot enforce sandboxing. Use Shift+Tab to choose Autopilot or `/autopilot` on a verified client.
 
 Give this objective:
 
@@ -47,7 +47,7 @@ Run node --test discount.test.mjs and stop only when all tests pass.
 If policy or required sandboxing blocks a step, stop and explain; do not bypass it.
 ```
 
-Observe the repair/test loop, inspect the diff, and show that the acceptance tests have not changed. A completion message is not the required result.
+Inspect the repair/test loop and diff; confirm the acceptance tests are unchanged. A completion message is not proof.
 
 ## Verify and reset
 
@@ -59,13 +59,13 @@ npm run demo:reset -- autopilot
 npm run demo:verify -- autopilot
 ```
 
-The final verification must fail again: the baseline bug has been restored. The verifier also fails if the original test file was changed. Reset touches only marked synthetic files.
+Final verification must fail again because reset restored the bug. It also fails if the test file changed. Reset touches only marked synthetic files.
 
-Return the CLI to its previous mode and sandbox settings if the demo changed them. Do not disable an enterprise-enforced control. No remote state is created by this kit.
+Restore prior CLI and sandbox settings. Never disable enterprise-enforced controls. This kit creates no remote state.
 
 ## Cost and limitations
 
-Autonomy can increase token usage, retries, and time. Current enterprise billing is AI credits; the CLI README's legacy premium-request statement is not used here as current enterprise pricing. Meter a bounded rehearsal and validate tenant budgets.
+Autonomy can increase AI usage, retries, and runtime. Enterprise billing uses AI credits; the CLI README's legacy premium-request statement is not current pricing. Meter a bounded run and verify tenant budgets.
 
 ## Official sources
 

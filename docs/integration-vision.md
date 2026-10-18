@@ -1,56 +1,56 @@
 # Account context and demo production: integration vision
 
-Status: front-end prototype, reviewed 14 October 2026. Neither WorkIQ retrieval nor video recording is connected. No authentication, backend, workflow dispatch, live Computer Use, or video generation is implemented by these screens.
+Status: front-end prototype, reviewed 14 October 2026. WorkIQ, recording, authentication, backend services, workflow dispatch, live Computer Use, and video generation are not connected.
 
 ## What works now
 
-- **Account context:** a visible people icon and "Pull your account context" entry point, configurable 7/30/90-day handoff prompt, three explicitly fictional account examples, feature-detail links, current catalog readiness verdicts, and sample clearing.
-- **Private handoff:** copy a read-only prompt into an approved user-authenticated Copilot + WorkIQ session. Copying does not launch a session or transmit data.
-- **Demo lab:** an original concept image for the selected feature, illustrated prepare/run/verify/reset instructions, copyable presenter commands, and the existing stop/reset rehearsal.
-- **Recording planner:** choose a 90-second or 3-minute target, build a local four-scene storyboard, and download a Markdown recording brief. These are planning artifacts, not videos or proof of a live demo. Changing the feature or target invalidates the old brief.
+- **Account context:** a 7/30/90-day handoff prompt, three fictional accounts, readiness-aware feature links, and sample clearing.
+- **Private handoff:** copy a read-only prompt to an approved, authenticated Copilot + WorkIQ session. Copying does not launch or transmit data.
+- **Demo lab:** concept images, prepare/run/verify/reset instructions, presenter commands, and offline rehearsal.
+- **Recording planner:** create a four-scene, 90-second or 3-minute storyboard and download a Markdown brief. These are plans, not videos or live-demo evidence. Changing the feature or target invalidates the brief.
 
-The portal stays self-contained, with `connect-src 'none'`. Samples and recording plans are in-memory only. Reloading clears them; only the deliberately downloaded public/synthetic recording brief persists. No connector installs, tenant consent, or work-data queries happen here.
+The portal is self-contained (`connect-src 'none'`). Samples and plans exist only in memory and clear on reload; only a deliberately downloaded synthetic brief persists. No connector, tenant consent, or work-data query is used.
 
 ## 1. Personalized account context
 
 ### Initial delivery path
 
-Use each viewer's approved **local Copilot session with WorkIQ installed and authenticated**. The official WorkIQ repository documents the plugin marketplace and standalone MCP setup. The portal can prepare a prompt; a public static page cannot silently identify its visitor, launch an authorized desktop agent, or retrieve their Microsoft 365 data.
+Use each viewer's approved **local Copilot session with WorkIQ installed and authenticated**. WorkIQ documents plugin marketplace and standalone MCP setup. This public page can prepare a prompt, but cannot identify a visitor, launch an authorized agent, or retrieve Microsoft 365 data.
 
-The proposed read-only request covers a user-selected time window, confirms account scope, cites authorized source links/dates, separates confirmed needs from inference, and recommends only curated features. Context may be incomplete: meeting/email activity is not an authoritative CRM account inventory. Account/entity resolution and recommendation confidence need validation before a real connector ships.
+The read-only request uses a selected time window, confirms account scope, cites authorized sources and dates, separates facts from inference, and recommends curated features. Email and meeting activity is not an authoritative CRM inventory. Validate account resolution and recommendation confidence before building a connector.
 
 ### Authentication and browser integration
 
-GitHub and Microsoft 365 identities are separate. GitHub login or `GITHUB_TOKEN` does not confer the viewer's Microsoft 365 permissions. WorkIQ's published admin guidance requires appropriate Microsoft 365 Copilot licensing, delegated permissions, and tenant administrator consent.
+GitHub and Microsoft 365 identities are separate: GitHub login or `GITHUB_TOKEN` grants no Microsoft 365 access. WorkIQ requires appropriate licensing, delegated permissions, and tenant admin consent.
 
-A browser-backed experience would need a **separate, approved private service**. Before implementation, validate the supported WorkIQ hosting/authentication contract and a per-user delegated Microsoft Entra flow. A browser OAuth client or an on-behalf-of flow must not be assumed to work with the current CLI/MCP package simply because generic Entra APIs support it.
+A browser experience needs a **separate, approved private service**. Validate WorkIQ's supported hosting/authentication contract and per-user delegated Entra flow first. Do not assume a browser OAuth or on-behalf-of flow works with the current CLI/MCP package.
 
 Required acceptance criteria:
 
-1. User-initiated sign-in and scoped retrieval; tenant/subject isolation and supported consent flow.
-2. An enforced read-only tool allowlist, not only a prompt instruction; source-level authorization and limited retrieval.
-3. No work-data credentials in this public repository, Pages bundle, query strings, Actions secrets used to impersonate viewers, public logs, or artifacts.
-4. Private response handling; no automatic uploads of account context, citations, messages, names, or recommendations to GitHub.
-5. Explicit retention, deletion/disconnect, auditing, data-processing approval, failure states, and separate license/cost approval.
-6. Human-reviewed recommendations with source dates, confidence, gaps, and unchanged readiness gates.
+1. User-initiated sign-in, scoped retrieval, tenant isolation, and supported consent.
+2. Enforced read-only tools, source authorization, and limited retrieval—not prompt-only restrictions.
+3. No work-data credentials in this public repo, Pages, query strings, impersonating Actions secrets, logs, or artifacts.
+4. Private responses; no automatic upload of account data or recommendations to GitHub.
+5. Defined retention, deletion/disconnect, audit, data-processing approval, failure states, and license/cost approval.
+6. Human-reviewed recommendations with sources, confidence, gaps, and unchanged readiness gates.
 
-Do not use a shared employee/service-account session for all visitors. Do not request broad write access or tenant consent from this prototype. Any consent or permission changes belong to an independently approved integration.
+Never share one employee/service-account session across visitors or request broad write access or tenant consent from this prototype. Permission changes belong to an independently approved integration.
 
 ## 2. Demo video production
 
 ### Available planning artifact
 
-Each recording brief captures the selected capability, target length, scene timings, setup/presenter/verify/reset instructions, expected evidence, separate remote cleanup, and recording guardrails. The timestamp allocation is editorial planning, not a runtime guarantee. Local helper verification does not certify that a real Copilot feature or account policy was exercised.
+Each brief includes the feature, target length, scene timings, presenter steps, evidence, remote cleanup, and safeguards. Timings are editorial, not guarantees. Local checks do not prove that Copilot or account policy was exercised.
 
 ### Future recording options
 
-- **Browser-only:** evaluate Playwright capture against synthetic browser demos with explicit assertions and a reviewed narration/caption script.
-- **Desktop Computer Use:** GitHub documents this for **local macOS and Windows sessions**. Validate an approved interactive OS session, supported Copilot/plugin version, application access, screen recording, and human approvals. No unattended or hosted-runner compatibility is claimed.
-- **Actions orchestration:** later, a private manually approved pipeline could coordinate an approved recorder/runner, validate fixtures, capture clips, stop on failures, collect only synthetic outputs, and request review. A normal hosted Linux job is not a substitute for local desktop Computer Use. Do not bypass approvals, run with blanket permissions, or start an interactive runner using this prototype.
+- **Browser:** evaluate Playwright capture with synthetic demos, explicit assertions, and reviewed narration/captions.
+- **Desktop Computer Use:** documented for **local macOS and Windows**. Validate the approved interactive session, client/plugin versions, app access, screen recording, and human approvals. Hosted or unattended use is unverified.
+- **Actions:** a future private, manually approved pipeline could run an approved recorder, validate fixtures, capture synthetic clips, stop on failure, and request review. Hosted Linux is not a substitute for local Computer Use. Do not bypass approvals, grant blanket permissions, or start an interactive runner from this prototype.
 
-A real recording service needs authenticated dispatch, an approved GUI/capture environment, queue/cancellation and failure handling, separate AI-credit and runner budgets, bounded runtime, redaction, retention, and a human publication checkpoint. Review platform terms and unattended-execution support before authoring a runner workflow.
+A recording service needs authenticated dispatch, an approved capture environment, queue/cancellation and failure handling, separate AI and runner budgets, bounded runtime, redaction, retention, and human publication review. Check platform terms and unattended-execution support before building a runner.
 
-Never combine real WorkIQ account data with a public demo recording. Do not embed passwords, tenant data, desktop notifications, or other people's information. Only verified, approved recordings may be labeled "live demo"; concept illustrations must remain clearly labeled.
+Never combine real WorkIQ data with public recordings or include passwords, tenant data, notifications, or others' information. Label only verified, approved recordings "live demo"; keep illustrations clearly labeled.
 
 ## Implementation surfaces
 

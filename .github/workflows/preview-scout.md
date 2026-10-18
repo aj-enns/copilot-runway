@@ -59,6 +59,12 @@ publication dates, what changed, lifecycle **signals** rather than inferred fact
 eligibility/control/data/audit/cost/rollback questions, suggested demo scope,
 missing evidence, and explicit review requirements.
 
+Write the proposal for quick scanning: lead with the key change, use plain
+language and short sentences, and organize details under focused headings,
+lists, or a compact table. Remove repetition, but retain source dates, lifecycle
+uncertainty, material caveats, missing evidence, and all safety/control questions.
+Do not pad the proposal with generic explanation or duplicate the same warning.
+
 Do not modify catalog admissions, existing feature assessments, gate statuses,
 verification dates, slide artifacts, scripts, workflow permissions, or deployment.
 No main-branch write, merge, approval, publish, or customer-facing recommendation.
@@ -74,3 +80,8 @@ scan or missing evidence.
 
 Use GitHub-flavored Markdown. Start proposal sections at `###`. End with
 "Candidate review only; human admission and evidence verification required."
+
+This scout creates a candidate only. After human admission, maintainers apply
+the same concise-writing standard to the feature record, generated assessment
+and slides, and presenter runbook. Regenerate generated artifacts and validate
+the complete release through the documented project checks.

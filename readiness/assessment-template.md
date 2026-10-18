@@ -1,6 +1,6 @@
 # Feature assessment template
 
-Use in the customer's approved evidence system, not this public artifact set.
+Use in the customer's approved evidence system, not this public repository.
 
 ## Scope
 
@@ -13,13 +13,13 @@ Use in the customer's approved evidence system, not this public artifact set.
 
 ## Required gates
 
-Use every stable ID in `readiness/gates.json`. For each, record finding (`pass`, `conditional`, `unknown`, `fail`), official mechanism, actual tenant evidence, acceptance-test result, owner, unresolved action, and due date.
+Use every stable ID in `readiness/gates.json`. Record the finding (`pass`, `conditional`, `unknown`, `fail`), official mechanism, tenant evidence, test result, owner, action, and due date.
 
-Unknowns and failures block required gates. Do not average them away. Customer observations must be distinguishable from vendor documentation.
+Unknowns and failures block required gates; do not average them away. Distinguish customer observations from vendor documentation.
 
 ## Value and cost
 
-Record the specific outcome, baseline, measurable success criterion, licensing, model/AI-credit assumptions, parallel agents/retries, Actions, compute, memory, snapshot storage, budgets, and observed usage. Distinguish a soft runtime ceiling from a hard spending policy.
+Record the outcome, baseline, success measure, licensing, AI/model assumptions, agents/retries, Actions, compute, memory, storage, budgets, and observed use. Distinguish runtime limits from hard spending controls.
 
 ## Demo validation
 
@@ -43,4 +43,4 @@ Preview/support risk acceptance:
 
 Review/expiry date:
 
-No production recommendation is implied by a kit passing its fixture checks.
+Passing fixture checks does not imply production readiness.

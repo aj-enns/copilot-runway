@@ -1,10 +1,10 @@
 # GitHub Agentic Workflows: preview scout
 
-**10 minutes | Technical preview | GitHub Actions | Kit-tested; paid reasoning run not performed**
+**10 minutes | Technical preview | GitHub Actions | Kit-tested; no paid reasoning run**
 
 ## Customer story
 
-Separate deterministic discovery from AI interpretation. Fetch only official sources, let a narrowly scoped agent draft a candidate review, and require a human PR review before adding any feature to the catalog.
+Separate deterministic discovery from AI interpretation: scan official sources, draft a candidate review, and require human PR review before catalog changes.
 
 ## Prepare and rehearse
 
@@ -15,22 +15,22 @@ gh aw --version
 npm run workflow:compile
 ```
 
-This repository compiles with `gh aw v0.86.2`. Use the pinned compiler version in CI; review upgrades as code changes. Commit the Markdown source and generated `.lock.yml` together.
+Use pinned compiler `gh aw v0.86.2`. Review upgrades as code changes and commit Markdown with its generated `.lock.yml`.
 
 ## Show the control boundary
 
-1. Open `.github\workflows\preview-discovery.yml`: a scheduled, deterministic feed scan. It calls no model and writes only a bounded issue digest through a separate step.
-2. Open `.github\workflows\preview-scout.md`: read-only agent permissions, approved source domains, an opt-in condition, and a draft-PR-only safe output restricted to `catalog/proposals/**`.
-3. Open the compiled `preview-scout.lock.yml`. Confirm that main-branch writes, merges, deployment, and readiness promotion are not agent outputs.
+1. Open `.github\workflows\preview-discovery.yml`: scheduled, model-free scan with a bounded issue digest.
+2. Open `.github\workflows\preview-scout.md`: read-only permissions, approved domains, opt-in, and draft-PR output limited to `catalog/proposals/**`.
+3. Open `preview-scout.lock.yml`. Confirm the agent cannot write to main, merge, deploy, or promote readiness.
 4. Show the flight deck's Radar. A discovery signal is not an adopted feature or a verified lifecycle.
 
 ## Optional live reasoning run
 
-An administrator must approve engine authentication, repository Actions policy, PR creation, and budget. Configure the documented `COPILOT_GITHUB_TOKEN` secret only through an authorized secret-management flow. Do not place a token in files, command history, screenshots, or this repository. This kit never creates one.
+An administrator must approve engine authentication, Actions policy, PR creation, and budget. Configure `COPILOT_GITHUB_TOKEN` only through approved secret management—never in files, history, screenshots, or this repo. The kit does not create it.
 
-Set repository variable `RUNWAY_AGENTIC_ENABLED=true` only after approval. The workflow stays inactive without it. The scheduled deterministic scan remains useful with no AI credential.
+After approval, set `RUNWAY_AGENTIC_ENABLED=true`. Without it, the workflow stays inactive; deterministic scans need no AI credential.
 
-After the operator explicitly approves the paid run:
+After explicit approval of the paid run:
 
 ```powershell
 gh workflow run preview-scout.lock.yml --repo aj-enns/copilot-runway
@@ -39,9 +39,9 @@ gh run watch RUN_ID --repo aj-enns/copilot-runway --exit-status
 gh aw audit RUN_ID
 ```
 
-Replace `RUN_ID` with the exact run returned by GitHub. If there are no new candidates, a successful `noop` is expected, not an empty PR.
+Replace `RUN_ID` with the returned run ID. No new candidates should produce a successful `noop`, not an empty PR.
 
-Inspect the proposed document and its official citations. It must remain candidate-only and must not alter `catalog/features.json`, gate statuses, slide briefs, last-verified dates, workflow permissions, or deployment.
+Review the proposal and citations. It must remain a candidate and leave feature data, gates, briefs, verification dates, workflow permissions, and deployment unchanged.
 
 If a draft PR was produced, record its exact links in `.demo-workspaces\agentic-workflows\candidate-review.json`:
 
@@ -54,7 +54,7 @@ If a draft PR was produced, record its exact links in `.demo-workspaces\agentic-
 }
 ```
 
-Then run `npm run demo:verify -- agentic-workflows`. This validates the local evidence shape, not the remote run's authenticity; the GitHub trace and PR are the live evidence.
+Then run `npm run demo:verify -- agentic-workflows`. It checks local evidence shape; the GitHub trace and PR prove the live run.
 
 ## Reset
 
@@ -62,11 +62,11 @@ Then run `npm run demo:verify -- agentic-workflows`. This validates the local ev
 npm run demo:reset -- agentic-workflows
 ```
 
-Disable the opt-in if it was only enabled for the demo. Cancel only the exact active demo run. Close only the synthetic draft PR if the owner approves. Local reset does not delete Actions logs, PRs, engine credentials, or remote state.
+Disable the opt-in if enabled for the demo. Cancel only its active run; close only its synthetic draft PR with owner approval. Local reset does not delete logs, PRs, credentials, or remote state.
 
 ## Cost and failure
 
-Inference and Actions runtime are separate charges. If authentication or policy is missing, do not dispatch a run hoping it will work. Demonstrate the offline control story and clearly label it as such.
+Inference and Actions runtime are separate charges. If authentication or policy is missing, do not dispatch; show and label the offline rehearsal instead.
 
 ## Official sources
 

@@ -7,53 +7,53 @@
 
 **[Open the public app](https://aj-enns.github.io/copilot-runway/)** | **[Browse Recently GA](https://aj-enns.github.io/copilot-runway/#view=ga)** | **[Presenter runbooks](demos/README.md)** | **[Enterprise policy](readiness/README.md)**
 
-Copilot Runway is an independent workspace for Cloud Solution Architects preparing customer conversations about **GitHub Copilot preview features**. It connects the potential enterprise use, required controls, official-source evidence, value/cost story, and a repeatable demo in one place.
+Copilot Runway helps Cloud Solution Architects prepare customer conversations about **GitHub Copilot preview features**. It brings enterprise use cases, controls, official evidence, value and cost, and demo guidance together.
 
 **Current kit:** 6 assessed capabilities | 10 required readiness gates | 6 demo kits | 12 sourced slides | a separate reviewed GA history.
 
 ![Copilot Runway flight deck with feature search, lifecycle badges, enterprise use cases, readiness findings, and demo actions](docs/images/flight-deck.png)
 
-*Flight deck snapshot, 14 October 2026. The counts and findings are curated evidence, not exhaustive product coverage or production certification.*
+*Snapshot: 14 October 2026. Counts and findings are curated, not exhaustive or a production certification.*
 
 ## What you can do in the app
 
 | Workspace | What it helps you do | What you leave with |
 | --- | --- | --- |
-| **Flight deck** | Search features and enterprise use cases; filter by lifecycle, surface, and readiness; compare up to three capabilities | A scoped feature shortlist with visible caveats |
-| **Account context** | Preview fictional account-to-feature matches and prepare a private WorkIQ handoff | A read-only prompt and explicit authentication/privacy blueprint, not retrieved account data |
-| **Readiness gates** | Inspect every non-negotiable and its owner, evidence, and test; propose local workshop requirements | A source-backed assessment and exportable proposed policy |
-| **Demo lab** | Rehearse a synthetic control story; follow illustrated steps; open the presenter kit; build a recording storyboard | A repeatable demo plan and downloadable recording brief, not an automatically generated video |
-| **Cost lab** | Change AI-credit and cloud-sandbox assumptions and inspect the published meter arithmetic | An exportable illustrative estimate, not a tenant quote |
-| **Preview radar** | Review daily official-source preview, release, policy, billing, and lifecycle signals | Candidates to investigate, not automatically admitted features |
-| **Recently GA** | Filter reviewed announcements by date and feature/model type, and inspect primary sources | Durable GA history plus a separate queue of unverified new GA signals |
+| **Flight deck** | Search and compare features; filter by lifecycle, surface, and readiness | A shortlist with visible caveats |
+| **Account context** | Preview fictional matches and prepare a private WorkIQ handoff | A read-only prompt and integration blueprint—not account data |
+| **Readiness gates** | Review required gates or propose workshop requirements | A sourced assessment and exportable proposal |
+| **Demo lab** | Rehearse controls, follow runbooks, and plan a recording | A demo plan and recording brief—not a video |
+| **Cost lab** | Adjust AI-credit and cloud-sandbox assumptions | An illustrative estimate—not a tenant quote |
+| **Preview radar** | Review daily official-source signals | Candidates to investigate—not admitted features |
+| **Recently GA** | Filter reviewed announcements and inspect sources | A reviewed history and separate queue of unverified signals |
 
 The site, slides, assessments, and runbooks are **public** and need no GitHub sign-in to view. Opening issues or proposing repository changes requires the appropriate GitHub account and permissions.
 
-The portal uses a responsive Microsoft Fluent-inspired shell and GitHub Primer-style feature explorer, Segoe typography, official Octicons, and light/dark themes. Microsoft-blue panels and preview illustrations, charcoal workspace chrome, rose action accents, and clearly labeled lifecycle/status colors make the controls easier to scan. Colors derive from shared theme tokens; they do not change readiness findings. It is a self-contained static app: **no runtime API or model calls, analytics, remote fonts, customer data, or live automation**. Runbooks explain how to exercise the real products separately.
+The portal is a self-contained static app with a responsive Fluent-inspired shell, Primer-style feature explorer, Segoe typography, official Octicons, and light/dark themes. Shared color tokens improve scanning but never affect readiness. The app makes **no runtime API or model calls**, and uses no analytics, remote fonts, customer data, or live automation. Runbooks cover real product use separately.
 
-Each feature now has an original, theme-aware **concept illustration**: a GUI service-desk edit, specialist journal, governed workflow draft, isolated cloud session, cited repository context, or bounded test-repair cycle. Click the illustrated cover for its control story and download a self-contained SVG for customer conversations. These are clearly labeled illustrations, not official product screenshots or evidence of a live run. Maintain them in `site/feature-visuals.mjs`; the build embeds them offline and exports `dist\artifacts\visuals\<feature-id>.svg` without changing assessed feature evidence or slide fingerprints.
+Each feature has an original, theme-aware **concept illustration**. Open one to read its control story or download its self-contained SVG. Illustrations are not product screenshots or live-run evidence. Maintain them in `site/feature-visuals.mjs`; the offline build exports `dist\artifacts\visuals\<feature-id>.svg` without changing assessments or slide fingerprints.
 
-Press `/` to focus capability search. Release-stage filters and result counts remain visible on mobile; the navigation scrolls to the selected view. The comparison tray stays available while scrolling and leaves space at the end of the page so it does not cover the final controls.
+Press `/` to focus search. On mobile, release filters and result counts remain visible, navigation scrolls to the selected view, and the comparison tray leaves room for the final controls.
 
 ## New front-end concepts: account context and demo video studio
 
-**[Pull your account context](https://aj-enns.github.io/copilot-runway/#view=context)** opens an explicitly unconnected WorkIQ concept. Preview three fictional accounts, inspect scenario-to-feature matches with the current readiness verdict, choose a 7/30/90-day handoff window, and copy a read-only prompt for your **own approved private Copilot + WorkIQ session**. The page does not sign in, launch Copilot, access Microsoft 365, or store account results. GitHub sign-in is not Microsoft 365 authentication; WorkIQ needs appropriate licensing and tenant administrator consent.
+**[Pull your account context](https://aj-enns.github.io/copilot-runway/#view=context)** is an unconnected WorkIQ concept. Preview three fictional accounts, review readiness-aware matches, choose a 7/30/90-day handoff window, and copy a read-only prompt for your **approved private Copilot + WorkIQ session**. The page does not sign in, launch Copilot, access Microsoft 365, or store results. GitHub sign-in is not Microsoft 365 authentication; WorkIQ requires appropriate licensing and tenant admin consent.
 
 ![Fictional account-context preview with WorkIQ connection boundaries and readiness-aware feature matches](docs/images/account-context.png)
 
-**[Demo lab](https://aj-enns.github.io/copilot-runway/#view=demos)** now shows a feature concept image and four illustrated **prepare / run with review / verify / reset** instructions. The video studio can build a 90-second or 3-minute storyboard and download a recording brief containing presenter instructions, evidence, cleanup, and recording safeguards. **Generate video** is visibly disabled and labeled backend planned; no recorder, model, Computer Use session, or Actions job is triggered.
+**[Demo lab](https://aj-enns.github.io/copilot-runway/#view=demos)** provides a feature illustration and **prepare / run with review / verify / reset** instructions. The video studio builds a 90-second or 3-minute storyboard and downloadable recording brief. **Generate video** is disabled; no recorder, model, Computer Use session, or Actions job runs.
 
 ![Illustrated demo instructions and the offline recording planner with video generation clearly marked as unconnected](docs/images/demo-studio.png)
 
-The [integration blueprint](docs/integration-vision.md) separates the working front end from future private authentication, account resolution, retrieval, and recording orchestration. Copilot Computer Use is documented for **local macOS/Windows**; unattended desktop recording on Actions is unvalidated, not assumed. Real work context must never enter public Pages, commits, Actions logs/artifacts, or demo recordings. The existing Pages deployment pipeline is unchanged.
+The [integration blueprint](docs/integration-vision.md) separates the current front end from future private authentication and recording services. Computer Use is documented for **local macOS/Windows**; unattended desktop recording in Actions is unvalidated. Never put real work context in Pages, commits, Actions logs/artifacts, or public demos. Pages deployment is unchanged.
 
 ## A customer-session journey
 
-1. **Pick a business scenario.** Search for a use case such as `legacy support records` or choose a feature. The three short enterprise uses under each card are conversation starters, not customer references.
-2. **Evaluate before enabling.** Open **Assess**, inspect all ten gates, and identify missing tenant evidence and named owners. Compare capabilities without averaging away a blocking unknown.
-3. **Explain the value and cost.** Download the sourced feature slides, review the explicit assumptions, and use **Cost lab** to export a scenario.
-4. **Rehearse, then demo deliberately.** Use the offline rehearsal first. For a real Copilot run, follow the full runbook, approved prerequisites, expected output, verification, and scoped local/remote cleanup.
-5. **Keep the recommendation current.** Check **Preview radar** and **Recently GA**. A GA announcement does not grant tenant access or automatically satisfy enterprise controls.
+1. **Choose a scenario.** Search a use case such as `legacy support records` or select a feature. Card examples are conversation starters, not customer references.
+2. **Check readiness.** Review all ten **Assess** gates, missing tenant evidence, and owners. A blocking unknown cannot be averaged away.
+3. **Explain value and cost.** Review sourced slides and assumptions; export a scenario from **Cost lab**.
+4. **Rehearse, then demo.** Start offline. For a live run, follow the runbook's prerequisites, verification, and scoped cleanup.
+5. **Refresh the recommendation.** Check **Preview radar** and **Recently GA**. A GA announcement does not grant access or satisfy enterprise controls.
 
 ## First-wave catalog
 
@@ -66,13 +66,13 @@ The [integration blueprint](docs/integration-vision.md) separates the working fr
 | [Copilot Memory](features/copilot-memory/assessment.md) | Public preview | Pilot with conditions | Cited repository context |
 | [Autopilot Mode](features/autopilot/assessment.md) | Experimental | Pilot with conditions | Bounded local repair/test task |
 
-Official sources were reviewed on **2026-10-14**. This is a curated first wave, **not an exhaustive list of all Copilot previews**. Lifecycle, policy, pricing, and eligibility can change. The UI treats evidence older than 30 days as stale and blocks required gates pending re-review.
+Sources were reviewed **2026-10-14**. This curated first wave is not exhaustive. Lifecycle, policy, pricing, and eligibility can change; evidence older than 30 days is stale and blocks required gates pending review.
 
-**Kit-tested is not live-feature-tested.** Fixtures, acceptance checks, offline orchestration, and repeatable reset are exercised by repository tests. Live account access, native app automation, paid SDK/Actions inference, cloud execution, server-side Memory, and tenant-specific policy enforcement are not claimed from those checks.
+**Kit-tested does not mean live-feature-tested.** Repository tests cover fixtures, acceptance checks, offline orchestration, and reset—not live account access, native app automation, paid inference, cloud execution, server-side Memory, or tenant policy.
 
 ## Enterprise uses and GA history
 
-Every feature card and Overview includes three short **potential enterprise uses**, searchable alongside the feature's name and surfaces. These are illustrative recommendations, not verified customer deployments or policy approval.
+Feature cards and Overview list three searchable **potential enterprise uses**. These are illustrative—not verified deployments or policy approvals.
 
 | Capability | Example enterprise conversation starter |
 | --- | --- |
@@ -83,27 +83,27 @@ Every feature card and Overview includes three short **potential enterprise uses
 | Copilot Memory | Retain repository architecture conventions |
 | Autopilot Mode | Repair failures against acceptance tests |
 
-**[Recently GA](https://aj-enns.github.io/copilot-runway/#view=ga)** defaults to announcements from the last 90 days, with 30-day/all-history and feature/model filters. The initial reviewed history includes local sandboxing (2026-10-07), Claude Haiku 5.5 model availability (2026-10-07), and Gemini 4 Argon model availability (2026-10-13). Local sandboxing's GA announcement does **not** graduate hosted Cloud Sandboxes.
+**[Recently GA](https://aj-enns.github.io/copilot-runway/#view=ga)** defaults to the last 90 days and supports 30-day/all-history and feature/model filters. The reviewed history includes local sandboxing (2026-10-07), Claude Haiku 5.5 availability (2026-10-07), and Gemini 4 Argon availability (2026-10-13). Local sandboxing's GA announcement does **not** graduate hosted Cloud Sandboxes.
 
 ![Recently GA view with reviewed announcement dates, feature versus model filters, official sources, and enterprise-readiness caveats](docs/images/recently-ga.png)
 
 *GA tracker snapshot, 14 October 2026. Model availability is labeled separately from feature GA; neither implies customer-specific approval.*
 
-The human-reviewed archive in `catalog/ga.json` survives feed rollover. To add an entry, verify the primary announcement, register its source/review date in `catalog/sources.json`, and record its GA date, type, concise potential enterprise use, and scope caveat. Daily scans surface new GA-looking announcements as **review-pending signals**, excluding already tracked announcement URLs. Retirement, stable CLI releases, and historical GA mentions are not proof of a feature graduation. Coverage is curated and bounded, not exhaustive; **GA never automatically changes enterprise readiness or tenant eligibility**.
+The reviewed `catalog/ga.json` archive survives feed rollover. Before adding an entry, verify its primary announcement and register the source/review date in `catalog/sources.json`; record the GA date, type, potential use, and scope caveat. Daily scans flag new GA-looking announcements for review and exclude archived URLs. Retirement, stable CLI releases, and historical mentions do not prove a feature graduated. Coverage is bounded; **GA never changes readiness or tenant eligibility automatically**.
 
 ## Enterprise non-negotiables
 
-Use [the readiness policy](readiness/README.md), [versioned gate definitions](readiness/gates.json), and [customer assessment template](readiness/assessment-template.md). Every feature is assessed against availability, admin control, least privilege, data boundaries, human approval, audit, cost, network, operations, and rollback.
+See the [readiness policy](readiness/README.md), [gate definitions](readiness/gates.json), and [assessment template](readiness/assessment-template.md). Gates cover availability, admin control, least privilege, data, human approval, audit, cost, network, operations, and rollback.
 
-Required unknown, failed, missing, or stale evidence blocks readiness. Conditions require a named owner and actual tenant evidence. No weighted score or marketing badge can override a blocking gate. **Pilot gates satisfied never means production-certified.**
+Unknown, failed, missing, or stale required evidence blocks readiness. Conditions need a named owner and tenant evidence; scores and badges cannot override a gate. **Passed pilot gates do not certify production readiness.**
 
-The Pages workshop can add local proposed requirements and export JSON. Repository policy changes require review, a rubric version change where appropriate, and an assessment for every feature.
+The Pages workshop exports locally proposed requirements as JSON. Changing repository policy requires review, a rubric version update when needed, and reassessment of every feature.
 
 ## Value, cost, and official branding
 
-[Download the combined 12-slide architect brief](artifacts/slides/copilot-runway.pptx), or open the two-slide deck linked from each feature. Briefs cover value, control story, readiness, cost assumptions, and how to start the demo; primary-source hyperlinks and detailed notes are embedded.
+[Download the 12-slide architect brief](artifacts/slides/copilot-runway.pptx) or a feature's two-slide deck. Briefs cover value, controls, readiness, cost assumptions, and demo steps, with linked sources and notes.
 
-Enterprise Copilot usage is measured in **AI credits** under the reviewed current billing documentation. Do not reuse legacy premium-request assumptions as current enterprise pricing. Cloud sandbox compute, allocated memory, and snapshot storage are separate meters. The Cost lab is explicitly illustrative and excludes seats, Actions, taxes, and other services.
+Enterprise Copilot usage is measured in **AI credits**; do not use legacy premium-request assumptions as current pricing. Cloud sandbox compute, memory, and snapshot storage are separate meters. Cost lab estimates are illustrative and exclude seats, Actions, taxes, and other services.
 
 Official Copilot/GitHub icons come from pinned Primer Octicons. [Attribution and brand guidance](THIRD_PARTY_NOTICES.md) are included with the site and decks.
 
@@ -118,11 +118,11 @@ npm run demo:verify -- computer-use
 npm run demo:reset -- computer-use
 ```
 
-Follow the [presenter runbooks](demos/README.md) for real-feature prerequisites and steps. Setup prints an absolute path under `.demo-workspaces\<feature-id>`. Verification intentionally fails until the specified result exists. Autopilot's seeded acceptance tests fail again after reset.
+Follow the [presenter runbooks](demos/README.md) for prerequisites and steps. Setup prints a workspace path under `.demo-workspaces\<feature-id>`. Verification fails until the expected result exists; Autopilot's seeded tests fail again after reset.
 
-Reset is marker-checked, rejects unknown files and symlinks/junctions, and touches only known synthetic files. **It does not revoke app permissions, delete memories/journals, stop cloud sessions, remove snapshots, close PRs, or reset account settings.** Those are separate, specifically authorized steps in the runbook.
+Reset is marker-checked and rejects unknown files and symlinks/junctions. It touches only synthetic files. **It does not revoke app permissions, delete memories/journals, stop cloud sessions, remove snapshots, close PRs, or reset account settings.** Authorize those separately as described in the runbook.
 
-The Dynamic Workflows extension registers `runway-architecture-review` on a compatible CLI without starting it, requesting secrets, or declaring guessed limits. Its real workflow includes runtime input validation, distinct agent labels, an explicitly selected **tool-free specialist profile**, null/failure handling, an input-versioned journal, and a human review checkpoint. `demo:rehearse` uses deterministic adapters and incurs no inference.
+The Dynamic Workflows extension registers `runway-architecture-review` without starting it or requesting secrets. Its workflow validates inputs, uses a **tool-free specialist profile**, handles failures, journals versioned inputs, and pauses for human review. `demo:rehearse` uses deterministic adapters; it incurs no inference.
 
 ## Run the app locally
 
@@ -131,9 +131,9 @@ npm ci
 npm run dev
 ```
 
-Use **Node.js 22 or later**. `npm run dev` builds the app and serves only generated `dist` content at **http://127.0.0.1:4173**. The committed assessment/slide artifacts are used as-is; regenerating them is unnecessary just to run the portal.
+Use **Node.js 22 or later**. `npm run dev` builds and serves generated `dist` at **http://127.0.0.1:4173**. Committed assessments and slides are used as-is; no regeneration is needed to run the portal.
 
-For offline viewing, run `npm run build` and open `dist\index.html` directly. Keep its sibling folders for slide, assessment, and runbook downloads. `?clawpilotTheme=light` or `?clawpilotTheme=dark` selects an explicit theme.
+For offline viewing, run `npm run build` and open `dist\index.html`; keep sibling folders for downloads. Use `?clawpilotTheme=light` or `?clawpilotTheme=dark` to select a theme.
 
 ## Validate and maintain
 
@@ -147,11 +147,11 @@ npm run build
 npm run test:e2e
 ```
 
-Unit tests cover blocking verdicts, stale/invalid evidence, enterprise-use coverage/search, GA history/filtering/deduplication, cost arithmetic, discovery boundaries, workflow failure/resume, the original seeded symptom, exact output contracts, and reset safety. Browser tests exercise all six workspace views and every feature's assessment/demo/slides actions, tabs, command-copy handlers, presenter downloads, offline rehearsal/stop/reset controls, plus filters, comparison limits, policy exports, cost exports, focus, mobile targets, contrast, themes, stale evidence, CSP, and offline operation. Clipboard success/denial paths are isolated in tests; they do not write the operator's desktop clipboard.
+Unit tests cover verdicts, evidence freshness, use-case search, GA history, cost arithmetic, discovery boundaries, workflow failure/resume, output contracts, and reset safety. Browser tests cover all six workspaces, feature actions, downloads, rehearsal controls, filters, exports, accessibility, themes, CSP, and offline use. Clipboard tests never change the operator's clipboard.
 
-Maintain portal recommendations in the `enterpriseUseCases` map in `catalog/features.json`. Validation requires concise examples for every known feature. They do not change generated assessments, slide inputs, or readiness evidence.
+Maintain recommendations in `catalog/features.json`'s `enterpriseUseCases` map. Every feature needs concise examples; they do not change assessments, slides, or readiness evidence.
 
-After changing authoritative feature/rubric/referenced-source content, regenerate the decks and Markdown with `npm run artifacts`. Portal-only enterprise-use recommendations and GA archive entries do not require slide regeneration; the evidence fingerprints remain enforced. `artifacts:check` rejects stale fingerprints. On a Windows machine with PowerPoint, `scripts\render-slides.ps1` exports the actual combined deck to `qa-results\slides` for visual QA; it closes only the presentation it opened.
+After changing feature, rubric, or referenced-source content, run `npm run artifacts` to regenerate decks and Markdown. Enterprise-use recommendations and GA archive entries do not require slide regeneration; `artifacts:check` enforces evidence fingerprints. On Windows with PowerPoint, `scripts\render-slides.ps1` exports the combined deck to `qa-results\slides` and closes only the presentation it opened.
 
 ## Staying current
 
@@ -159,13 +159,13 @@ After changing authoritative feature/rubric/referenced-source content, regenerat
 | --- | --- | --- |
 | `preview-discovery.yml` | Daily 09:17 UTC + manual | Fetches official Copilot RSS and CLI/gh-aw releases, preserves a bounded snapshot, and updates one deduplicated bot-owned issue digest. No model required. |
 | `pages.yml` | Main push, daily 09:47 UTC, manual | Validates reviewed content, refreshes candidate-only Radar, builds, browser-tests, and deploys Pages. Failed ingestion or browser checks stop publication and do not replace the last deployed site. |
-| `preview-scout.md` + `.lock.yml` | Weekly Monday + manual, **opt-in** | Uses a read-only agent and restricted safe outputs to propose one draft candidate-review PR. It cannot admit a feature, promote readiness, merge, or deploy. |
+| `preview-scout.md` + `.lock.yml` | Weekly Monday + manual, **opt-in** | Proposes one concise candidate-review PR. Human review is required; it cannot admit a feature, promote readiness, merge, or deploy. |
 | `ci.yml` | Main push + PR + manual | Checks data, tests, artifact evidence, browser behavior, and matching compiled workflow source. |
 | Dependabot | Weekly | Proposes npm and Actions pin updates for review. Compiler upgrades need explicit source/lock review. |
 
-The official watchlist is in `catalog/watch.json`; `npm run sources:scan -- --update` refreshes only `catalog/monitor.json`. Responses and redirects are host-allowlisted, size/time bounded, parsed as inert data, and fail explicitly. RSS is a rolling window, not complete history. Signals include GA, retirement, policy, billing, and release changes as well as previews.
+`catalog/watch.json` is the official watchlist. `npm run sources:scan -- --update` refreshes only `catalog/monitor.json`. Fetches and redirects are host-allowlisted and size/time bounded; content is inert data and failures are explicit. RSS is not complete history. Signals cover GA, retirement, policy, billing, releases, and previews.
 
-**Agentic authentication is not configured by this repository.** An administrator must approve the engine/budget, configure the documented `COPILOT_GITHUB_TOKEN` secret securely, and set `RUNWAY_AGENTIC_ENABLED=true`. Until then, the reasoning workflow is intentionally skipped; deterministic discovery and Pages still operate. Do not put tokens in source, screenshots, logs, or command history. See [automation setup](docs/automation.md).
+**This repository does not configure Agentic authentication.** An administrator must approve the engine and budget, securely configure `COPILOT_GITHUB_TOKEN`, and set `RUNWAY_AGENTIC_ENABLED=true`. Until then, only deterministic discovery and Pages run. Never put tokens in source, screenshots, logs, or command history. See [automation setup](docs/automation.md).
 
 ## Repository map
 

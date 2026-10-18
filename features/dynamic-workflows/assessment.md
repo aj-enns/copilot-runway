@@ -7,7 +7,7 @@ An experimental Copilot SDK API for extension-authored, session-scoped workflows
 
 Official SDK documentation calls the API experimental. This is not GitHub Actions or a verified public-preview SKU.
 
-This is a minimum assessment for a controlled pilot, not a production certification or customer-specific approval. Unknowns block adoption; conditions require named tenant evidence. Evidence older than 30 days is stale.
+Minimum evidence for a controlled pilot, not a production certification or customer approval. Unknowns block adoption; conditions need tenant evidence. Evidence older than 30 days is stale.
 
 ## Non-negotiable gates
 

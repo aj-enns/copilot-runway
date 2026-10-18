@@ -7,7 +7,7 @@ Write agent instructions in Markdown with YAML frontmatter; gh aw compiles them 
 
 The official announcement names a technical preview. Recheck current lifecycle before adoption.
 
-This is a minimum assessment for a controlled pilot, not a production certification or customer-specific approval. Unknowns block adoption; conditions require named tenant evidence. Evidence older than 30 days is stale.
+Minimum evidence for a controlled pilot, not a production certification or customer approval. Unknowns block adoption; conditions need tenant evidence. Evidence older than 30 days is stale.
 
 ## Non-negotiable gates
 

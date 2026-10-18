@@ -1,10 +1,10 @@
 # Dynamic Workflows: architecture triage with human review
 
-**10 minutes | Experimental SDK API | Two synthetic inputs | Kit-tested; live feature not run**
+**10 minutes | Experimental SDK API | Two synthetic inputs | Kit-tested; not live-tested**
 
 ## Not the same as GitHub Agentic Workflows
 
-This demo runs a session-scoped Copilot SDK workflow, not GitHub Actions. The official SDK calls the API experimental. Execution eligibility can require token-based billing or trusted HMAC authentication; do not infer a public-preview entitlement from registration.
+This demo uses a session-scoped Copilot SDK workflow, not GitHub Actions. The SDK calls it experimental. Execution may require token-based billing or trusted HMAC authentication; registration does not imply preview access.
 
 ## Prepare and rehearse without inference
 
@@ -13,19 +13,19 @@ npm run demo:setup -- dynamic-workflows
 npm run demo:rehearse -- dynamic-workflows
 ```
 
-The offline harness exercises the real workflow function with a deterministic adapter. It proves the input guards, null/failure handling, blocked audit decision, pause checkpoint, and journal reuse. It does **not** invoke Copilot agents or demonstrate live SDK admission.
+The offline harness runs the workflow with a deterministic adapter, testing input guards, failures, blocked audit decisions, pause, and journal reuse. It does **not** invoke agents or prove live SDK access.
 
 ## Live prerequisites
 
-Review the extension source in `.github\extensions\runway-demo\extension.mjs` and `demos\dynamic-workflows\workflow.mjs`. It registers a workflow but starts no run, requests no secret, and declares no guessed limits. Start an approved compatible Copilot CLI from the **Runway repository root** so the project extension is discovered.
+Review `.github\extensions\runway-demo\extension.mjs` and `demos\dynamic-workflows\workflow.mjs`. The extension registers but does not start a run, request secrets, or guess limits. Start an approved compatible CLI from the **Runway repository root** to discover it.
 
-The workflow explicitly selects `.github\agents\runway-assessor.agent.md` for both specialists. Its `tools: []` profile disables tools instead of relying only on a "do not use tools" prompt. Confirm that profile is available and inspect its effective tool configuration before a live run. Model inference and durable journals still have their own data and billing implications.
+Both specialists use `.github\agents\runway-assessor.agent.md` with `tools: []`, a real tool restriction rather than prompt-only guidance. Confirm the profile and effective tool configuration before a live run. Inference and durable journals have separate data and billing implications.
 
-Use the CLI's extension management tools to confirm that `runway-demo` loaded and inspect the registered `runway-architecture-review` metadata. If extensions or Dynamic Workflows are unavailable, stop. Do not install an unrelated package or substitute an Actions workflow.
+Use CLI extension tools to confirm `runway-demo` loaded and inspect `runway-architecture-review`. If unavailable, stop; do not install unrelated packages or substitute Actions.
 
 ## Present a specifically approved run
 
-Give Copilot this request:
+Ask Copilot:
 
 ```text
 Inspect the registered runway-architecture-review workflow.
@@ -47,12 +47,12 @@ Use these exact arguments:
 }
 ```
 
-1. Choose an approved per-run budget/runtime/concurrency policy. A soft `maxAiCredits` limit is post-paid and can overshoot; it is not a billing hard stop.
-2. After approving this specific run, ask Copilot to invoke it by registered name using the workflow run tool. Record the run ID.
-3. Inspect **workflow** run detail/progress. Do not use ordinary `read_agent`/`write_agent` for workflow-owned agents.
-4. The workflow must pause at human review. `contoso-batch` must be `blocked`; the other app is only `pilot-with-review`, never enterprise-certified.
-5. Approve continuation explicitly. Resume using the same run ID. The assessments should be journaled, not re-run.
-6. Export the completed report JSON, without changing its content, to `.demo-workspaces\dynamic-workflows\assessment.json`.
+1. Set approved per-run budget, runtime, and concurrency. Soft, post-paid `maxAiCredits` can overshoot; it is not a billing hard stop.
+2. Approve this run, invoke it by registered name with the workflow run tool, and record its ID.
+3. Inspect **workflow** progress. Do not use ordinary `read_agent`/`write_agent` for workflow-owned agents.
+4. Confirm the human-review pause. `contoso-batch` must be `blocked`; the other app is `pilot-with-review`, not certified.
+5. Explicitly approve continuation and resume with the same ID. Journaled assessments should not rerun.
+6. Export the unchanged report to `.demo-workspaces\dynamic-workflows\assessment.json`.
 
 ## Verify and cleanup
 
@@ -61,13 +61,13 @@ npm run demo:verify -- dynamic-workflows
 npm run demo:reset -- dynamic-workflows
 ```
 
-Local verification checks the completed report contract and fixture facts; inspect live provenance separately. An offline report is deliberately rejected as a live output. Cancel any active workflow using its exact run ID before resetting. Local reset does not erase journaled session history. Never delete the whole session store.
+Local verification checks the report contract and fixture facts, not live provenance. Offline reports cannot pass as live output. Cancel the exact active run before reset. Reset does not erase journals; never delete the session store.
 
 ## Failure behavior
 
-`dynamic_workflows_unavailable`, unavailable durable storage, null/invalid assessments, inconsistent facts, cancellation, and hard limit failures are not successful results. A reached limit requires approval before raising it and resuming. The implementation rejects partial pipeline success.
+Unavailable workflows/storage, invalid assessments, inconsistent facts, cancellation, and hard-limit failures are not success. Get approval before raising a reached limit and resuming. Partial pipeline results are rejected.
 
-Journal keys include a semantic version and canonical input identity. The workflow code submits no external action, and its specialist profile has no tools. At-least-once replay must not be extended with non-idempotent customer actions.
+Journal keys include semantic version and canonical input identity. The workflow has no external actions and its specialist has no tools. Do not add non-idempotent customer actions to at-least-once replay.
 
 ## Official source
 

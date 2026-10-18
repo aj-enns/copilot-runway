@@ -1,8 +1,8 @@
 # Enterprise readiness: the non-negotiables
 
-The versioned source of truth is [gates.json](gates.json). The flight deck renders it directly, and every feature's generated Markdown assessment uses the same gate IDs and verdict rules.
+The [gates.json](gates.json) source of truth drives the flight deck and every generated feature assessment.
 
-This framework defines **minimum evidence for a controlled enterprise pilot**, not production certification, legal advice, an SLA, or approval for a particular customer's data.
+This framework sets **minimum evidence for a controlled enterprise pilot**. It is not production certification, legal advice, an SLA, or customer-data approval.
 
 ## Ten required gates
 
@@ -21,28 +21,28 @@ This framework defines **minimum evidence for a controlled enterprise pilot**, n
 
 ## Findings are not a weighted score
 
-**pass** means the cited mechanism or bounded kit behavior is documented. It does not prove that a customer's policy is configured or that its legal/security review is complete.
+**pass** means the mechanism or bounded kit behavior is documented—not that customer policy or legal/security review is complete.
 
-**conditional** means there is a documented route, but customer-specific validation, measurement, risk acceptance, or named approval remains.
+**conditional** means a route is documented, but customer validation, measurement, risk acceptance, or approval remains.
 
-**unknown** means required evidence is absent. **fail** means known evidence does not satisfy the requirement. A missing finding is unknown, never an implicit pass.
+**unknown** means evidence is missing. **fail** means it does not meet the requirement. Missing findings are unknown, never passes.
 
 The shared evaluator applies these rules:
 
-1. Any required fail, unknown, missing, or stale evidence yields **Hold for evidence**.
-2. Otherwise, any required conditional finding yields **Pilot with conditions**.
-3. Only all-current required passes yield **Pilot gates satisfied**. Preview acceptance and actual tenant sign-off are still required.
+1. Any required fail, unknown, missing, or stale evidence means **Hold for evidence**.
+2. Otherwise, any required conditional means **Pilot with conditions**.
+3. Only current passes on all required gates mean **Pilot gates satisfied**. Preview acceptance and tenant sign-off still apply.
 
-Evidence is stale after **30 days**. Failed ingestion does not overwrite a known-good snapshot. A successful scan does not extend a feature's or source's last-verified date.
+Evidence is stale after **30 days**. Failed ingestion preserves the last good snapshot. Successful scans never extend verification dates.
 
 ## Add or change a non-negotiable
 
-Edit `readiness/gates.json`. Give the gate a stable kebab-case ID, a question, named owner role, evidence requirement, and measurable acceptance test. Required defaults should remain explicit. Add an assessment for the new gate to **every** entry in `catalog/features.json`, using unknown until evidence exists.
+Edit `readiness/gates.json` with a stable kebab-case ID, question, owner role, evidence requirement, and measurable test. Keep required defaults explicit. Add the gate to **every** feature in `catalog/features.json`, using unknown until evidence exists.
 
-For a semantic change, increment the rubric version and reassess every affected feature. Regenerate briefs/assessments with `npm run artifacts`, run `npm run check`, and submit the change for maintainer review.
+For semantic changes, increment the rubric version and reassess affected features. Regenerate briefs/assessments with `npm run artifacts`, run `npm run check`, and request maintainer review.
 
-The Pages **Readiness gates** workspace also accepts local proposed requirements and exports JSON. These additions remain browser-only proposals; they do not change repository policy or promote existing findings.
+The Pages **Readiness gates** workspace exports local proposals as JSON; it does not change repository policy or promote findings.
 
 ## Customer sign-off
 
-Use [assessment-template.md](assessment-template.md) to record tenant/platform scope, exact client versions, test evidence, unresolved gaps, accountable owner roles, budget assumptions, preview acceptance, and the decision date. Keep customer-specific, personal, or confidential evidence **out of this repository and its public Pages output**.
+Use [assessment-template.md](assessment-template.md) to record scope, versions, evidence, gaps, owners, budget, preview acceptance, and decision date. Keep customer, personal, and confidential evidence **out of this public repository and Pages site**.
