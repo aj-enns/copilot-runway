@@ -1,0 +1,111 @@
+name: Runway feature producer
+
+on:
+  workflow_run:
+    workflows: ["Runway preview scout"]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: runway-feature-producer
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && vars.RUNWAY_AUTOMATION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      noChanges: ${{ steps.select.outputs.noChanges }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-fund --no-audit
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: runway-research
+          path: release-input
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Select only this trusted run's data proposal
+        id: select
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESEARCH_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: node scripts/release.mjs select
+      - name: Materialize grounded data with base-branch tools
+        id: materialize
+        if: steps.select.outputs.noChanges != 'true'
+        run: node scripts/materialize.mjs release-input/bundle.json release-input/.research.json
+      - if: steps.select.outputs.noChanges != 'true' && steps.materialize.outputs.changed != '0'
+        run: npm run artifacts
+      - if: steps.select.outputs.noChanges != 'true'
+        run: npx playwright install --with-deps chromium
+      - if: steps.select.outputs.noChanges != 'true'
+        run: npm run check
+      - if: steps.select.outputs.noChanges != 'true'
+        run: npm run artifacts:check
+      - if: steps.select.outputs.noChanges != 'true'
+        run: python scripts/verify_pptx.py
+      - name: Seal allowlisted release content
+        if: steps.select.outputs.noChanges != 'true'
+        run: node scripts/release.mjs pack
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.select.outputs.noChanges != 'true'
+        with:
+          name: runway-release-content
+          path: release-output
+          retention-days: 14
+      - name: Record generation outcome
+        if: always()
+        run: echo "Generation ${{ job.status }}. No live feature validation or human verification date renewal was performed." >> "$GITHUB_STEP_SUMMARY"
+  publish:
+    needs: generate
+    if: vars.RUNWAY_AUTOPUBLISH_ENABLED == 'true' && needs.generate.outputs.noChanges != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - run: npm ci --no-fund --no-audit
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: runway-release-content
+          path: release-output
+      - name: Mint repository-scoped release identity
+        id: app
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNWAY_APP_ID: ${{ vars.RUNWAY_APP_ID }}
+          RUNWAY_APP_INSTALLATION_ID: ${{ vars.RUNWAY_APP_INSTALLATION_ID }}
+          RUNWAY_APP_PRIVATE_KEY: ${{ secrets.RUNWAY_APP_PRIVATE_KEY }}
+        run: node scripts/release.mjs app-token
+      - name: Create machine release PR
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: node scripts/release.mjs publish
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: runway-release-attestation
+          path: release-attestation
+          retention-days: 14
+      - name: Revoke short-lived installation token
+        if: always() && steps.app.outputs.token != ''
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: node scripts/release.mjs revoke

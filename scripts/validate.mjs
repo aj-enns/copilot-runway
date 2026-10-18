@@ -1,6 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { fromRoot, loadCatalog, readJson, isOfficialUrl, isDate, fingerprint, assessmentMarkdown } from "./lib.mjs";
+import { inert } from "./automation.mjs";
 
 const statuses = new Set(["pass", "conditional", "unknown", "fail"]);
 const lifecycles = new Set(["public-preview", "technical-preview", "experimental", "ga", "retired", "unverified"]);
@@ -10,6 +11,14 @@ export function validateCatalog(data, watch, today = new Date().toISOString().sl
   const errors = [];
   const check = (condition, message) => { if (!condition) errors.push(message); };
   const validDate = (value, label) => check(isDate(value) && value <= today, `${label}: invalid or future date`);
+  const machineDate = (record, label) => {
+    check(record.verifiedOn === null && record.provenance?.kind === "automated", `${label}: missing human verification must be explicit`);
+    validDate(record.provenance?.assessedOn, `${label} assessedOn`);
+    check(Array.isArray(record.provenance?.sourceHashes) && record.provenance.sourceHashes.length > 0 &&
+      record.provenance.sourceHashes.every((entry) => isOfficialUrl(entry.url, watch.allowedHosts) && /^[a-f0-9]{64}$/.test(entry.sha256)),
+    `${label}: machine evidence hashes required`);
+  };
+  inert(data);
   check(data.schemaVersion === 1, "Unsupported catalog schemaVersion");
   validDate(data.updatedOn, "Catalog updatedOn");
   check(data.rubric.schemaVersion === 1, "Unsupported rubric schemaVersion");
@@ -28,7 +37,8 @@ export function validateCatalog(data, watch, today = new Date().toISOString().sl
   const sourceIds = new Set(Object.keys(data.sources));
   for (const [id, source] of Object.entries(data.sources)) {
     check(isOfficialUrl(source.url, watch.allowedHosts), `${id}: source must use an approved HTTPS host`);
-    validDate(source.verifiedOn, `${id} verifiedOn`);
+    if (source.provenance?.kind === "automated") machineDate(source, id);
+    else validDate(source.verifiedOn, `${id} verifiedOn`);
     check(Boolean(source.title && source.publisher && source.kind), `${id}: missing source metadata`);
   }
   const refs = (ids, label) => {
@@ -40,7 +50,18 @@ export function validateCatalog(data, watch, today = new Date().toISOString().sl
   for (const feature of data.features) {
     check(idPattern.test(feature.id) && !featureIds.has(feature.id), `Invalid or duplicate feature: ${feature.id}`);
     featureIds.add(feature.id);
-    validDate(feature.verifiedOn, `${feature.id} verifiedOn`);
+    if (feature.provenance?.kind === "automated") {
+      machineDate(feature, feature.id);
+      check(feature.readiness.every((gate) => ["unknown", "fail"].includes(gate.status)), `${feature.id}: automated evidence cannot promote readiness`);
+      check(feature.demo.liveStatus === "not-run", `${feature.id}: automated kit cannot claim live validation`);
+    } else validDate(feature.verifiedOn, `${feature.id} verifiedOn`);
+    if (feature.automatedReview) {
+      validDate(feature.automatedReview.assessedOn, `${feature.id} automated review`);
+      check(feature.automatedReview.kind === "automated" && feature.automatedReview.findings.length === data.rubric.gates.length &&
+        new Set(feature.automatedReview.findings.map((gate) => gate.gate)).size === data.rubric.gates.length &&
+        feature.automatedReview.findings.every((gate) => gateIds.has(gate.gate) && ["unknown", "fail"].includes(gate.status) && gate.reason && gate.next),
+      `${feature.id}: invalid conservative automated review`);
+    }
     check(lifecycles.has(feature.lifecycle.status), `${feature.id}: invalid lifecycle`);
     refs([feature.lifecycle.source], `${feature.id} lifecycle`);
     refs(feature.cost.sources, `${feature.id} cost`);

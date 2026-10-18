@@ -22,6 +22,7 @@
     "demo:reset": "node scripts/demo.mjs reset",
     "demo:rehearse": "node scripts/demo.mjs rehearse",
     "sources:scan": "node scripts/discover.mjs",
+    "automation:prepare": "node scripts/automation.mjs prepare",
     "workflow:compile": "gh aw compile preview-scout --no-check-update"
   },
   "devDependencies": {

@@ -15,7 +15,7 @@ gh aw --version
 npm run workflow:compile
 ```
 
-Use pinned compiler `gh aw v0.86.2`. Review upgrades as code changes and commit Markdown with its generated `.lock.yml`.
+Use pinned compiler `gh aw v0.92.0`. Review upgrades as code changes and commit Markdown with its generated `.lock.yml`.
 
 ## Show the control boundary
 

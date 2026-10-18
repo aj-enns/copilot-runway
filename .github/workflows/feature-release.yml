@@ -1,0 +1,67 @@
+name: Runway automatic release
+
+on:
+  workflow_run:
+    workflows: ["Runway quality"]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+  checks: read
+
+concurrency:
+  group: runway-automatic-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request' && vars.RUNWAY_AUTOPUBLISH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - run: npm ci --no-fund --no-audit
+      - name: Resolve trusted producer run
+        id: origin
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QUALITY_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: node scripts/release.mjs origin
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        if: steps.origin.outputs.producer != ''
+        with:
+          name: runway-release-attestation
+          path: release-attestation
+          run-id: ${{ steps.origin.outputs.producer }}
+          github-token: ${{ github.token }}
+      - name: Mint short-lived release identity
+        if: steps.origin.outputs.producer != ''
+        id: app
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNWAY_APP_ID: ${{ vars.RUNWAY_APP_ID }}
+          RUNWAY_APP_INSTALLATION_ID: ${{ vars.RUNWAY_APP_INSTALLATION_ID }}
+          RUNWAY_APP_PRIVATE_KEY: ${{ secrets.RUNWAY_APP_PRIVATE_KEY }}
+        run: node scripts/release.mjs app-token
+      - name: Merge only exact validated content
+        if: steps.origin.outputs.producer != ''
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          QUALITY_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: node scripts/release.mjs merge
+      - name: Revoke installation token
+        if: always() && steps.app.outputs.token != ''
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: node scripts/release.mjs revoke
+      - name: Record release outcome
+        if: always()
+        run: echo "Release ${{ job.status }}. Merge is separate from Pages deployment; inspect Publish Runway Pages for publication status." >> "$GITHUB_STEP_SUMMARY"

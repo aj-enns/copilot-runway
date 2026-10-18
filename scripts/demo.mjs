@@ -4,22 +4,23 @@ import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import { root, assertNoSymlink } from "./lib.mjs";
 import { fixtures, supportExpected, applications } from "../demos/fixtures.mjs";
+import { sameRecipeOutput, runRecipe } from "../demos/recipes.mjs";
 import { rehearseWorkflow } from "../demos/dynamic-workflows/offline.mjs";
 import { validateAssessment } from "../demos/dynamic-workflows/workflow.mjs";
 
 const markerName = ".runway-demo.json";
 
-export function workspaceFor(id, repositoryRoot = root) {
-  if (!Object.hasOwn(fixtures, id)) throw new Error(`Unknown demo '${id}'. Choose ${Object.keys(fixtures).join(", ")}`);
+export function workspaceFor(id, repositoryRoot = root, registry = fixtures) {
+  if (!Object.hasOwn(registry, id)) throw new Error(`Unknown demo '${id}'. Choose ${Object.keys(registry).join(", ")}`);
   return resolve(repositoryRoot, ".demo-workspaces", id);
 }
 
-async function inspectWorkspace(id, repositoryRoot, requireMarker) {
-  const directory = workspaceFor(id, repositoryRoot);
+async function inspectWorkspace(id, repositoryRoot, requireMarker, registry = fixtures) {
+  const directory = workspaceFor(id, repositoryRoot, registry);
   await assertNoSymlink(directory, repositoryRoot);
   try {
     const entries = await readdir(directory);
-    const allowed = new Set([markerName, ...Object.keys(fixtures[id].files), ...fixtures[id].outputs]);
+    const allowed = new Set([markerName, ...Object.keys(registry[id].files), ...registry[id].outputs]);
     if (entries.some((entry) => !allowed.has(entry))) {
       throw new Error(`Refusing to overwrite ${directory}: unexpected files must be reviewed and moved by the owner`);
     }
@@ -43,17 +44,17 @@ async function inspectWorkspace(id, repositoryRoot, requireMarker) {
   return directory;
 }
 
-export async function setupDemo(id, repositoryRoot = root, reset = false) {
-  const directory = await inspectWorkspace(id, repositoryRoot, reset);
+export async function setupDemo(id, repositoryRoot = root, reset = false, registry = fixtures) {
+  const directory = await inspectWorkspace(id, repositoryRoot, reset, registry);
   await mkdir(directory, { recursive: true });
-  for (const output of fixtures[id].outputs) {
+  for (const output of registry[id].outputs) {
     try {
       await unlink(join(directory, output));
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
     }
   }
-  for (const [name, content] of Object.entries(fixtures[id].files)) {
+  for (const [name, content] of Object.entries(registry[id].files)) {
     await writeFile(join(directory, name), content);
   }
   await writeFile(join(directory, markerName), `${JSON.stringify({ schemaVersion: 1, owner: "copilot-runway", demo: id }, null, 2)}\n`);
@@ -69,9 +70,13 @@ async function readOutput(directory, name) {
   }
 }
 
-export async function verifyDemo(id, repositoryRoot = root) {
-  const directory = await inspectWorkspace(id, repositoryRoot, true);
-  if (id === "computer-use") {
+export async function verifyDemo(id, repositoryRoot = root, registry = fixtures) {
+  const directory = await inspectWorkspace(id, repositoryRoot, true, registry);
+  if (registry[id].recipe) {
+    const { recipe } = registry[id];
+    const actual = await readOutput(directory, recipe.output);
+    if (!sameRecipeOutput(actual, runRecipe(recipe))) throw new Error(`${recipe.output} does not match the deterministic expected result`);
+  } else if (id === "computer-use") {
     const saved = (await readFile(join(directory, "support-brief.txt"), "utf8")).replace(/\r\n/g, "\n");
     if (saved !== supportExpected) {
       throw new Error("Support brief does not contain exactly the two requested edits");
@@ -123,11 +128,15 @@ export async function verifyDemo(id, repositoryRoot = root) {
   return { directory, scope: "Local output contract only. Inspect live tool traces, policy enforcement, remote state, and identity separately." };
 }
 
-export async function rehearseDemo(id, repositoryRoot = root) {
-  const directory = await inspectWorkspace(id, repositoryRoot, true);
+export async function rehearseDemo(id, repositoryRoot = root, registry = fixtures) {
+  const directory = await inspectWorkspace(id, repositoryRoot, true, registry);
   let result;
   let output;
-  if (id === "dynamic-workflows") {
+  if (registry[id].recipe) {
+    const { recipe } = registry[id];
+    result = { mode: "offline-rehearsal", liveStatus: "not-run", note: "Offline expected output; not a live Copilot result.", ...runRecipe(recipe) };
+    output = `offline-${recipe.output}`;
+  } else if (id === "dynamic-workflows") {
     result = await rehearseWorkflow();
     output = "offline-assessment.json";
   } else if (id === "agentic-workflows") {

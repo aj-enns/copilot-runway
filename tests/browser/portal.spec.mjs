@@ -2,9 +2,61 @@ import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { resolve } from "node:path";
+import { featureVisual } from "../../site/feature-visuals.mjs";
+import { verdict } from "../../site/model.mjs";
 
 const site = resolve(fileURLToPath(new URL("../../", import.meta.url)), "dist", "index.html");
 const catalog = JSON.parse(await readFile(new URL("../../catalog/features.json", import.meta.url), "utf8"));
+
+test("an unknown recipe feature supports details, downloads, rehearsal and recording without product claims", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  let document = await readFile(site, "utf8");
+  const match = document.match(/<script type="application\/json" id="runway-data">([\s\S]*?)<\/script>/);
+  const payload = JSON.parse(match[1]);
+  const feature = structuredClone(payload.features[0]);
+  Object.assign(feature, {
+    id: "synthetic-new-kit", name: "Synthetic new kit", featured: false, verifiedOn: null,
+    lifecycle: { ...feature.lifecycle, status: "unverified", note: "Automated signal, not verified." },
+    provenance: { kind: "automated", assessedOn: "2026-10-14", runId: "123", sourceHashes: [] },
+    readiness: feature.readiness.map((gate) => ({ ...gate, status: "unknown" })),
+  });
+  feature.demo.runbook = "demos/synthetic-new-kit/README.md";
+  feature.demo.runbookText = "# Synthetic new kit\n\nOffline synthetic recipe. Live status: not-run.\n";
+  feature.demo.recipe = {
+    schemaVersion: 1,
+    files: { "input.json": JSON.stringify({ operation: "classify-required-booleans", requiredFields: ["audit"], records: [{ id: "demo-app", audit: false }] }) },
+    output: "result.json",
+    expected: { schemaVersion: 1, operation: "classify-required-booleans", classification: "synthetic", summary: { total: 1, passed: 0, blocked: 1 }, results: [{ id: "demo-app", decision: "blocked", missing: ["audit"] }] },
+    steps: [{ title: "Inspect the synthetic input", detail: "Check whether audit evidence is present." }],
+    controlStory: ["Synthetic input", "Check required controls", "Inspect result"],
+  };
+  payload.features.push(feature);
+  payload.visuals[feature.id] = featureVisual(feature, payload.icons);
+  payload.enterpriseUseCases[feature.id] = ["Synthetic controls example"];
+  document = document.replace(match[1], () => JSON.stringify(payload).replace(/</g, "\\u003c"));
+  await page.route(new URL("/", test.info().project.use.baseURL).href, (route) => route.fulfill({ contentType: "text/html", body: document }));
+  await page.route("**/runbooks/synthetic-new-kit.md", (route) => route.fulfill({ contentType: "text/markdown", body: feature.demo.runbookText }));
+  await page.goto("/");
+  const card = page.locator('[data-feature="synthetic-new-kit"]');
+  expect(errors).toEqual([]);
+  await expect(card).toContainText("Hold for evidence");
+  await card.getByRole("button", { name: "Assess", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: feature.name, exact: true });
+  await dialog.getByRole("tab", { name: "Sources", exact: true }).click();
+  await expect(dialog).toContainText("not human verified");
+  await dialog.getByRole("tab", { name: "Demo", exact: true }).click();
+  const download = page.waitForEvent("download");
+  await dialog.getByRole("link", { name: "Download full runbook (.md)" }).click();
+  expect((await download).suggestedFilename()).toBe(`${feature.id}.md`);
+  await dialog.getByRole("button", { name: "Open offline rehearsal" }).click();
+  await expect(page.locator("#demo-lab")).toContainText("synthetic");
+  await page.locator("#lab-advance").click();
+  await page.locator("#demo-studio").getByRole("button", { name: "Build recording brief" }).click();
+  await expect(page.locator("#video-brief-content")).toContainText(feature.name);
+  await expect(page.locator("#video-brief-content")).toContainText("PLANNED ONLY");
+  expect(errors).toEqual([]);
+});
 
 async function checkCopyButtons(scope, page) {
   for (const button of await scope.locator("[data-copy]").all()) {
@@ -18,7 +70,7 @@ async function checkCopyButtons(scope, page) {
 test("all feature illustrations render in both themes, open details, and download as self-contained SVG", async ({ page }) => {
   for (const theme of ["light", "dark"]) {
     await page.goto(`/?clawpilotTheme=${theme}`);
-    await expect(page.locator(".feature-cover .feature-art")).toHaveCount(6);
+    await expect(page.locator(".feature-cover .feature-art")).toHaveCount(catalog.features.length);
     for (const feature of catalog.features) {
       await page.getByRole("button", { name: `Open illustrated overview of ${feature.name}`, exact: true }).click();
       const dialog = page.getByRole("dialog", { name: feature.name, exact: true });
@@ -45,9 +97,9 @@ test("flight deck renders, filters, links assets, and emits no browser/CSP error
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await page.goto("/?clawpilotTheme=light");
   await expect(page.getByRole("heading", { name: /From preview to/ })).toBeVisible();
-  await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.locator(".feature-card")).toHaveCount(catalog.features.length);
   await page.getByRole("button", { name: "Public preview", exact: true }).click();
-  await expect(page.locator(".feature-card")).toHaveCount(3);
+  await expect(page.locator(".feature-card")).toHaveCount(catalog.features.filter((feature) => feature.lifecycle.status === "public-preview").length);
   await page.getByRole("button", { name: "All capabilities", exact: true }).click();
   await page.getByRole("searchbox", { name: "Search capabilities" }).fill("dynamic");
   await expect(page.locator(".feature-card")).toHaveCount(1);
@@ -55,7 +107,7 @@ test("flight deck renders, filters, links assets, and emits no browser/CSP error
   await page.getByRole("searchbox", { name: "Search capabilities" }).fill("no-match-for-this");
   await expect(page.getByRole("heading", { name: "No capabilities match those filters." })).toBeVisible();
   await page.getByRole("button", { name: "Reset filters", exact: true }).click();
-  await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.locator(".feature-card")).toHaveCount(catalog.features.length);
   await expect(page.getByRole("searchbox", { name: "Search capabilities" })).toBeFocused();
   for (const path of ["/runbooks/computer-use.md", "/assessments/dynamic-workflows.md", "/artifacts/slides/copilot-runway.pptx", "/assets/copilot.svg", "/THIRD_PARTY_NOTICES.md"]) {
     expect((await request.get(path)).status()).toBe(200);
@@ -63,7 +115,7 @@ test("flight deck renders, filters, links assets, and emits no browser/CSP error
   expect((await request.get("/not-present")).status()).toBe(404);
   expect(errors).toEqual([]);
   await page.goto("/?clawpilotTheme=light");
-  await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.locator(".feature-card")).toHaveCount(catalog.features.length);
   await page.screenshot({ path: "test-results/flight-deck-desktop.png", fullPage: true });
 });
 
@@ -187,14 +239,16 @@ test("release, readiness, surface, and search filters compose and reset together
   await expect(page.locator(".feature-title")).toHaveText(["GitHub Agentic Workflows"]);
   await page.getByRole("button", { name: "All capabilities", exact: true }).click();
   await page.getByLabel("Filter by readiness").selectOption("blocked");
-  await expect(page.locator(".feature-title")).toHaveText(["Dynamic Workflows"]);
+  const payload = JSON.parse(await page.locator("#runway-data").textContent());
+  await expect(page.locator(".feature-title")).toHaveText(payload.features.filter((feature) =>
+    verdict(feature, payload.rubric, new Date("2026-10-14T12:00:00Z"), payload.sources) === "blocked").map((feature) => feature.name));
   await page.getByRole("button", { name: "Experimental", exact: true }).click();
   await page.getByLabel("Filter by surface").selectOption("Copilot SDK");
   await expect(page.locator(".feature-title")).toHaveText(["Dynamic Workflows"]);
   await page.getByRole("searchbox", { name: "Search capabilities" }).fill("legacy support records");
   await expect(page.locator(".feature-card")).toHaveCount(0);
   await page.getByRole("button", { name: "Reset filters", exact: true }).click();
-  await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.locator(".feature-card")).toHaveCount(catalog.features.length);
   await expect(page.getByLabel("Filter by readiness")).toHaveValue("");
   await expect(page.getByLabel("Filter by surface")).toHaveValue("");
   await expect(page.getByRole("searchbox", { name: "Search capabilities" })).toHaveValue("");
@@ -338,7 +392,7 @@ test("account context shows fictional matches, private handoff, and no connected
   await expect(page.locator(".account-match")).toHaveCount(0);
   await page.getByRole("button", { name: "Preview sample account matches" }).click();
   await expect(page.locator(".account-match")).toHaveCount(3);
-  await expect(page.locator(".account-feature-match")).toHaveCount(6);
+  await expect(page.locator(".account-feature-match")).toHaveCount(catalog.features.length);
   await expect(page.locator("#context-status")).toContainText("no real data was retrieved");
   await page.getByLabel("Planned lookback").selectOption("7");
   await expect(page.locator("#workiq-handoff")).toContainText("last 7 days");
@@ -373,7 +427,7 @@ test("account scenario fit never overrides stale readiness evidence", async ({ p
   await page.clock.install({ time: new Date("2026-11-20T12:00:00Z") });
   await page.goto("/#view=context");
   await page.getByRole("button", { name: "Preview sample account matches" }).click();
-  await expect(page.locator(".account-feature-match .badge-blocked")).toHaveCount(6);
+  await expect(page.locator(".account-feature-match .badge-blocked")).toHaveCount(catalog.features.length);
   await expect(page.locator("#workiq-handoff")).not.toContainText("Current pilot verdict: Pilot with conditions");
 });
 
@@ -444,13 +498,15 @@ test("recording planning preserves rehearsal behavior and never dispatches exter
 test("concise enterprise use cases appear in every card, detail view, and search", async ({ page }) => {
   await page.goto("/?clawpilotTheme=light");
   const cards = page.locator(".feature-card");
-  await expect(cards).toHaveCount(6);
+  await expect(cards).toHaveCount(catalog.features.length);
   for (const card of await cards.all()) {
-    await expect(card.locator(".enterprise-uses li")).toHaveCount(3);
+    const featureId = await card.getAttribute("data-feature");
+    const examples = catalog.enterpriseUseCases[featureId];
+    await expect(card.locator(".enterprise-uses li")).toHaveText(examples);
     await expect(card).toContainText("Potential enterprise uses");
     await card.locator(".feature-title").click();
     const dialog = page.getByRole("dialog");
-    await expect(dialog.locator(".enterprise-uses li")).toHaveCount(3);
+    await expect(dialog.locator(".enterprise-uses li")).toHaveText(examples);
     await expect(dialog).toContainText("not verified customer deployments");
     await dialog.getByRole("button", { name: "Close feature" }).click();
   }
@@ -485,7 +541,7 @@ test("Recently GA has reviewed dates, official links, feature/model filters, and
   await expect(page.locator(".ga-card .category-label")).toHaveText(["Model availability", "Model availability"]);
   await page.locator(".nav-button[data-view=catalog]").click();
   await expect(page.locator("[data-feature=cloud-sandboxes] .badge-preview")).toHaveText("Public preview");
-  await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.locator(".feature-card")).toHaveCount(catalog.features.length);
   expect(errors).toEqual([]);
 });
 
@@ -517,7 +573,7 @@ test("unreviewed GA signals are escaped and deduplicated without entering review
     { ...pending, id: "release", feed: "copilot-cli-releases" },
   ];
   document = document.replace(match[1], () => JSON.stringify(catalog).replace(/</g, "\\u003c"));
-  await page.route("http://127.0.0.1:4173/", (route) => route.fulfill({ contentType: "text/html", body: document }));
+  await page.route(new URL("/", test.info().project.use.baseURL).href, (route) => route.fulfill({ contentType: "text/html", body: document }));
   await page.goto("/#view=ga");
   await expect(page.locator("#ga-pending")).toBeVisible();
   await expect(page.locator(".ga-pending-item")).toHaveCount(1);
@@ -604,7 +660,7 @@ test("mobile layout, dark theme, and reduced motion remain usable without horizo
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/?clawpilotTheme=dark");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.locator(".feature-card")).toHaveCount(catalog.features.length);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.locator('[data-feature="computer-use"] .feature-title').click();
   await expect(page.getByRole("dialog", { name: "Computer Use", exact: true })).toBeVisible();
@@ -626,7 +682,7 @@ test("dashboard controls, result counts, and comparison remain usable across bre
       expect(heights.every((height) => height >= 44)).toBe(true);
     }
     await page.getByRole("button", { name: "Public preview", exact: true }).click();
-    await expect(page.locator("#result-count")).toHaveText("3 of 6 capabilities");
+    await expect(page.locator("#result-count")).toHaveText(`${catalog.features.filter((feature) => feature.lifecycle.status === "public-preview").length} of ${catalog.features.length} capabilities`);
     await page.getByRole("button", { name: "Compare Computer Use", exact: true }).click();
     await expect(page.locator("#compare-rail")).toBeInViewport();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -687,7 +743,7 @@ test("stale evidence blocks all required verdicts, even when the source scan is 
   await page.clock.install({ time: new Date("2026-11-20T12:00:00Z") });
   await page.goto("/");
   await expect(page.locator("#global-warning")).toContainText("past the 30-day evidence window");
-  await expect(page.locator(".card-readiness strong")).toHaveText(Array(6).fill("Hold for evidence"));
+  await expect(page.locator(".card-readiness strong")).toHaveText(Array(catalog.features.length).fill("Hold for evidence"));
   await expect(page.locator("#hero-kit")).toContainText("Hold for evidence");
 });
 
@@ -698,18 +754,18 @@ test("a stale underlying source blocks current-looking feature assessments and s
   const catalog = JSON.parse(match[1]);
   catalog.sources.billing.verifiedOn = "2026-09-01";
   document = document.replace(match[1], () => JSON.stringify(catalog).replace(/</g, "\\u003c"));
-  await page.route("http://127.0.0.1:4173/", (route) => route.fulfill({ contentType: "text/html", body: document }));
+  await page.route(new URL("/", test.info().project.use.baseURL).href, (route) => route.fulfill({ contentType: "text/html", body: document }));
   await page.goto("/");
   await expect(page.locator("#global-warning")).toContainText("or their sources");
-  await expect(page.locator(".card-readiness strong")).toHaveText(Array(6).fill("Hold for evidence"));
-  await expect(page.locator(".card-readiness small")).toHaveText(Array(6).fill("Re-review overdue"));
+  await expect(page.locator(".card-readiness strong")).toHaveText(Array(catalog.features.length).fill("Hold for evidence"));
+  await expect(page.locator(".card-readiness small")).toHaveText(Array(catalog.features.length).fill("Re-review overdue"));
 });
 
 test("built portal works from a file URL without any network dependency", async ({ page }) => {
   const network = [];
   page.on("request", (request) => { if (/^https?:/.test(request.url())) network.push(request.url()); });
   await page.goto(pathToFileURL(site).href + "?clawpilotTheme=light");
-  await expect(page.locator(".feature-card")).toHaveCount(6);
+  await expect(page.locator(".feature-card")).toHaveCount(catalog.features.length);
   await page.getByRole("button", { name: "Experimental", exact: true }).click();
   await expect(page.locator(".feature-card")).toHaveCount(2);
   await page.locator(".nav-button[data-view=ga]").click();

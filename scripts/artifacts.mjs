@@ -1,8 +1,33 @@
+import { mkdir } from "node:fs/promises";
 import pptxgen from "pptxgenjs";
 import octicons from "@primer/octicons";
 import { fromRoot, loadCatalog, readJson, write, fingerprint, assessmentMarkdown, verdict, verdictLabels } from "./lib.mjs";
 import { validateCatalog } from "./validate.mjs";
-import { featureSourceIds, lifecycleLabels } from "../site/model.mjs";
+import { featureSourceIds, lifecycleLabels, reviewLabel, evaluationDate } from "../site/model.mjs";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import { recipeRunbook, assertRecipeFeature, recipeFixtures } from "../demos/recipes.mjs";
+import { setupDemo, rehearseDemo, verifyDemo } from "./demo.mjs";
+import { runRecipe } from "../site/model.mjs";
+
+// Trusted offline acceptance: kit-tested is claimed only after this passes; it never implies live validation.
+async function acceptRecipe(feature) {
+  const registry = recipeFixtures([feature]);
+  const { recipe } = feature.demo;
+  await mkdir(fromRoot("qa-results"), { recursive: true });
+  const workspace = await mkdtemp(fromRoot("qa-results", "recipe-accept-"));
+  try {
+    const directory = await setupDemo(feature.id, workspace, false, registry);
+    await rehearseDemo(feature.id, workspace, registry);
+    let rejected = false;
+    await verifyDemo(feature.id, workspace, registry).catch(() => { rejected = true; });
+    if (!rejected) throw new Error(`${feature.id}: verify accepted an offline rehearsal as a live result`);
+    await writeFile(join(directory, recipe.output), `${JSON.stringify(runRecipe(recipe), null, 2)}\n`);
+    await verifyDemo(feature.id, workspace, registry);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+}
 
 const data = await loadCatalog();
 validateCatalog(data, await readJson(fromRoot("catalog", "watch.json")));
@@ -55,12 +80,13 @@ function chrome(slide, theme, feature, page, total) {
   logo(slide, theme, "copilot", .6, .52, .32);
   text(slide, "COPILOT RUNWAY", 1.02, .55, 3.1, .24, theme, { fontSize: 11, bold: true, charSpacing: 1.4 });
   text(slide, "EVALUATE. EXPLAIN. DEMO.", 8.4, .55, 4.33, .24, theme, { fontSize: 10, color: theme.muted, align: "right", charSpacing: 1 });
-  text(slide, `Independent initiative. Not an official GitHub or Microsoft product.  |  Reviewed ${feature.verifiedOn}`, .6, 6.82, 10.6, .18, theme, { fontSize: 8.5, color: theme.muted });
+  text(slide, `Independent initiative. Not an official GitHub or Microsoft product.  |  ${reviewLabel(feature)}`, .6, 6.82, 10.6, .18, theme, { fontSize: 8.5, color: theme.muted });
   text(slide, `${page} / ${total}`, 11.5, 6.82, 1.23, .18, theme, { fontSize: 8.5, color: theme.muted, align: "right" });
 }
 
 function citations(slide, feature, theme) {
   const sources = [...new Set([feature.lifecycle.source, ...feature.cost.sources])];
+  for (const id of sources) if (!/^https:\/\//.test(data.sources[id].url)) throw new Error(`Source ${id} must use HTTPS for slide links`);
   const rich = [{ text: "Primary sources: ", options: { color: theme.muted } }];
   sources.forEach((id, index) => {
     rich.push({
@@ -76,7 +102,7 @@ function notes(slide, feature, purpose) {
   slide.addNotes([
     purpose,
     `Exact lifecycle: ${feature.lifecycle.status}. ${feature.lifecycle.note}`,
-    `Verification date: ${feature.verifiedOn}. Evidence older than ${data.rubric.reviewWindowDays} days requires re-review.`,
+    feature.verifiedOn ? `Verification date: ${feature.verifiedOn}. Evidence older than ${data.rubric.reviewWindowDays} days requires re-review.` : `${reviewLabel(feature)}. A human must review the cited evidence before readiness can change.`,
     "This is independent enablement for a controlled pilot, not production certification or customer-specific approval.",
     `Cost detail: ${feature.cost.detail}`,
     `Explicit assumptions:\n${feature.cost.assumptions.join("\n")}`,
@@ -106,7 +132,9 @@ function valueSlide(deck, feature, page = 1, total = 2) {
   });
   box(slide, deck, 8.0, 1.15, 4.73, 4.87, dark);
   text(slide, "THE CONTROL STORY", 8.32, 1.47, 4.09, .24, dark, { fontSize: 10, color: dark.accent, bold: true, charSpacing: 1.2 });
-  diagrams[feature.id].forEach((label, index) => {
+  const story = diagrams[feature.id] ?? feature.demo.recipe?.controlStory;
+  if (!story) throw new Error(`Add a control-story diagram or demo recipe for ${feature.id}`);
+  story.forEach((label, index) => {
     const y = 2.0 + index * 1.08;
     box(slide, deck, 8.36, y, 4.0, .67, dark, dark.bg);
     text(slide, label, 8.58, y + .17, 3.56, .33, dark, { fontSize: 16, align: "center", bold: index === 2 });
@@ -122,7 +150,7 @@ function valueSlide(deck, feature, page = 1, total = 2) {
 function readinessSlide(deck, feature, page = 2, total = 2) {
   const slide = deck.addSlide();
   chrome(slide, light, feature, page, total);
-  const decision = verdict(feature, data.rubric, new Date(`${feature.verifiedOn}T12:00:00Z`), data.sources);
+  const decision = verdict(feature, data.rubric, evaluationDate(feature), data.sources);
   text(slide, verdictLabels[decision], .6, 1.1, 12.13, .55, light, { fontSize: 30, bold: true, color: decision === "blocked" ? findingColors.unknown : light.accent });
   text(slide, `${feature.name}  |  Controlled pilot, not production certification`, .6, 1.79, 12.13, .34, light, { fontSize: 14, color: light.muted });
   text(slide, "NON-NEGOTIABLE GATES", .6, 2.33, 6.4, .25, light, { fontSize: 11, bold: true, charSpacing: 1 });
@@ -151,6 +179,11 @@ function readinessSlide(deck, feature, page = 2, total = 2) {
 const combined = presentation("Copilot Runway: architect feature briefs");
 const manifest = { schemaVersion: 1, rubricVersion: data.rubric.version, generatedFromVerifiedOn: data.updatedOn, features: [] };
 for (const [index, feature] of data.features.entries()) {
+  if (feature.demo.recipe) {
+    assertRecipeFeature(feature);
+    await acceptRecipe(feature);
+    await write(fromRoot(feature.demo.runbook), recipeRunbook(feature, data.sources));
+  }
   for (const id of new Set([feature.lifecycle.source, ...feature.cost.sources])) {
     if (typeof data.sources[id].shortTitle !== "string" || data.sources[id].shortTitle.length > 40) {
       throw new Error(`Source ${id} requires a concise slide citation title of at most 40 characters`);

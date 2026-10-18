@@ -19,6 +19,13 @@ def normalized(value):
     return " ".join(value.split())
 
 
+def review_label(feature):
+    if feature.get("verifiedOn"):
+        return f"Reviewed {feature['verifiedOn']}"
+    assessed = (feature.get("provenance") or {}).get("assessedOn")
+    return f"Not human verified (assessed {assessed})" if assessed else "Not human verified"
+
+
 def verify(path, features):
     expected_count = len(features) * 2
     errors = []
@@ -37,7 +44,7 @@ def verify(path, features):
             feature = features[index // 2]
             tree = ET.fromstring(package.read(name))
             content = normalized(" ".join(node.text or "" for node in tree.findall(".//a:t", NS)))
-            required_text = ["COPILOT RUNWAY", "Primary sources:", "Independent initiative.", feature["name"], f"Reviewed {feature['verifiedOn']}"]
+            required_text = ["COPILOT RUNWAY", "Primary sources:", "Independent initiative.", feature["name"], review_label(feature)]
             if index % 2:
                 kit = feature["demo"]["status"].removeprefix("kit-").replace("-", " ").upper()
                 live = feature["demo"]["liveStatus"].replace("-", " ").upper()

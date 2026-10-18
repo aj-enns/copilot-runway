@@ -26,9 +26,9 @@ Daily ingestion flags Copilot announcements that say GA in the headline or openi
 
 ## Optional agentic interpretation
 
-The scout runs Mondays at 11:21 UTC or on manual dispatch. Its explicit cron keeps compilation stable across local and CI environments; changing the schedule requires regenerating the lock.
+The scout runs daily at 11:21 UTC or on manual dispatch. It prioritizes existing features due for weekly reassessment and new official signals. Its explicit cron keeps compilation stable across local and CI environments.
 
-`preview-scout.md` is a GitHub Agentic Workflow. Compile it with `gh aw v0.86.2`; update its versioned `.lock.yml` whenever frontmatter changes.
+`preview-scout.md` is a GitHub Agentic Workflow. Compile it with pinned `gh aw v0.92.0`; commit the source and generated `.lock.yml` together.
 
 The workflow is **off** unless `RUNWAY_AGENTIC_ENABLED=true`. Setup creates no AI credential or persistent access. Before opting in, review Actions policy, engine data terms, budgets, compiled jobs, network rules, tools, and safe-output scope.
 
@@ -36,7 +36,9 @@ An authorized administrator must configure the `COPILOT_GITHUB_TOKEN` engine sec
 
 The agent sees public discovery metadata and named catalog files, never customer context. It cannot write to GitHub directly. A separate safe-output job can create only a **draft PR** under `catalog/proposals/**`; the compiler/runtime enforces this allowlist, not the prompt alone.
 
-The scout creates concise, plain-language **candidate proposals only**. It cannot change feature admissions, lifecycle, verified dates, readiness, gates, costs, slides, scripts, workflows, or deployment. Maintainers apply the same writing standard to docs and runbooks after admitting a feature, regenerate artifacts, and review the full release. It must return `noop` when an existing proposal covers the signal or there is nothing actionable. No automatic merge or approval is configured.
+The scout writes structured, concise **research proposals only**. It cannot modify canonical evidence, scripts, workflows, gates, or deployment. A separate trusted producer validates the data, generates complete offline kits, and tests the result. An independently authorized release job can merge only its exact validated content. This path is disabled until its policy, budgets, App, and branch protection are configured; see [feature automation](feature-automation.md).
+
+Machine-generated features remain explicitly unverified and on Hold. Automated reassessment never renews human verification dates or promotes readiness. Complete documentation may publish with unknown findings; unsupported or unsafe kits stay pending. No live demos are run automatically.
 
 ## Validation and updates
 

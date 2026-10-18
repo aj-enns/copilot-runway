@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { recipeFixtures } from "./recipes.mjs";
+
 export const applications = [
   { id: "northwind-api", sso: true, audit: true, approvedEgress: true },
   { id: "contoso-batch", sso: true, audit: false, approvedEgress: true },
@@ -56,3 +59,6 @@ export const fixtures = {
     outputs: [],
   },
 };
+
+const catalog = JSON.parse(readFileSync(new URL("../catalog/features.json", import.meta.url), "utf8"));
+Object.assign(fixtures, recipeFixtures(catalog.features, fixtures));

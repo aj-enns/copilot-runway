@@ -1,4 +1,5 @@
 import { escapeHtml } from "../scripts/lib.mjs";
+import { runRecipe } from "./model.mjs";
 
 export function featureVisual(feature, icons) {
   const accent = feature.lifecycle.status === "experimental" ? "accent" : "link";
@@ -16,6 +17,21 @@ export function featureVisual(feature, icons) {
     return `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="${viewBox}" fill="var(--cp-${accent})">${paths}</svg>`;
   };
   const header = (label) => `${rect(48, 36, 504, 248)}${rect(48, 36, 504, 48, "accent-soft")}${text(72, 68, label, 20, "text", 600)}${stamp(feature.icon, 510, 47, 24)}`;
+  const recipeScene = (recipe) => {
+    const output = runRecipe(recipe);
+    const clip = (value) => (value.length > 18 ? `${value.slice(0, 17)}...` : value);
+    return {
+      title: recipe.controlStory[0],
+      caption: `Offline rehearsal classifies synthetic records: ${output.summary.passed} pass, ${output.summary.blocked} blocked. Live status: ${feature.demo.liveStatus}.`,
+      scene: () => `${header("SYNTHETIC RECORDS")}
+        ${output.results.slice(0, 3).map((result, index) => {
+          const y = 100 + index * 52;
+          const pass = result.decision === "pass";
+          return `${rect(72, y, 456, 42, "surface-soft", 10, pass ? "success" : "danger")}${stamp(pass ? "check" : "alert", 86, y + 8, 26)}${text(124, y + 29, clip(result.id), 20, "text", 600)}${text(380, y + 29, pass ? "PASS" : "BLOCKED", 18, "text-soft", 600)}`;
+        }).join("")}
+        ${rect(72, 258, 456, 20, "accent-soft", 8, "accent")}${text(84, 273, clip(recipe.controlStory[2]), 15, "text", 600)}`,
+    };
+  };
   const scenes = {
     "computer-use": {
       title: "Work with the app, not around it",
@@ -72,6 +88,7 @@ export function featureVisual(feature, icons) {
         ${rect(72, 210, 456, 52, "accent-soft", 10, "accent")}${stamp("diff", 90, 222)}${text(132, 245, "Human reviews the diff", 24, "text", 600)}`,
     },
   };
+  if (!Object.hasOwn(scenes, feature.id) && feature.demo?.recipe) scenes[feature.id] = recipeScene(feature.demo.recipe);
   const visual = scenes[feature.id];
   if (!visual) throw new Error(`Add a feature illustration for ${feature.id}`);
   return {

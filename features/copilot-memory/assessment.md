@@ -57,7 +57,7 @@ Assumptions:
 - [Two-slide feature brief](../../artifacts/slides/copilot-memory.pptx)
 - Kit status: kit-tested. Live feature validation: not-run.
 - Expected outcome: A cited, repository-scoped synthetic convention and a generated ticket ID of demo-ticket in a later session.
-- Separate remote cleanup: With the repository owner's authorization, delete only this demo fact in repository Settings > Copilot > Memory. Never clear all memories.
+- Separate remote cleanup: With the repository owner's authorization, delete only this demo fact in repository Settings &gt; Copilot &gt; Memory. Never clear all memories.
 
 ## Known limitations
 

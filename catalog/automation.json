@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "enabled": false,
+  "publicationEnabled": false,
+  "billingApproved": false,
+  "maxItemsPerRun": null,
+  "maxResearchDocuments": null,
+  "maxTurns": null,
+  "timeoutMinutes": null,
+  "reassessDays": 7,
+  "include": "New enterprise-relevant capabilities and material lifecycle, governance, data, audit, billing, or retirement changes.",
+  "exclude": "Routine model availability and version-only releases without a material effect on an existing feature.",
+  "requiredChecks": ["quality", "workflow-source"],
+  "compilerVersion": "v0.92.0"
+}

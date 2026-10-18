@@ -28,7 +28,7 @@ const sampleAccounts = [
 ];
 
 const resultFor = (feature) => verdict(feature, data.rubric, new Date(), data.sources);
-const date = (value) => new Date(value.length === 10 ? `${value}T12:00:00Z` : value).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const date = (value) => value ? new Date(value.length === 10 ? `${value}T12:00:00Z` : value).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "not human verified";
 const money = (value) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(value);
 const sourceLinks = (ids) => `<div class="source-links">${[...new Set(ids)].map((id) => `<a href="${html(data.sources[id].url)}" target="_blank" rel="noopener noreferrer">${html(data.sources[id].title)} &nearr;</a>`).join("")}</div>`;
 const lifecycleBadge = (feature) => `<span class="badge ${feature.lifecycle.status === "experimental" ? "badge-experimental" : "badge-preview"}">${html(lifecycleLabels[feature.lifecycle.status])}</span>`;
@@ -225,7 +225,7 @@ function demoContent(feature) {
 }
 
 function sourcesContent(feature) {
-  return `<div class="notice"><p>Verified facts cite primary GitHub sources. Recommendations, tenant validation, and cost assumptions are separate. Lifecycle evidence is reviewed as of ${date(feature.verifiedOn)}, not guaranteed forever.</p></div>
+  return `<div class="notice"><p>${feature.provenance?.kind === "automated" ? `Automatically assessed ${html(date(feature.provenance.assessedOn))}; not human verified. Lifecycle is an unverified signal and required evidence remains on hold.` : `Verified facts cite primary GitHub sources. Recommendations, tenant validation, and cost assumptions are separate. Lifecycle evidence is reviewed as of ${date(feature.verifiedOn)}, not guaranteed forever.`}${feature.automatedReview ? ` Automated reassessment ${html(date(feature.automatedReview.assessedOn))}: ${html(feature.automatedReview.reason)} Human verification dates are unchanged.` : ""}</p></div>
     ${featureSourceIds(feature).map((id) => {
       const source = data.sources[id];
       const state = freshness(source.verifiedOn, data.rubric.reviewWindowDays);
@@ -268,7 +268,7 @@ function renderWorkshop() {
 
 function renderLab() {
   const feature = data.features.find((entry) => entry.id === labFeature);
-  const scenario = rehearsalScenario(labFeature);
+  const scenario = rehearsalScenario(labFeature, data.features.find((feature) => feature.id === labFeature));
   $("#demo-chooser").innerHTML = data.features.map((entry) => `<button class="demo-choice ${entry.id === labFeature ? "active" : ""}" data-lab="${entry.id}" aria-pressed="${entry.id === labFeature}"><span>${icon(entry.icon)}</span><span><strong>${html(entry.name)}</strong><small>${entry.demo.minutes}-min live runbook</small></span></button>`).join("");
   const label = labStopped ? "Rehearsal stopped; no external action occurred." : [
     "Inspect the synthetic context before deciding what to permit.",

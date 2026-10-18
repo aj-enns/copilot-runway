@@ -13,7 +13,23 @@ export const verdictLabels = {
   ready: "Pilot gates satisfied",
 };
 
+export function isAutomated(feature) {
+  return feature?.provenance?.kind === "automated";
+}
+
+export function reviewLabel(feature) {
+  if (feature.verifiedOn) return `Reviewed ${feature.verifiedOn}`;
+  return feature.provenance?.assessedOn ? `Not human verified (assessed ${feature.provenance.assessedOn})` : "Not human verified";
+}
+
+export function evaluationDate(feature) {
+  const day = feature.verifiedOn ?? feature.provenance?.assessedOn;
+  if (typeof day !== "string") throw new Error(`${feature.id}: no verification or assessment date`);
+  return new Date(`${day}T12:00:00Z`);
+}
+
 export function freshness(verifiedOn, windowDays, now = new Date()) {
+  if (verifiedOn === null || verifiedOn === undefined) return { age: null, stale: true };
   const age = Math.floor((now.valueOf() - new Date(`${verifiedOn}T00:00:00Z`).valueOf()) / 86_400_000);
   return { age, stale: !Number.isFinite(age) || age < 0 || age > windowDays };
 }
@@ -37,7 +53,7 @@ export function verdict(feature, rubric, now = new Date(), sources = {}) {
   const statuses = rubric.gates.filter((gate) => gate.required).map((gate) =>
     feature.readiness.find((assessment) => assessment.gate === gate.id)?.status ?? "unknown");
   const stale = evidenceIsStale(feature, rubric, sources, now);
-  if (stale || statuses.some((status) => status === "fail" || status === "unknown")) return "blocked";
+  if (stale || feature.automatedReview !== undefined || isAutomated(feature) || statuses.some((status) => status === "fail" || status === "unknown")) return "blocked";
   if (statuses.some((status) => status === "conditional")) return "conditional";
   return "ready";
 }
@@ -139,7 +155,106 @@ export function policyExport(rubric, workshop) {
   };
 }
 
-export function rehearsalScenario(id) {
+
+export const recipeOperation = "classify-required-booleans";
+const plainText = /^[A-Za-z0-9][A-Za-z0-9 .,:;'"()\/+%#=?-]*$/;
+
+function exactKeys(value, keys, label) {
+  const prototype = value && typeof value === "object" ? Object.getPrototypeOf(value) : undefined;
+  if (!value || Array.isArray(value) || (prototype !== Object.prototype && prototype !== null) ||
+    Object.keys(value).sort().join() !== [...keys].sort().join()) throw new Error(`Recipe ${label} must contain exactly: ${keys.join(", ")}`);
+}
+
+function safeText(value, max, label) {
+  if (typeof value !== "string" || value.length > max || !plainText.test(value) || value !== value.trim()) {
+    throw new Error(`Recipe ${label} must be plain text of at most ${max} characters`);
+  }
+}
+
+function canonical(value) {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  if (value && typeof value === "object") return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`).join(",")}}`;
+  return JSON.stringify(value);
+}
+
+export const sameRecipeOutput = (a, b) => canonical(a) === canonical(b);
+
+export function parseRecipeInput(text) {
+  let input;
+  try {
+    input = JSON.parse(text);
+  } catch {
+    throw new Error("Recipe input.json is not valid JSON");
+  }
+  exactKeys(input, ["operation", "requiredFields", "records"], "input");
+  if (input.operation !== recipeOperation) throw new Error(`Unsupported recipe operation; only ${recipeOperation} is supported`);
+  const fields = input.requiredFields;
+  if (!Array.isArray(fields) || fields.length < 1 || fields.length > 5 || new Set(fields).size !== fields.length ||
+    fields.some((field) => typeof field !== "string" || !/^[a-z][A-Za-z0-9]{0,30}$/.test(field))) {
+    throw new Error("Recipe requiredFields must be 1-5 unique camelCase names");
+  }
+  if (!Array.isArray(input.records) || input.records.length < 1 || input.records.length > 10) throw new Error("Recipe records must contain 1-10 items");
+  for (const record of input.records) {
+    exactKeys(record, ["id", ...fields], "record");
+    if (typeof record.id !== "string" || !/^[a-z0-9][a-z0-9-]{0,39}$/.test(record.id) || fields.some((field) => typeof record[field] !== "boolean")) {
+      throw new Error("Recipe records need a lowercase id and boolean required fields");
+    }
+  }
+  if (new Set(input.records.map((record) => record.id)).size !== input.records.length) throw new Error("Recipe record IDs must be unique");
+  return input;
+}
+
+function classify(input) {
+  const results = input.records.map((record) => {
+    const missing = input.requiredFields.filter((field) => record[field] !== true);
+    return { id: record.id, decision: missing.length ? "blocked" : "pass", missing };
+  });
+  const blocked = results.filter((result) => result.decision === "blocked").length;
+  return {
+    schemaVersion: 1, operation: recipeOperation, classification: "synthetic",
+    summary: { total: results.length, passed: results.length - blocked, blocked }, results,
+  };
+}
+
+export function validateRecipe(recipe) {
+  exactKeys(recipe, ["schemaVersion", "files", "output", "expected", "steps", "controlStory"], "recipe");
+  if (recipe.schemaVersion !== 1) throw new Error("Unsupported recipe schemaVersion");
+  exactKeys(recipe.files, ["input.json"], "files");
+  if (typeof recipe.files["input.json"] !== "string" || recipe.files["input.json"].length > 4096) throw new Error("Recipe input.json must be a string of at most 4096 characters");
+  if (typeof recipe.output !== "string" || !/^[a-z][a-z0-9-]{0,39}\.json$/.test(recipe.output) || recipe.output.startsWith("offline-")) {
+    throw new Error("Recipe output must be a simple lowercase .json name");
+  }
+  const computed = classify(parseRecipeInput(recipe.files["input.json"]));
+  if (!sameRecipeOutput(recipe.expected, computed)) throw new Error("Recipe expected output does not match the deterministic operation result");
+  if (!Array.isArray(recipe.steps) || recipe.steps.length < 1 || recipe.steps.length > 6) throw new Error("Recipe steps must contain 1-6 items");
+  recipe.steps.forEach((step, index) => {
+    exactKeys(step, ["title", "detail"], `step ${index + 1}`);
+    safeText(step.title, 60, `step ${index + 1} title`);
+    safeText(step.detail, 240, `step ${index + 1} detail`);
+  });
+  if (!Array.isArray(recipe.controlStory) || recipe.controlStory.length !== 3) throw new Error("Recipe controlStory must contain exactly three items");
+  recipe.controlStory.forEach((item, index) => safeText(item, 60, `controlStory ${index + 1}`));
+  return recipe;
+}
+
+export function runRecipe(recipe) {
+  return classify(parseRecipeInput(validateRecipe(recipe).files["input.json"]));
+}
+
+function recipeScenario(feature) {
+  const recipe = validateRecipe(feature.demo.recipe);
+  const input = parseRecipeInput(recipe.files["input.json"]);
+  const output = runRecipe(recipe);
+  const mark = (value) => (value ? "yes" : "NO");
+  return {
+    title: feature.demo.title,
+    before: input.records.map((record) => `${record.id}  ${input.requiredFields.map((field) => `${field} ${mark(record[field])}`).join(" | ")}`).join("\n"),
+    after: `${output.results.map((result) => `${result.id}  ${result.decision}${result.missing.length ? `: missing ${result.missing.join(", ")}` : ""}`).join("\n")}\nOffline rehearsal; live status: not-run`,
+    review: "Review each synthetic classification before accepting the result.",
+    proof: "The classification is computed locally from synthetic data. No Copilot run, remote service, or live feature check occurred.",
+  };
+}
+export function rehearsalScenario(id, feature) {
   const scenarios = {
     "computer-use": {
       title: "Synthetic service desk",
@@ -184,6 +299,10 @@ export function rehearsalScenario(id) {
       proof: "The expected repair is illustrated. No model or actual test runner was invoked by this page.",
     },
   };
+  if (!Object.hasOwn(scenarios, id) && feature?.id === id && feature.demo?.recipe) return recipeScenario(feature);
   if (!Object.hasOwn(scenarios, id)) throw new Error(`No rehearsal scenario for ${id}`);
   return scenarios[id];
 }
+
+export const validateDemoRecipe = validateRecipe;
+export const recipeResult = runRecipe;

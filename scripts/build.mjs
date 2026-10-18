@@ -4,6 +4,7 @@ import octicons from "@primer/octicons";
 import { fromRoot, loadCatalog, readJson, write } from "./lib.mjs";
 import { validateCatalog, validateFiles } from "./validate.mjs";
 import { featureVisual } from "../site/feature-visuals.mjs";
+import { assertRecipeFeature, recipeRunbook } from "../demos/recipes.mjs";
 
 const data = await loadCatalog();
 validateCatalog(data, await readJson(fromRoot("catalog", "watch.json")));
@@ -22,6 +23,10 @@ for (const name of new Set(iconNames)) {
 }
 for (const feature of data.features) {
   feature.demo.runbookText = await readFile(fromRoot(feature.demo.runbook), "utf8");
+  if (feature.demo.recipe) {
+    assertRecipeFeature(feature);
+    if (feature.demo.runbookText !== recipeRunbook(feature, data.sources)) throw new Error(`${feature.id}: generated runbook is stale; run npm run artifacts`);
+  }
 }
 const [template, styles, model, app] = await Promise.all([
   readFile(fromRoot("site", "index.html"), "utf8"),

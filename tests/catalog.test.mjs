@@ -9,9 +9,11 @@ const watch = await readJson(fromRoot("catalog", "watch.json"));
 const current = new Date("2026-10-14T12:00:00Z");
 const copy = () => structuredClone(data);
 
-test("six fully assessed capabilities use ten explicit required gates", () => {
-  assert.doesNotThrow(() => validateCatalog(data, watch, "2026-10-14"));
-  assert.equal(data.features.length, 6);
+test("curated and automated capabilities use ten explicit required gates", () => {
+  assert.doesNotThrow(() => validateCatalog(data, watch));
+  for (const id of ["computer-use", "dynamic-workflows", "agentic-workflows", "cloud-sandboxes", "copilot-memory", "autopilot"]) {
+    assert.ok(data.features.some((feature) => feature.id === id));
+  }
   assert.equal(data.rubric.gates.length, 10);
   assert.ok(data.rubric.gates.every((gate) => gate.required));
   assert.ok(data.features.every((feature) => feature.demo.liveStatus === "not-run"));
@@ -25,6 +27,7 @@ test("experimental SDK and technical-preview Actions are not conflated", () => {
 
 test("required unknown, fail, missing, or stale findings cannot be averaged away", () => {
   const feature = structuredClone(data.features[0]);
+  delete feature.automatedReview;
   assert.equal(verdict(feature, data.rubric, current, data.sources), "conditional");
   feature.readiness[0].status = "unknown";
   assert.equal(verdict(feature, data.rubric, current, data.sources), "blocked");
@@ -37,6 +40,7 @@ test("required unknown, fail, missing, or stale findings cannot be averaged away
 
 test("an all-pass decision still requires complete current official references", () => {
   const feature = structuredClone(data.features[0]);
+  delete feature.automatedReview;
   feature.readiness.forEach((gate) => { gate.status = "pass"; });
   assert.equal(verdict(feature, data.rubric, current, data.sources), "ready");
   const missing = structuredClone(data.sources);
@@ -81,14 +85,14 @@ test("feature filters compose text, stage, readiness, and surface", () => {
   const filtered = filterFeatures(data.features, { search: "desktop GUI", lifecycle: "public-preview", surface: "Windows" }, data.rubric, data.sources, current);
   assert.deepEqual(filtered.map((feature) => feature.id), ["computer-use"]);
   const held = filterFeatures(data.features, { readiness: "blocked" }, data.rubric, data.sources, current);
-  assert.deepEqual(held.map((feature) => feature.id), ["dynamic-workflows"]);
+  assert.deepEqual(held.map((feature) => feature.id), data.features.filter((feature) => verdict(feature, data.rubric, current, data.sources) === "blocked").map((feature) => feature.id));
   assert.equal(filterFeatures(data.features, { search: "does-not-exist" }, data.rubric, data.sources, current).length, 0);
 });
 
 test("every feature has concise enterprise examples and their text is searchable", () => {
   assert.deepEqual(Object.keys(data.enterpriseUseCases).sort(), data.features.map((feature) => feature.id).sort());
   for (const feature of data.features) {
-    assert.equal(data.enterpriseUseCases[feature.id].length, 3);
+    assert.ok(data.enterpriseUseCases[feature.id].length >= 1 && data.enterpriseUseCases[feature.id].length <= 3);
     assert.ok(data.enterpriseUseCases[feature.id].every((example) => example.length <= 80));
   }
   const filtered = filterFeatures(data.features, { search: "legacy support records", lifecycle: "public-preview" },

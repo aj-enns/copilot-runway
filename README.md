@@ -9,7 +9,7 @@
 
 Copilot Runway helps Cloud Solution Architects prepare customer conversations about **GitHub Copilot preview features**. It brings enterprise use cases, controls, official evidence, value and cost, and demo guidance together.
 
-**Current kit:** 6 assessed capabilities | 10 required readiness gates | 6 demo kits | 12 sourced slides | a separate reviewed GA history.
+**Curated baseline:** 6 assessed capabilities | 10 required readiness gates | 6 demo kits | 12 sourced slides | a separate reviewed GA history. Configured automation can add explicitly unverified kits; the app shows current totals.
 
 ![Copilot Runway flight deck with feature search, lifecycle badges, enterprise use cases, readiness findings, and demo actions](docs/images/flight-deck.png)
 
@@ -101,7 +101,7 @@ The Pages workshop exports locally proposed requirements as JSON. Changing repos
 
 ## Value, cost, and official branding
 
-[Download the 12-slide architect brief](artifacts/slides/copilot-runway.pptx) or a feature's two-slide deck. Briefs cover value, controls, readiness, cost assumptions, and demo steps, with linked sources and notes.
+[Download the combined architect brief](artifacts/slides/copilot-runway.pptx) or a feature's two-slide deck. Briefs cover value, controls, readiness, cost assumptions, and demo steps, with linked sources and notes.
 
 Enterprise Copilot usage is measured in **AI credits**; do not use legacy premium-request assumptions as current pricing. Cloud sandbox compute, memory, and snapshot storage are separate meters. Cost lab estimates are illustrative and exclude seats, Actions, taxes, and other services.
 
@@ -159,13 +159,17 @@ After changing feature, rubric, or referenced-source content, run `npm run artif
 | --- | --- | --- |
 | `preview-discovery.yml` | Daily 09:17 UTC + manual | Fetches official Copilot RSS and CLI/gh-aw releases, preserves a bounded snapshot, and updates one deduplicated bot-owned issue digest. No model required. |
 | `pages.yml` | Main push, daily 09:47 UTC, manual | Validates reviewed content, refreshes candidate-only Radar, builds, browser-tests, and deploys Pages. Failed ingestion or browser checks stop publication and do not replace the last deployed site. |
-| `preview-scout.md` + `.lock.yml` | Weekly Monday + manual, **opt-in** | Proposes one concise candidate-review PR. Human review is required; it cannot admit a feature, promote readiness, merge, or deploy. |
+| `preview-scout.md` + `.lock.yml` | Daily + manual, **opt-in** | Researches major official signals and weekly evidence reviews; proposes data only. |
+| `feature-producer.yml` | After successful scout, **opt-in** | Validates grounded research and generates/tests complete data-only feature kits. |
+| `feature-release.yml` | After successful release-PR CI, **opt-in** | Uses a restricted App to merge only exact validated content; main-push Pages publishes it. |
 | `ci.yml` | Main push + PR + manual | Checks data, tests, artifact evidence, browser behavior, and matching compiled workflow source. |
 | Dependabot | Weekly | Proposes npm and Actions pin updates for review. Compiler upgrades need explicit source/lock review. |
 
 `catalog/watch.json` is the official watchlist. `npm run sources:scan -- --update` refreshes only `catalog/monitor.json`. Fetches and redirects are host-allowlisted and size/time bounded; content is inert data and failures are explicit. RSS is not complete history. Signals cover GA, retirement, policy, billing, releases, and previews.
 
 **This repository does not configure Agentic authentication.** An administrator must approve the engine and budget, securely configure `COPILOT_GITHUB_TOKEN`, and set `RUNWAY_AGENTIC_ENABLED=true`. Until then, only deterministic discovery and Pages run. Never put tokens in source, screenshots, logs, or command history. See [automation setup](docs/automation.md).
+
+For continuous Flight deck updates, follow [feature automation](docs/feature-automation.md). Research, generation, and publication have separate opt-ins. Complete machine-assessed kits can publish with **Hold for evidence**, but never claim human verification or live validation. Unsupported demos and incomplete evidence output stay pending; no agent can change executable infrastructure or readiness policy.
 
 ## Repository map
 

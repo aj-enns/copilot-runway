@@ -8,3 +8,8 @@ playwright-report/
 .env.*
 *.log
 catalog/.candidate-scan.json
+.automation-test-*/
+release-input/
+release-output/
+release-attestation/
+catalog/proposals/.research.json
