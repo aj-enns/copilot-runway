@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "39161292725",
+  "baseSha": "407b351ca896e9404c72fe3f3819fbe5f8230f8b",
+  "decisions": [
+    {
+      "id": "agentic-workflows",
+      "outcome": "review",
+      "reason": "Weekly reassessment of GitHub Agentic Workflows (Actions). Sources still describe a technical preview; no stage change found. Separate from the experimental session-SDK Dynamic Workflows. Conservative automated review only; human dates and findings are unchanged.",
+      "citations": [
+        {
+          "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+          "sha256": "f18f2b589ff15a4405cf8dfc4a2aabaef9cb78a5c860eec3929060d59891769e",
+          "quote": "The feature is available in technical preview through the gh aw CLI extension."
+        },
+        {
+          "url": "https://github.github.io/gh-aw/setup/quick-start/",
+          "sha256": "f81341188074323989acf3d9469d559e7d083094a7706e50395df7121e05e990",
+          "quote": "This path requires an organization Copilot subscription with centralized billing."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "The announcement (2026-02-13) names a technical preview. Current stage, account eligibility, and a tested client are not confirmed.",
+          "next": "Recheck the current stage and eligibility with a named pilot cohort."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No fetched evidence shows an enterprise policy that disables or restricts the capability.",
+          "next": "Test an enforceable Actions policy with a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "The quick start describes PAT and organization-billing authentication paths. Scopes and revocation were not validated.",
+          "next": "Document approved scopes, credential owner, and revocation."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Retention, residency, and engine data terms were not found in the fetched evidence.",
+          "next": "Complete a data-flow review using synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "Safe outputs are documented, but approval and prompt-injection behavior were not tested here.",
+          "next": "Run an untrusted-instruction test and confirm a human review boundary."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No sample trace or log-retention evidence was reviewed.",
+          "next": "Reconstruct a synthetic run from Actions logs and identify gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Actions and inference costs are not metered. Billing evidence was not tied to a representative run.",
+          "next": "Measure a rehearsal and confirm the effective spending policy."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Allowlist behavior was not validated on the target execution surface.",
+          "next": "Validate allowed paths and a denied destination."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Preview support, versioning, and incident ownership are not accepted or verified.",
+          "next": "Record preview risk acceptance, version inventory, and an owner."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Cleanup of produced PRs, runs, and logs was not rehearsed.",
+          "next": "Rehearse a scoped stop and account for remote state separately."
+        }
+      ]
+    }
+  ]
+}
