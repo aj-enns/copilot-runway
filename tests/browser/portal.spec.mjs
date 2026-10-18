@@ -8,6 +8,35 @@ import { verdict } from "../../site/model.mjs";
 const site = resolve(fileURLToPath(new URL("../../", import.meta.url)), "dist", "index.html");
 const catalog = JSON.parse(await readFile(new URL("../../catalog/features.json", import.meta.url), "utf8"));
 
+test("site update dates distinguish build time, automated assessment and human evidence", async ({ page }) => {
+  await page.goto("/");
+  const payload = JSON.parse(await page.locator("#runway-data").textContent());
+  const update = page.locator("#site-update");
+  await expect(update).toContainText("Site built");
+  await expect(update).toContainText("UTC");
+  await expect(update.locator("time").first()).toHaveAttribute("datetime", payload.siteUpdate.builtAt);
+  await expect(page.locator(".topbar-date time")).toHaveAttribute("datetime", payload.updatedOn);
+  const assessmentDates = payload.features.flatMap((feature) =>
+    [feature.provenance?.assessedOn, feature.automatedReview?.assessedOn]).filter(Boolean).sort();
+  expect(payload.siteUpdate.latestAutomatedAssessmentOn).toBe(assessmentDates.at(-1) ?? null);
+  await expect(update).toContainText("do not renew human evidence verification");
+  if (!assessmentDates.length) await expect(update).toContainText("Latest automated assessment: not recorded");
+  await page.setViewportSize({ width: 320, height: 960 });
+  await expect(update).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+  let document = await readFile(site, "utf8");
+  const match = document.match(/<script type="application\/json" id="runway-data">([\s\S]*?)<\/script>/);
+  const fixture = JSON.parse(match[1]);
+  fixture.siteUpdate = { builtAt: "2026-10-18T22:05:17.000Z", latestAutomatedAssessmentOn: "2026-10-18" };
+  document = document.replace(match[1], () => JSON.stringify(fixture).replace(/</g, "\\u003c"));
+  await page.route(new URL("/", test.info().project.use.baseURL).href, (route) => route.fulfill({ contentType: "text/html", body: document }));
+  await page.goto("/");
+  await expect(update).toContainText("18 Oct 2026, 22:05:17 UTC");
+  await expect(update).toContainText("Latest automated assessment: 18 Oct 2026");
+  await expect(page.locator(".topbar-date time")).toHaveAttribute("datetime", payload.updatedOn);
+});
+
 test("an unknown recipe feature supports details, downloads, rehearsal and recording without product claims", async ({ page }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));

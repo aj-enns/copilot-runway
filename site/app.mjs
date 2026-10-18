@@ -138,6 +138,12 @@ function renderMetrics() {
   $(".nav-count").textContent = String(data.features.length).padStart(2, "0");
   $("#coverage-note").textContent = data.scope;
   $(".topbar-date").innerHTML = `Evidence reviewed <time datetime="${html(data.updatedOn)}">${date(data.updatedOn)}</time>`;
+  const builtAt = data.siteUpdate.builtAt;
+  const buildTime = new Date(builtAt).toLocaleString("en-GB", {
+    day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZone: "UTC",
+  });
+  const assessedOn = data.siteUpdate.latestAutomatedAssessmentOn;
+  $("#site-update").innerHTML = `Site built <time datetime="${html(builtAt)}">${html(buildTime)} UTC</time><br>Latest automated assessment: ${assessedOn ? `<time datetime="${html(assessedOn)}">${date(assessedOn)}</time>` : "not recorded"}<br>Build and automated assessment dates do not renew human evidence verification.`;
 }
 
 function renderHeroKit() {

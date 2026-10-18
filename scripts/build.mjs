@@ -9,6 +9,12 @@ import { assertRecipeFeature, recipeRunbook } from "../demos/recipes.mjs";
 const data = await loadCatalog();
 validateCatalog(data, await readJson(fromRoot("catalog", "watch.json")));
 await validateFiles(data, true);
+const assessmentDates = data.features.flatMap((feature) =>
+  [feature.provenance?.assessedOn, feature.automatedReview?.assessedOn]).filter(Boolean).sort();
+data.siteUpdate = {
+  builtAt: new Date().toISOString(),
+  latestAutomatedAssessmentOn: assessmentDates.at(-1) ?? null,
+};
 const iconNames = [
   "copilot", "mark-github", "apps", "shield-lock", "play", "meter", "broadcast",
   "verified", "plus", "sun", "moon", "search", "info", "alert", "download",
