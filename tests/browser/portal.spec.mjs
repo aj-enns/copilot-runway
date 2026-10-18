@@ -151,6 +151,9 @@ test("brand color accents remain visible and readable in both themes", async ({ 
 
 test("start links, home navigation, Radar shortcuts, and shared downloads work", async ({ page }) => {
   await page.goto("/?clawpilotTheme=light");
+  await expect(page.locator(".repo-identity a")).toHaveText("aj-enns/copilot-runway");
+  await expect(page.locator(".repo-identity a")).toHaveAttribute("href",
+    "https://github.com/aj-enns/copilot-runway");
   await page.getByRole("button", { name: "Start with Computer Use", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Computer Use", exact: true });
   await expect(dialog.getByRole("tab", { name: "Demo", exact: true })).toHaveAttribute("aria-selected", "true");
@@ -165,9 +168,9 @@ test("start links, home navigation, Radar shortcuts, and shared downloads work",
     expect((await downloaded).suggestedFilename()).toBe(filename);
   }
   await expect(page.getByRole("link", { name: "Suggest a feature" })).toHaveAttribute("href",
-    "https://github.com/hammadorg93/copilot-runway/issues/new?template=feature-request.yml");
+    "https://github.com/aj-enns/copilot-runway/issues/new?template=feature-request.yml");
   await expect(page.getByRole("link", { name: /Open repository/ })).toHaveAttribute("href",
-    "https://github.com/hammadorg93/copilot-runway");
+    "https://github.com/aj-enns/copilot-runway");
   await page.getByRole("button", { name: /See what's on radar/ }).click();
   await expect(page.locator("#view-radar")).toBeVisible();
   await page.getByRole("link", { name: "Copilot Runway home" }).click();
@@ -231,7 +234,7 @@ for (const feature of catalog.features) {
     await expect(dialog).not.toBeVisible();
     await expect(page.locator("#view-readiness")).toBeVisible();
     await expect(page.getByRole("link", { name: "Propose a policy change" })).toHaveAttribute("href",
-      "https://github.com/hammadorg93/copilot-runway/edit/main/readiness/gates.json");
+      "https://github.com/aj-enns/copilot-runway/edit/main/readiness/gates.json");
     await page.locator(".nav-button[data-view=catalog]").click();
     await card.getByRole("button", { name: "Demo", exact: true }).click();
     await expect(dialog.getByRole("tab", { name: "Demo", exact: true })).toHaveAttribute("aria-selected", "true");

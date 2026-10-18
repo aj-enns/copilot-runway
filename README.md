@@ -2,10 +2,10 @@
 
 **Evaluate. Explain. Demo.**
 
-[![Publish Runway Pages](https://github.com/hammadorg93/copilot-runway/actions/workflows/pages.yml/badge.svg)](https://github.com/hammadorg93/copilot-runway/actions/workflows/pages.yml)
-[![Runway quality](https://github.com/hammadorg93/copilot-runway/actions/workflows/ci.yml/badge.svg)](https://github.com/hammadorg93/copilot-runway/actions/workflows/ci.yml)
+[![Publish Runway Pages](https://github.com/aj-enns/copilot-runway/actions/workflows/pages.yml/badge.svg)](https://github.com/aj-enns/copilot-runway/actions/workflows/pages.yml)
+[![Runway quality](https://github.com/aj-enns/copilot-runway/actions/workflows/ci.yml/badge.svg)](https://github.com/aj-enns/copilot-runway/actions/workflows/ci.yml)
 
-**[Open the public app](https://hammadorg93.github.io/copilot-runway/)** | **[Browse Recently GA](https://hammadorg93.github.io/copilot-runway/#view=ga)** | **[Presenter runbooks](demos/README.md)** | **[Enterprise policy](readiness/README.md)**
+**[Open the public app](https://aj-enns.github.io/copilot-runway/)** | **[Browse Recently GA](https://aj-enns.github.io/copilot-runway/#view=ga)** | **[Presenter runbooks](demos/README.md)** | **[Enterprise policy](readiness/README.md)**
 
 Copilot Runway is an independent workspace for Cloud Solution Architects preparing customer conversations about **GitHub Copilot preview features**. It connects the potential enterprise use, required controls, official-source evidence, value/cost story, and a repeatable demo in one place.
 
@@ -37,11 +37,11 @@ Press `/` to focus capability search. Release-stage filters and result counts re
 
 ## New front-end concepts: account context and demo video studio
 
-**[Pull your account context](https://hammadorg93.github.io/copilot-runway/#view=context)** opens an explicitly unconnected WorkIQ concept. Preview three fictional accounts, inspect scenario-to-feature matches with the current readiness verdict, choose a 7/30/90-day handoff window, and copy a read-only prompt for your **own approved private Copilot + WorkIQ session**. The page does not sign in, launch Copilot, access Microsoft 365, or store account results. GitHub sign-in is not Microsoft 365 authentication; WorkIQ needs appropriate licensing and tenant administrator consent.
+**[Pull your account context](https://aj-enns.github.io/copilot-runway/#view=context)** opens an explicitly unconnected WorkIQ concept. Preview three fictional accounts, inspect scenario-to-feature matches with the current readiness verdict, choose a 7/30/90-day handoff window, and copy a read-only prompt for your **own approved private Copilot + WorkIQ session**. The page does not sign in, launch Copilot, access Microsoft 365, or store account results. GitHub sign-in is not Microsoft 365 authentication; WorkIQ needs appropriate licensing and tenant administrator consent.
 
 ![Fictional account-context preview with WorkIQ connection boundaries and readiness-aware feature matches](docs/images/account-context.png)
 
-**[Demo lab](https://hammadorg93.github.io/copilot-runway/#view=demos)** now shows a feature concept image and four illustrated **prepare / run with review / verify / reset** instructions. The video studio can build a 90-second or 3-minute storyboard and download a recording brief containing presenter instructions, evidence, cleanup, and recording safeguards. **Generate video** is visibly disabled and labeled backend planned; no recorder, model, Computer Use session, or Actions job is triggered.
+**[Demo lab](https://aj-enns.github.io/copilot-runway/#view=demos)** now shows a feature concept image and four illustrated **prepare / run with review / verify / reset** instructions. The video studio can build a 90-second or 3-minute storyboard and download a recording brief containing presenter instructions, evidence, cleanup, and recording safeguards. **Generate video** is visibly disabled and labeled backend planned; no recorder, model, Computer Use session, or Actions job is triggered.
 
 ![Illustrated demo instructions and the offline recording planner with video generation clearly marked as unconnected](docs/images/demo-studio.png)
 
@@ -83,7 +83,7 @@ Every feature card and Overview includes three short **potential enterprise uses
 | Copilot Memory | Retain repository architecture conventions |
 | Autopilot Mode | Repair failures against acceptance tests |
 
-**[Recently GA](https://hammadorg93.github.io/copilot-runway/#view=ga)** defaults to announcements from the last 90 days, with 30-day/all-history and feature/model filters. The initial reviewed history includes local sandboxing (2026-10-07), Claude Haiku 5.5 model availability (2026-10-07), and Gemini 4 Argon model availability (2026-10-13). Local sandboxing's GA announcement does **not** graduate hosted Cloud Sandboxes.
+**[Recently GA](https://aj-enns.github.io/copilot-runway/#view=ga)** defaults to announcements from the last 90 days, with 30-day/all-history and feature/model filters. The initial reviewed history includes local sandboxing (2026-10-07), Claude Haiku 5.5 model availability (2026-10-07), and Gemini 4 Argon model availability (2026-10-13). Local sandboxing's GA announcement does **not** graduate hosted Cloud Sandboxes.
 
 ![Recently GA view with reviewed announcement dates, feature versus model filters, official sources, and enterprise-readiness caveats](docs/images/recently-ga.png)
 

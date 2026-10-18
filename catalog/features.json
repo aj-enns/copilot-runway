@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updatedOn": "2026-10-14",
-  "repository": "hammadorg93/copilot-runway",
+  "repository": "aj-enns/copilot-runway",
   "scope": "Six priority capabilities for architects. This is a curated starting catalog, not an exhaustive inventory of every Copilot preview. Discovery candidates require review before admission.",
   "enterpriseUseCases": {
     "computer-use": [

@@ -2,7 +2,7 @@
 
 ## GitHub Pages
 
-Pages is configured for **GitHub Actions** at https://hammadorg93.github.io/copilot-runway/. The site and source repository are deliberately **public**, with no GitHub sign-in required to view the portal. The `pages.yml` workflow publishes only generated `dist` content. It does not upload `.git`, dependencies, credentials, session logs, or demo workspaces.
+Pages is configured for **GitHub Actions** at https://aj-enns.github.io/copilot-runway/. The site and source repository are deliberately **public**, with no GitHub sign-in required to view the portal. The `pages.yml` workflow publishes only generated `dist` content. It does not upload `.git`, dependencies, credentials, session logs, or demo workspaces.
 
 The [Pages pipeline](../.github/workflows/pages.yml) runs on pushes to `main`, a daily schedule, and manual dispatch. Its build job validates evidence and artifacts, runs unit tests, refreshes official-source signals, builds the portal, and runs the Playwright browser suite before uploading a Pages artifact. The separate deployment job requires that build to succeed and uses GitHub's `deploy-pages` action with scoped Pages/OIDC permissions. A failed browser check cannot publish the refreshed UI.
 
