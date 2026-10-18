@@ -26,6 +26,8 @@ Daily ingestion flags Copilot announcements that say GA in the headline or openi
 
 ## Optional agentic interpretation
 
+The scout runs Mondays at 11:21 UTC or on manual dispatch. Its explicit cron keeps compilation stable across local and CI environments; changing the schedule requires regenerating the lock.
+
 `preview-scout.md` is a GitHub Agentic Workflow. Compile it with `gh aw v0.86.2`; update its versioned `.lock.yml` whenever frontmatter changes.
 
 The workflow is **off** unless `RUNWAY_AGENTIC_ENABLED=true`. Setup creates no AI credential or persistent access. Before opting in, review Actions policy, engine data terms, budgets, compiled jobs, network rules, tools, and safe-output scope.

@@ -2,7 +2,8 @@
 name: Runway preview scout
 description: Interpret official Copilot discovery signals and propose a bounded draft review document, never an adopted feature.
 on:
-  schedule: weekly on monday
+  schedule:
+    - cron: "21 11 * * 1"
   workflow_dispatch:
 if: vars.RUNWAY_AGENTIC_ENABLED == 'true'
 permissions:
