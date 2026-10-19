@@ -29,6 +29,24 @@
       "reason": "Weekly reassessment. The pinned CLI README still lists Autopilot under Experimental Features. No lifecycle change is shown. Gates stay unknown; human dates are not renewed.",
       "attemptedOn": "2026-10-19",
       "runId": "39193804483"
+    },
+    "cloud-sandboxes": {
+      "assessedOn": "2026-10-19",
+      "sourceHashes": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25"
+        }
+      ],
+      "revision": "d6937759ed0197c979452b20fe1f179caf8893598b6aae3c4499237491209abd",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The fetched doc still says cloud sandboxes are in public preview and billed by usage. No lifecycle change is shown. The fetch does not cover tenant policy, data, audit, or network controls, so every gate stays unknown. Human dates are not renewed.",
+      "attemptedOn": "2026-10-19",
+      "runId": "39251646199"
     }
   }
 }
