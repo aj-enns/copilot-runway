@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "39251646199",
+  "baseSha": "2cd41160909353b10e2b9bfaf921a53097019274",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The fetched doc still says cloud sandboxes are in public preview and billed by usage. No lifecycle change is shown. The fetch does not cover tenant policy, data, audit, or network controls, so every gate stays unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25",
+          "quote": "Cloud sandboxes for GitHub Copilot are in public preview and subject to change."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "The doc states public preview. Pilot identity, client version, and account eligibility are not shown in the fetched evidence.",
+          "next": "Verify a permitted and an ineligible pilot identity on a supported client."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "The fetched page does not show an enforceable admin policy or a negative enforcement test.",
+          "next": "Test the disabled policy with a pilot identity."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "No identity flow, token scope, or revocation evidence is in the fetched text.",
+          "next": "Document identity flow, scopes, owner, and revocation."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Retention, deletion, and residency for session state are not verified in this run.",
+          "next": "Review data flow, retention, and deletion with synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No approval boundary or prompt-injection test result is in the fetched evidence.",
+          "next": "Run an untrusted-instruction test and confirm a safe stop."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No sample trace or log-access evidence is in the fetched text.",
+          "next": "Reconstruct a synthetic run from available traces."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The doc says cloud sandboxing is billed by usage. Current rates, budget, and observed usage were not verified in this run.",
+          "next": "Check current billing docs and measure a rehearsal."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Endpoint allowlist and egress validation are not shown in the fetched evidence.",
+          "next": "Validate allowed and denied destinations on the target surface."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "The preview is subject to change. Support route, risk acceptance, and incident ownership are not shown.",
+          "next": "Record preview risk acceptance, support route, and owner."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Remote session and snapshot cleanup are not verified in this run.",
+          "next": "Rehearse stop and delete, and verify remote state separately."
+        }
+      ]
+    }
+  ]
+}
