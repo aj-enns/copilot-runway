@@ -1237,6 +1237,80 @@
         "prompt": "Work only in this synthetic demo workspace. Fix discount.mjs so discount(120, 25) is 90, discount(40, 0) is 40, and discount(40, 100) is 0. Reject non-finite or negative prices and percentages outside 0..100. Do not modify discount.test.mjs, install dependencies, access the network, use other directories, or commit/push. Run node --test discount.test.mjs and stop only when all tests pass. If effective policy or required sandboxing blocks a step, stop and explain rather than bypass it.",
         "expected": "The seeded tests fail before the repair and pass afterward, with the original test file unchanged.",
         "remoteCleanup": "No remote state is created by this kit. Stop the session before local reset and return the CLI to the prior mode/settings."
+      },
+      "automatedReview": {
+        "kind": "automated",
+        "assessedOn": "2026-10-19",
+        "runId": "39193804483",
+        "sourceHashes": [
+          {
+            "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+            "sha256": "661149adc3a90aa03d1e48c56def2bde6ae0a88e3f5377e1abb70b3b5b915dda"
+          }
+        ],
+        "reason": "Weekly reassessment. The pinned CLI README still lists Autopilot under Experimental Features. No lifecycle change is shown. Gates stay unknown; human dates are not renewed.",
+        "findings": [
+          {
+            "gate": "eligibility",
+            "status": "unknown",
+            "reason": "README lists Autopilot as experimental. Plan, client version, and tenant eligibility are not shown.",
+            "next": "Confirm eligibility for the target client and plan in official docs."
+          },
+          {
+            "gate": "admin-control",
+            "status": "unknown",
+            "reason": "README does not describe enterprise policy controls for Autopilot.",
+            "next": "Find the official admin control for experimental CLI modes."
+          },
+          {
+            "gate": "identity",
+            "status": "unknown",
+            "reason": "README does not state identity or token scope for autonomous continuation.",
+            "next": "Verify the identity and scopes used during autonomous runs."
+          },
+          {
+            "gate": "data",
+            "status": "unknown",
+            "reason": "README does not state data handling or retention for Autopilot sessions.",
+            "next": "Verify data handling in official CLI documentation."
+          },
+          {
+            "gate": "human-approval",
+            "status": "unknown",
+            "reason": "README says Autopilot continues until done. Approval behavior for tools is not shown in this excerpt.",
+            "next": "Verify permission prompts and unattended-run behavior."
+          },
+          {
+            "gate": "audit",
+            "status": "unknown",
+            "reason": "README does not describe audit records for autonomous actions.",
+            "next": "Find official audit or session-log evidence for CLI activity."
+          },
+          {
+            "gate": "cost",
+            "status": "unknown",
+            "reason": "README billing text is legacy premium-request wording. Current tenant cost and budget caps are unmeasured.",
+            "next": "Measure usage on a synthetic task against current billing docs."
+          },
+          {
+            "gate": "network",
+            "status": "unknown",
+            "reason": "README does not state network or sandbox boundaries for Autopilot.",
+            "next": "Verify sandbox and network enforcement on the target OS."
+          },
+          {
+            "gate": "operations",
+            "status": "unknown",
+            "reason": "Experimental behavior may change between versions. No support or retirement terms are in the evidence.",
+            "next": "Recheck the CLI release notes before each use."
+          },
+          {
+            "gate": "rollback",
+            "status": "unknown",
+            "reason": "No rollback or disable procedure is described in the fetched evidence.",
+            "next": "Document how to stop a run and revert synthetic changes."
+          }
+        ]
       }
     }
   ]
