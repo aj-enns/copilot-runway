@@ -47,6 +47,24 @@
       "reason": "Weekly reassessment. The fetched doc still says cloud sandboxes are in public preview and billed by usage. No lifecycle change is shown. The fetch does not cover tenant policy, data, audit, or network controls, so every gate stays unknown. Human dates are not renewed.",
       "attemptedOn": "2026-10-19",
       "runId": "39251646199"
+    },
+    "computer-use": {
+      "assessedOn": "2026-10-19",
+      "sourceHashes": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "e5d7d0827f8dfdb9525a06f98480e2eec862562b670a698fd18c9ff664a3672a"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "e5d7d0827f8dfdb9525a06f98480e2eec862562b670a698fd18c9ff664a3672a"
+        }
+      ],
+      "revision": "584d303a9ac4053f25be62a4f77f5ba4b9f54866725692a4b924237d229c71bd",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The fetched concept doc still says public preview and managed-settings control. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
+      "attemptedOn": "2026-10-19",
+      "runId": "39294592983"
     }
   }
 }

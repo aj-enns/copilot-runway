@@ -223,6 +223,84 @@
         "prompt": "Use Computer Use to interact with the native text editor containing support-brief.txt. Inspect the document first. Change only 'Status: Draft' to 'Status: Ready for pilot' and 'Next step: Unassigned' to 'Next step: Validate policy in test tenant.' Save only this synthetic document to its existing path. Do not access other apps, send anything, change permissions, or use shell/filesystem tools to perform the edits. Stop if the target app or document is ambiguous.",
         "expected": "Two exact text changes in the synthetic document, visible app/tool activity, and no external side effect.",
         "remoteCleanup": "Disable /computer; review any saved app approvals separately. A local reset cannot revoke permissions in an active session."
+      },
+      "automatedReview": {
+        "kind": "automated",
+        "assessedOn": "2026-10-19",
+        "runId": "39294592983",
+        "sourceHashes": [
+          {
+            "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+            "sha256": "e5d7d0827f8dfdb9525a06f98480e2eec862562b670a698fd18c9ff664a3672a"
+          },
+          {
+            "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+            "sha256": "e5d7d0827f8dfdb9525a06f98480e2eec862562b670a698fd18c9ff664a3672a"
+          }
+        ],
+        "reason": "Weekly reassessment. The fetched concept doc still says public preview and managed-settings control. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
+        "findings": [
+          {
+            "gate": "eligibility",
+            "status": "unknown",
+            "reason": "Doc states public preview on macOS and Windows. No tested client version or eligible pilot identity is evidenced.",
+            "next": "Record the client version and a named pilot cohort."
+          },
+          {
+            "gate": "admin-control",
+            "status": "unknown",
+            "reason": "Doc says managed settings can disable it. No negative enforcement test is evidenced.",
+            "next": "Run a negative test with a disabled test identity."
+          },
+          {
+            "gate": "identity",
+            "status": "unknown",
+            "reason": "Fetched doc covers app approvals, not identity scopes, credential owner, or revocation.",
+            "next": "Document identity flow, scopes, and revocation."
+          },
+          {
+            "gate": "data",
+            "status": "unknown",
+            "reason": "Doc warns windows can expose sensitive data. Retention, deletion, and residency are not evidenced.",
+            "next": "Complete a data-flow review with synthetic data."
+          },
+          {
+            "gate": "human-approval",
+            "status": "unknown",
+            "reason": "Doc describes approval prompts and Esc to stop. No prompt-injection test is evidenced.",
+            "next": "Test an untrusted on-screen instruction."
+          },
+          {
+            "gate": "audit",
+            "status": "unknown",
+            "reason": "Doc says tool activity can be reviewed in the session. Enterprise audit coverage is not evidenced.",
+            "next": "Confirm what audit records a session produces."
+          },
+          {
+            "gate": "cost",
+            "status": "unknown",
+            "reason": "The fetched doc quotes no computer-use pricing or usage limit.",
+            "next": "Measure usage in the pilot tenant."
+          },
+          {
+            "gate": "network",
+            "status": "unknown",
+            "reason": "The fetched doc covers local desktop control, not network or egress controls.",
+            "next": "Review model and endpoint egress for the client."
+          },
+          {
+            "gate": "operations",
+            "status": "unknown",
+            "reason": "Doc warns UI changes can cause wrong or repeated actions. No support or monitoring owner is evidenced.",
+            "next": "Name an owner and failure-handling runbook."
+          },
+          {
+            "gate": "rollback",
+            "status": "unknown",
+            "reason": "Removing an always-allow approval does not revoke an active session. No rollback evidence is fetched.",
+            "next": "Document disable, revoke, and data-recovery steps."
+          }
+        ]
       }
     },
     {
