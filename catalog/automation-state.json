@@ -15,6 +15,20 @@
       "reason": "Weekly reassessment. The 2026-02-13 changelog says technical preview. No newer lifecycle change is in the fetched evidence. Every gate stays unknown; this does not renew human dates.",
       "attemptedOn": "2026-10-18",
       "runId": "39170904897"
+    },
+    "autopilot": {
+      "assessedOn": "2026-10-19",
+      "sourceHashes": [
+        {
+          "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+          "sha256": "661149adc3a90aa03d1e48c56def2bde6ae0a88e3f5377e1abb70b3b5b915dda"
+        }
+      ],
+      "revision": "fabdc93cddc7ff74cbd98af0b10e905176deb7b4a9fdde6e767f631821495072",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The pinned CLI README still lists Autopilot under Experimental Features. No lifecycle change is shown. Gates stay unknown; human dates are not renewed.",
+      "attemptedOn": "2026-10-19",
+      "runId": "39193804483"
     }
   }
 }
