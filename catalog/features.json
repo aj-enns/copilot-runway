@@ -863,6 +863,84 @@
         "prompt": "In this cloud sandbox, create a synthetic sandbox-proof.json containing platform, a note that this is remote execution, and the result of summing [2, 3, 5]. Use no secrets, private repository, network downloads, or external service. Show the environment and the file. Do not stop, delete, or change cloud resources until I explicitly approve cleanup.",
         "expected": "Remote Linux execution, a sum of 10, and an explicitly reviewed active/stopped/snapshot lifecycle.",
         "remoteCleanup": "Stop the exact cloud session and separately review its stored snapshot. The local reset cannot perform cloud cleanup."
+      },
+      "automatedReview": {
+        "kind": "automated",
+        "assessedOn": "2026-10-19",
+        "runId": "39251646199",
+        "sourceHashes": [
+          {
+            "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+            "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25"
+          },
+          {
+            "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+            "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25"
+          }
+        ],
+        "reason": "Weekly reassessment. The fetched doc still says cloud sandboxes are in public preview and billed by usage. No lifecycle change is shown. The fetch does not cover tenant policy, data, audit, or network controls, so every gate stays unknown. Human dates are not renewed.",
+        "findings": [
+          {
+            "gate": "eligibility",
+            "status": "unknown",
+            "reason": "The doc states public preview. Pilot identity, client version, and account eligibility are not shown in the fetched evidence.",
+            "next": "Verify a permitted and an ineligible pilot identity on a supported client."
+          },
+          {
+            "gate": "admin-control",
+            "status": "unknown",
+            "reason": "The fetched page does not show an enforceable admin policy or a negative enforcement test.",
+            "next": "Test the disabled policy with a pilot identity."
+          },
+          {
+            "gate": "identity",
+            "status": "unknown",
+            "reason": "No identity flow, token scope, or revocation evidence is in the fetched text.",
+            "next": "Document identity flow, scopes, owner, and revocation."
+          },
+          {
+            "gate": "data",
+            "status": "unknown",
+            "reason": "Retention, deletion, and residency for session state are not verified in this run.",
+            "next": "Review data flow, retention, and deletion with synthetic data."
+          },
+          {
+            "gate": "human-approval",
+            "status": "unknown",
+            "reason": "No approval boundary or prompt-injection test result is in the fetched evidence.",
+            "next": "Run an untrusted-instruction test and confirm a safe stop."
+          },
+          {
+            "gate": "audit",
+            "status": "unknown",
+            "reason": "No sample trace or log-access evidence is in the fetched text.",
+            "next": "Reconstruct a synthetic run from available traces."
+          },
+          {
+            "gate": "cost",
+            "status": "unknown",
+            "reason": "The doc says cloud sandboxing is billed by usage. Current rates, budget, and observed usage were not verified in this run.",
+            "next": "Check current billing docs and measure a rehearsal."
+          },
+          {
+            "gate": "network",
+            "status": "unknown",
+            "reason": "Endpoint allowlist and egress validation are not shown in the fetched evidence.",
+            "next": "Validate allowed and denied destinations on the target surface."
+          },
+          {
+            "gate": "operations",
+            "status": "unknown",
+            "reason": "The preview is subject to change. Support route, risk acceptance, and incident ownership are not shown.",
+            "next": "Record preview risk acceptance, support route, and owner."
+          },
+          {
+            "gate": "rollback",
+            "status": "unknown",
+            "reason": "Remote session and snapshot cleanup are not verified in this run.",
+            "next": "Rehearse stop and delete, and verify remote state separately."
+          }
+        ]
       }
     },
     {

@@ -29,7 +29,7 @@
       "slides": 2,
       "deck": "artifacts/slides/cloud-sandboxes.pptx",
       "assessment": "features/cloud-sandboxes/assessment.md",
-      "fingerprint": "d8593d175bb579cd778db068cb5cb68e71ccf087752e39e81dfaefc07ea21e48"
+      "fingerprint": "67fa69716e68151aa1f30be0402273a72b904eb7c10091f752ea5aafa406e900"
     },
     {
       "id": "copilot-memory",
