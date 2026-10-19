@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "runId": "39193804483",
+  "baseSha": "931c43d0d3bc3fafeb59bc91247674735da1ce2d",
+  "decisions": [
+    {
+      "id": "autopilot",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The pinned CLI README still lists Autopilot under Experimental Features. No lifecycle change is shown. Gates stay unknown; human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+          "sha256": "661149adc3a90aa03d1e48c56def2bde6ae0a88e3f5377e1abb70b3b5b915dda",
+          "quote": "Autopilot is a new mode (press Shift+Tab to cycle through modes), which encourages the agent to continue working until a task is completed."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "README lists Autopilot as experimental. Plan, client version, and tenant eligibility are not shown.",
+          "next": "Confirm eligibility for the target client and plan in official docs."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "README does not describe enterprise policy controls for Autopilot.",
+          "next": "Find the official admin control for experimental CLI modes."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "README does not state identity or token scope for autonomous continuation.",
+          "next": "Verify the identity and scopes used during autonomous runs."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "README does not state data handling or retention for Autopilot sessions.",
+          "next": "Verify data handling in official CLI documentation."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "README says Autopilot continues until done. Approval behavior for tools is not shown in this excerpt.",
+          "next": "Verify permission prompts and unattended-run behavior."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "README does not describe audit records for autonomous actions.",
+          "next": "Find official audit or session-log evidence for CLI activity."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "README billing text is legacy premium-request wording. Current tenant cost and budget caps are unmeasured.",
+          "next": "Measure usage on a synthetic task against current billing docs."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "README does not state network or sandbox boundaries for Autopilot.",
+          "next": "Verify sandbox and network enforcement on the target OS."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Experimental behavior may change between versions. No support or retirement terms are in the evidence.",
+          "next": "Recheck the CLI release notes before each use."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "No rollback or disable procedure is described in the fetched evidence.",
+          "next": "Document how to stop a run and revert synthetic changes."
+        }
+      ]
+    }
+  ]
+}
