@@ -10,6 +10,14 @@ Runway can prepare and release complete synthetic feature kits without per-featu
 
 The proposal PR is research input, not the feature release. Source snapshots, proposal lineage, generated file hashes, release commits, and check results are linked by run IDs. Missing output is incomplete work, not “nothing new.”
 
+### Scout status on the Flight deck
+
+The footer shows **Last Scout run**: its start time in UTC, outcome (or in-progress status), and a link to the run. Pages reads the latest Scout run on `main` from this repository during the build. This requires Actions read permission; a failed lookup blocks deployment rather than displaying a successful fallback.
+
+This is a build-time snapshot, not live status. Scout success does not prove its findings were published. A release merge triggers a new Pages build; a Scout run without a release does not. To refresh the snapshot independently, manually run **Publish Runway Pages** after Scout finishes.
+
+Local builds do not query Actions by default and show “not recorded in this build.” Set `RUNWAY_SCOUT_REPOSITORY=owner/repo` to include a snapshot; `GH_TOKEN` can supply Actions read authentication. The deployed portal makes no runtime network calls. Build, Scout, and automated assessment dates never renew human verification or readiness.
+
 ## Readiness is not publication approval
 
 An automatically generated kit can publish with **Hold for evidence**. Machine-generated features remain lifecycle **unverified**, with `verifiedOn: null`, automated provenance, and required findings of `unknown` or `fail`. Human-reviewed lifecycle stages and readiness passes require substantive source review.

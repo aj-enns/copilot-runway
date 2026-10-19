@@ -1,13 +1,53 @@
 import { access, readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { fromRoot, loadCatalog, readJson, isOfficialUrl, isDate, fingerprint, assessmentMarkdown } from "./lib.mjs";
-import { inert } from "./automation.mjs";
+import { inert, idPattern, assertRecord, assertArray } from "../shared/validation.mjs";
 
 const statuses = new Set(["pass", "conditional", "unknown", "fail"]);
 const lifecycles = new Set(["public-preview", "technical-preview", "experimental", "ga", "retired", "unverified"]);
-const idPattern = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+
+function assertCatalogShape(data, watch) {
+  const records = (value, label) => {
+    assertArray(value, label);
+    value.forEach((entry, index) => assertRecord(entry, `${label}[${index}]`));
+  };
+  const provenance = (value, label) => {
+    if (value === undefined) return;
+    assertRecord(value, label);
+    records(value.sourceHashes, `${label}.sourceHashes`);
+  };
+  assertRecord(data, "Catalog");
+  assertRecord(watch, "Watch");
+  assertArray(watch.allowedHosts, "Watch.allowedHosts");
+  records(watch.feeds, "Watch.feeds");
+  assertRecord(data.rubric, "Rubric");
+  records(data.rubric.gates, "Rubric.gates");
+  assertRecord(data.sources, "Sources");
+  for (const [id, source] of Object.entries(data.sources)) {
+    assertRecord(source, `Source ${id}`);
+    provenance(source.provenance, `Source ${id}.provenance`);
+  }
+  records(data.features, "Features");
+  for (const feature of data.features) {
+    const label = `Feature ${feature.id ?? "(missing id)"}`;
+    for (const field of ["lifecycle", "cost", "demo"]) assertRecord(feature[field], `${label}.${field}`);
+    for (const field of ["surfaces", "tags", "value", "limitations"]) assertArray(feature[field], `${label}.${field}`);
+    for (const field of ["sources", "assumptions"]) assertArray(feature.cost[field], `${label}.cost.${field}`);
+    records(feature.enablement, `${label}.enablement`);
+    feature.enablement.forEach((step, index) => assertArray(step.sources, `${label}.enablement[${index}].sources`));
+    records(feature.readiness, `${label}.readiness`);
+    feature.readiness.forEach((gate, index) => assertArray(gate.sources, `${label}.readiness[${index}].sources`));
+    provenance(feature.provenance, `${label}.provenance`);
+    if (feature.automatedReview !== undefined) {
+      assertRecord(feature.automatedReview, `${label}.automatedReview`);
+      records(feature.automatedReview.findings, `${label}.automatedReview.findings`);
+    }
+  }
+}
 
 export function validateCatalog(data, watch, today = new Date().toISOString().slice(0, 10)) {
+  inert(data);
+  assertCatalogShape(data, watch);
   const errors = [];
   const check = (condition, message) => { if (!condition) errors.push(message); };
   const validDate = (value, label) => check(isDate(value) && value <= today, `${label}: invalid or future date`);
@@ -18,7 +58,6 @@ export function validateCatalog(data, watch, today = new Date().toISOString().sl
       record.provenance.sourceHashes.every((entry) => isOfficialUrl(entry.url, watch.allowedHosts) && /^[a-f0-9]{64}$/.test(entry.sha256)),
     `${label}: machine evidence hashes required`);
   };
-  inert(data);
   check(data.schemaVersion === 1, "Unsupported catalog schemaVersion");
   validDate(data.updatedOn, "Catalog updatedOn");
   check(data.rubric.schemaVersion === 1, "Unsupported rubric schemaVersion");

@@ -1,3 +1,4 @@
+import { build as bundle } from "esbuild";
 import { readFile, mkdir, copyFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import octicons from "@primer/octicons";
@@ -5,6 +6,7 @@ import { fromRoot, loadCatalog, readJson, write } from "./lib.mjs";
 import { validateCatalog, validateFiles } from "./validate.mjs";
 import { featureVisual } from "../site/feature-visuals.mjs";
 import { assertRecipeFeature, recipeRunbook } from "../demos/recipes.mjs";
+import { scoutSnapshot } from "./scout-status.mjs";
 
 const data = await loadCatalog();
 validateCatalog(data, await readJson(fromRoot("catalog", "watch.json")));
@@ -14,6 +16,7 @@ const assessmentDates = data.features.flatMap((feature) =>
 data.siteUpdate = {
   builtAt: new Date().toISOString(),
   latestAutomatedAssessmentOn: assessmentDates.at(-1) ?? null,
+  scout: await scoutSnapshot(process.env.RUNWAY_SCOUT_REPOSITORY, { token: process.env.GH_TOKEN }),
 };
 const iconNames = [
   "copilot", "mark-github", "apps", "shield-lock", "play", "meter", "broadcast",
@@ -34,11 +37,14 @@ for (const feature of data.features) {
     if (feature.demo.runbookText !== recipeRunbook(feature, data.sources)) throw new Error(`${feature.id}: generated runbook is stale; run npm run artifacts`);
   }
 }
-const [template, styles, model, app] = await Promise.all([
+const [template, styles, browser] = await Promise.all([
   readFile(fromRoot("site", "index.html"), "utf8"),
   readFile(fromRoot("site", "styles.css"), "utf8"),
-  readFile(fromRoot("site", "model.mjs"), "utf8"),
-  readFile(fromRoot("site", "app.mjs"), "utf8"),
+  bundle({
+    entryPoints: [fromRoot("site", "app.mjs")],
+    bundle: true, write: false, platform: "browser", format: "iife", target: "es2022",
+    charset: "utf8", legalComments: "none",
+  }),
 ]);
 const lightTokens = styles.match(/^:root \{[\s\S]*?\n\}/)?.[0];
 if (!lightTokens) throw new Error("Illustration exports require the portal theme tokens");
@@ -49,7 +55,7 @@ for (const feature of data.features) {
   await write(fromRoot("dist", "artifacts", "visuals", `${feature.id}.svg`),
     visual.svg.replace("<title>", `<style>${lightTokens}</style><title>`));
 }
-const combinedScript = `${model.replace(/^export (?=(?:const|function|async function) )/gm, "")}\n${app.replace(/^import[^\n]*\n/gm, "")}`;
+const combinedScript = browser.outputFiles[0].text;
 if (/<\/script/i.test(combinedScript) || /<\/style/i.test(styles)) throw new Error("Unexpected HTML terminator in embedded source");
 let output = template
   .replace("/*STYLES*/", () => styles)

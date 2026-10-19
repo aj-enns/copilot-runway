@@ -1,26 +1,22 @@
-import { lifecycleLabels, verdictLabels, freshness, featureSourceIds, evidenceIsStale, verdict, filterFeatures, filterGaEntries, gaCandidates, calculateCost, validateWorkshop, policyExport, rehearsalScenario } from "./model.mjs";
+import { escapeHtml as html, formatDate as date } from "../shared/text.mjs";
+import { siteUpdateMarkup } from "./site-update.mjs";
+import { createWorkshop } from "./workshop.mjs";
+import { createDemoStudio } from "./demo-studio.mjs";
+import { lifecycleLabels, verdictLabels, freshness, featureSourceIds, evidenceIsStale, verdict, filterFeatures, filterGaEntries, gaCandidates, calculateCost, reviewLabel } from "./model.mjs";
 
 const data = JSON.parse(document.getElementById("runway-data").textContent);
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const html = (value) => String(value).replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 const icon = (name) => data.icons[name] ?? data.icons.info;
-const storageKey = "copilot-runway.workshop.v1";
 const viewNames = { catalog: "Flight deck", context: "Account context", readiness: "Readiness gates", demos: "Demo lab", cost: "Cost lab", radar: "Preview radar", ga: "Recently GA" };
 const tabNames = { overview: "Overview", readiness: "Readiness", demo: "Demo", sources: "Sources" };
 let toastTimer;
 let view = "catalog";
 let currentFeature;
 let currentTab = "overview";
-let labFeature = "computer-use";
-let labStep = 0;
-let labStopped = false;
 const compared = new Set();
 const filters = { search: "", lifecycle: "", readiness: "", surface: "" };
-let workshop = { schemaVersion: 1, rules: [] };
 let sampleContextVisible = false;
-let videoDuration = 90;
-let videoBrief;
 const sampleAccounts = [
   { name: "Sample retail account", need: "Manual service-desk handoffs depend on GUI-only tools and repeatable team conventions.", matches: [["computer-use", "Explore an approved GUI-only support-record update."], ["copilot-memory", "Explore cited repository conventions for onboarding."]] },
   { name: "Sample engineering account", need: "Intermittent test failures need isolated reproduction and a measurable acceptance bar.", matches: [["cloud-sandboxes", "Explore an isolated Linux reproduction workspace."], ["autopilot", "Explore bounded repair against acceptance tests."]] },
@@ -28,7 +24,6 @@ const sampleAccounts = [
 ];
 
 const resultFor = (feature) => verdict(feature, data.rubric, new Date(), data.sources);
-const date = (value) => value ? new Date(value.length === 10 ? `${value}T12:00:00Z` : value).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "not human verified";
 const money = (value) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(value);
 const sourceLinks = (ids) => `<div class="source-links">${[...new Set(ids)].map((id) => `<a href="${html(data.sources[id].url)}" target="_blank" rel="noopener noreferrer">${html(data.sources[id].title)} &nearr;</a>`).join("")}</div>`;
 const lifecycleBadge = (feature) => `<span class="badge ${feature.lifecycle.status === "experimental" ? "badge-experimental" : "badge-preview"}">${html(lifecycleLabels[feature.lifecycle.status])}</span>`;
@@ -52,25 +47,6 @@ function warn(message) {
   const element = $("#global-warning");
   element.hidden = false;
   element.textContent = element.textContent ? `${element.textContent} ${message}` : message;
-}
-
-function loadWorkshop() {
-  try {
-    const raw = localStorage.getItem(storageKey);
-    if (raw) workshop = validateWorkshop(JSON.parse(raw));
-  } catch (error) {
-    console.warn("Runway workshop storage:", error.message);
-    warn("Saved workshop requirements could not be read. This session uses an empty local workshop; export changes before leaving.");
-  }
-}
-
-function saveWorkshop() {
-  try {
-    localStorage.setItem(storageKey, JSON.stringify(validateWorkshop(workshop)));
-  } catch (error) {
-    console.warn("Runway workshop storage:", error.message);
-    toast("Browser storage is unavailable. Your changes exist only in this session; export the proposed policy to keep them.");
-  }
 }
 
 function download(name, content, type = "text/plain;charset=utf-8") {
@@ -138,12 +114,7 @@ function renderMetrics() {
   $(".nav-count").textContent = String(data.features.length).padStart(2, "0");
   $("#coverage-note").textContent = data.scope;
   $(".topbar-date").innerHTML = `Evidence reviewed <time datetime="${html(data.updatedOn)}">${date(data.updatedOn)}</time>`;
-  const builtAt = data.siteUpdate.builtAt;
-  const buildTime = new Date(builtAt).toLocaleString("en-GB", {
-    day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZone: "UTC",
-  });
-  const assessedOn = data.siteUpdate.latestAutomatedAssessmentOn;
-  $("#site-update").innerHTML = `Site built <time datetime="${html(builtAt)}">${html(buildTime)} UTC</time><br>Latest automated assessment: ${assessedOn ? `<time datetime="${html(assessedOn)}">${date(assessedOn)}</time>` : "not recorded"}<br>Build and automated assessment dates do not renew human evidence verification.`;
+  $("#site-update").innerHTML = siteUpdateMarkup(data.siteUpdate);
 }
 
 function renderHeroKit() {
@@ -243,7 +214,7 @@ function renderFeature() {
   const feature = data.features.find((entry) => entry.id === currentFeature);
   if (!feature) return;
   const content = { overview: overviewContent, readiness: readinessContent, demo: demoContent, sources: sourcesContent }[currentTab](feature);
-  $("#feature-dialog-content").innerHTML = `<div class="dialog-header"><div><span class="eyebrow">${html(feature.category)}</span><h2 id="feature-title">${html(feature.name)}</h2><p>${html(feature.tagline)}</p><div class="dialog-badges">${lifecycleBadge(feature)}${resultBadge(feature)}<span class="badge badge-neutral">Reviewed ${date(feature.verifiedOn)}</span></div></div><button class="icon-button" data-close="feature-dialog" aria-label="Close feature">${icon("x")}</button></div>
+  $("#feature-dialog-content").innerHTML = `<div class="dialog-header"><div><span class="eyebrow">${html(feature.category)}</span><h2 id="feature-title">${html(feature.name)}</h2><p>${html(feature.tagline)}</p><div class="dialog-badges">${lifecycleBadge(feature)}${resultBadge(feature)}<span class="badge badge-neutral">${html(reviewLabel(feature, date))}</span></div></div><button class="icon-button" data-close="feature-dialog" aria-label="Close feature">${icon("x")}</button></div>
     <div class="dialog-tabs" role="tablist" aria-label="Feature detail">${Object.entries(tabNames).map(([id, name]) => `<button class="dialog-tab" id="tab-${id}" role="tab" aria-selected="${currentTab === id}" aria-controls="feature-tabpanel" tabindex="${currentTab === id ? 0 : -1}" data-tab-change="${id}">${name}</button>`).join("")}</div>
     <div class="dialog-body" id="feature-tabpanel" role="tabpanel" aria-labelledby="tab-${currentTab}">${content}</div>`;
 }
@@ -263,78 +234,7 @@ function openFeature(id, tab = "overview") {
 function renderReadiness() {
   $("#policy-version").textContent = `Enterprise readiness rubric ${data.rubric.version}`;
   $("#gate-grid").innerHTML = data.rubric.gates.map((gate, index) => `<article class="gate-card"><div class="card-top"><span class="gate-number">GATE ${String(index + 1).padStart(2, "0")}</span><span class="badge badge-neutral">${gate.required ? "Non-negotiable" : "Advisory"}</span></div><h3>${html(gate.name)}</h3><p>${html(gate.question)}</p><small>Owner: ${html(gate.owner)}</small><details><summary>Evidence and acceptance test</summary><p><strong>Evidence:</strong> ${html(gate.evidenceRequired)}</p><p><strong>Test:</strong> ${html(gate.test)}</p></details></article>`).join("");
-  renderWorkshop();
-}
-
-function renderWorkshop() {
-  $("#local-rules").innerHTML = workshop.rules.length ? workshop.rules.map((rule) =>
-    `<div class="local-rule"><span>${html(rule.name)}</span><span class="badge badge-experimental">Local proposal</span><button class="text-link" data-remove-rule="${html(rule.id)}" aria-label="Remove local requirement ${html(rule.name)}">Remove</button></div>`).join("") :
-    '<p>No local additions yet. The versioned repository rubric remains authoritative.</p>';
-}
-
-function renderLab() {
-  const feature = data.features.find((entry) => entry.id === labFeature);
-  const scenario = rehearsalScenario(labFeature, data.features.find((feature) => feature.id === labFeature));
-  $("#demo-chooser").innerHTML = data.features.map((entry) => `<button class="demo-choice ${entry.id === labFeature ? "active" : ""}" data-lab="${entry.id}" aria-pressed="${entry.id === labFeature}"><span>${icon(entry.icon)}</span><span><strong>${html(entry.name)}</strong><small>${entry.demo.minutes}-min live runbook</small></span></button>`).join("");
-  const label = labStopped ? "Rehearsal stopped; no external action occurred." : [
-    "Inspect the synthetic context before deciding what to permit.",
-    scenario.review,
-    "The requested transformation is shown locally. Verify the result instead of trusting a completion message.",
-    scenario.proof,
-  ][labStep];
-  const actionLabel = ["Inspect synthetic context", "Approve local rehearsal", "Verify fixture story", "Rehearsal complete"][labStep];
-  $("#demo-lab").innerHTML = `<div class="lab-header"><div><span class="eyebrow">OFFLINE FLIGHT LAB</span><h2>${html(scenario.title)}</h2><p>${html(feature.name)} &middot; no Copilot service called</p></div><span class="badge ${labStopped ? "badge-blocked" : labStep === 3 ? "badge-ready" : "badge-neutral"}">${labStopped ? "Stopped" : labStep === 3 ? "Rehearsal checked" : "Synthetic only"}</span></div>
-    <div class="lab-steps">${["01 Observe", "02 Review", "03 Verify"].map((name, index) => `<div class="lab-step ${labStep >= index + 1 ? "active" : ""}">${name}</div>`).join("")}</div>
-    <figure class="lab-illustration">${data.visuals[feature.id].svg}<figcaption>Concept illustration: ${html(data.visuals[feature.id].caption)} Not a product screenshot or live run.</figcaption></figure>
-    <div class="lab-context"><label>${labStep < 2 || labStopped ? "SYNTHETIC INPUT" : "LOCAL ILLUSTRATION"}</label><pre>${html(labStep < 2 || labStopped ? scenario.before : scenario.after)}</pre></div>
-    <p class="lab-note" role="status">${html(label)}</p>
-    <div class="lab-actions"><button class="button button-primary" id="lab-advance" ${labStep === 3 || labStopped ? "disabled" : ""}>${actionLabel}</button><button class="button" id="lab-stop" ${labStopped || labStep === 3 ? "disabled" : ""}>Stop</button><button class="button" id="lab-reset">${icon("sync")}Reset rehearsal</button></div>
-    <div class="lab-kit"><strong>Ready for the real feature?</strong><p>Prepare a marked synthetic workspace. Local reset does not reset account settings or remote state.</p>${commandBox(`npm run demo:setup -- ${feature.id}`)}<button class="button button-small" data-open="${feature.id}" data-tab="demo">Open full presenter kit ${icon("arrow-right")}</button><p class="lab-note">${html(feature.demo.remoteCleanup)}</p></div>`;
-}
-
-function demoSteps(feature) {
-  return [
-    ["Prepare", "npm run demo:setup", "Create the marked synthetic workspace; confirm eligibility, permissions and budget first.", `npm run demo:setup -- ${feature.id}`],
-    ["Run with review", "Copilot + human review", "Use the presenter prompt in the approved feature surface. This page never runs it.", feature.demo.prompt],
-    ["Verify evidence", "npm run demo:verify", "Check the fixture output. This helper is not proof that the real Copilot feature ran.", `npm run demo:verify -- ${feature.id}`],
-    ["Reset safely", "npm run demo:reset", "Reset only the marked local workspace. Follow the separate remote-cleanup instructions.", `npm run demo:reset -- ${feature.id}`],
-  ];
-}
-
-function renderDemoStudio() {
-  const feature = data.features.find((entry) => entry.id === labFeature);
-  videoBrief = undefined;
-  $("#demo-studio").innerHTML = `<div class="section-heading"><div><span class="eyebrow">${icon("checklist")}ILLUSTRATED PRESENTER GUIDE</span><h2 id="demo-studio-title" tabindex="-1">How to demo ${html(feature.name)}</h2><p>Original command illustrations, not screenshots. Select a rehearsal above to change the guide and recording brief.</p></div></div>
-    <div class="demo-guide-steps">${demoSteps(feature).map(([title, label, detail, command], index) => `<article class="demo-guide-step">
-      <svg class="demo-step-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 144" role="img" aria-label="${html(title)} command illustration"><title>${html(title)}: ${html(label)}</title><rect width="320" height="144" fill="var(--cp-link-panel)"/><rect x="20" y="20" width="280" height="104" rx="10" fill="var(--cp-surface)" stroke="var(--cp-border)" stroke-width="2"/><circle cx="38" cy="38" r="4" fill="var(--cp-accent)"/><circle cx="52" cy="38" r="4" fill="var(--cp-warning)"/><circle cx="66" cy="38" r="4" fill="var(--cp-link)"/><text x="36" y="74" font-size="18" font-weight="600" fill="var(--cp-text)">${String(index + 1).padStart(2, "0")} / ${html(title)}</text><text x="36" y="103" font-family="Consolas, monospace" font-size="15" fill="var(--cp-text)">${html(label)}</text></svg>
-      <div><h3>${html(title)}</h3><p>${html(detail)}</p>${commandBox(command)}</div></article>`).join("")}</div>
-    <section class="video-planner" aria-labelledby="video-planner-title"><div class="video-planner-heading"><span class="feature-icon">${icon("device-camera-video")}</span><div><span class="eyebrow">DEMO VIDEO STUDIO &middot; VISION</span><h2 id="video-planner-title" tabindex="-1">Plan a recording. Automate it later.</h2></div><span class="badge badge-experimental">Recorder not connected</span></div>
-      <p id="video-boundary">No video has been generated. The available action builds a local storyboard and downloadable recording brief; it does not launch Copilot, Computer Use, GitHub Actions or a recorder.</p>
-      <div class="video-controls"><label for="video-duration">Target video length<select id="video-duration"><option value="90" ${videoDuration === 90 ? "selected" : ""}>90 seconds</option><option value="180" ${videoDuration === 180 ? "selected" : ""}>3 minutes</option></select></label><button class="button button-primary" id="build-video-brief">${icon("checklist")}Build recording brief</button><button class="button" disabled aria-describedby="video-boundary">${icon("device-camera-video")}Generate video (backend planned)</button></div>
-      <p class="context-hint">Target duration is a storyboard assumption, not a recording-time guarantee. Changing the feature or duration invalidates the previous brief.</p>
-      <div id="video-brief" hidden><h3>Recording brief</h3><div class="video-timeline" id="video-timeline"></div><pre id="video-brief-content"></pre></div>
-      <div class="lab-actions"><button class="button button-small" id="download-video-brief" disabled>${icon("download")}Download recording brief (.md)</button><a class="button button-small" href="docs/integration-vision.md" download>Read the automation vision</a></div>
-      <details><summary>Could GitHub Actions make the video?</summary><p>That is a future orchestration option, not a connected capability. Copilot Computer Use is documented for local macOS/Windows sessions; unattended desktop recording on Actions has not been validated here. A generic hosted Linux runner is not a supported substitute.</p><p>A future private pipeline needs an approved interactive GUI runner, synthetic fixtures, explicit application permissions, human checkpoints, separate AI/runner budgets, capture/redaction, and review before publishing a video. Browser-only recording could use Playwright instead.</p><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/computer-use" target="_blank" rel="noopener noreferrer">Official Computer Use requirements &nearr;</a></details>
-    </section>`;
-  $$("#demo-studio .demo-guide-step [data-copy]").forEach((button, index) => {
-    button.setAttribute("aria-label", `Copy ${demoSteps(feature)[index][0].toLowerCase()} instruction`);
-  });
-}
-
-function buildVideoBrief() {
-  const feature = data.features.find((entry) => entry.id === labFeature);
-  const timestamp = (seconds) => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
-  const boundaries = [0, .15, .35, .8, 1].map((fraction) => Math.round(fraction * videoDuration));
-  const scenes = demoSteps(feature).map(([title, , detail], index) => ({
-    time: `${timestamp(boundaries[index])}-${timestamp(boundaries[index + 1])}`,
-    title, detail,
-  }));
-  videoBrief = `# Copilot Runway recording brief: ${feature.name}\n\nPLANNED ONLY. No video, Copilot run, WorkIQ query, GUI automation or Actions job was created.\nTarget length: ${videoDuration} seconds (an assumption, not a guarantee).\nCurrent pilot verdict: ${verdictLabels[resultFor(feature)]}; scenario fit does not grant enterprise approval.\n\n## Storyboard\n${scenes.map((scene) => `- ${scene.time} | ${scene.title}: ${scene.detail}`).join("\n")}\n\n## Presenter instructions\n${demoSteps(feature).map(([title, , , command]) => `### ${title}\n\n${command}`).join("\n\n")}\n\n## Evidence to show\n${feature.demo.expected}\n\n## Remote cleanup (separate from local reset)\n${feature.demo.remoteCleanup}\n\n## Recording guardrails\n- Use only synthetic fixtures; no customer accounts, messages, credentials or personal data.\n- Validate account eligibility, admin policy, application permissions and OS-session support before the live demo.\n- Copilot Computer Use is documented for local macOS/Windows. Unattended Actions GUI recording is unvalidated here; hosted Linux is not a substitute.\n- Review human checkpoints and stop conditions; do not bypass approvals to make an unattended recording work.\n- Approve AI-credit and runner/capture budgets separately; no job is dispatched by this brief.\n- Review and redact the recording, prove the demonstrated output, then approve publication. Never label a concept illustration as a live recording.\n\n## Full runbook\nhttps://github.com/aj-enns/copilot-runway/blob/main/${feature.demo.runbook}\n\n## Future integration blueprint\nhttps://github.com/aj-enns/copilot-runway/blob/main/docs/integration-vision.md\n`;
-  $("#video-timeline").innerHTML = scenes.map((scene) => `<div><span>${html(scene.time)}</span><strong>${html(scene.title)}</strong><p>${html(scene.detail)}</p></div>`).join("");
-  $("#video-brief-content").textContent = videoBrief;
-  $("#video-brief").hidden = false;
-  $("#download-video-brief").disabled = false;
-  toast("Recording brief built locally. No video or external job was created.");
+  workshop.render();
 }
 
 function getCostInputs() {
@@ -413,9 +313,14 @@ function openComparison() {
   $("#compare-dialog").showModal();
 }
 
+const workshop = createWorkshop({ $, data, toast, warn, download });
+const demos = createDemoStudio({ $, $$, data, icon, commandBox, resultFor, toast, download, showView });
+const { renderLab, renderDemoStudio } = demos;
+
 document.addEventListener("click", async (event) => {
   const button = event.target.closest("button, a[data-view]");
   if (!button) return;
+  if (workshop.handleClick(button) || demos.handleClick(button)) return;
   if (button.dataset.view) {
     if ($("#feature-dialog").open) $("#feature-dialog").close();
     showView(button.dataset.view);
@@ -449,33 +354,6 @@ document.addEventListener("click", async (event) => {
       console.warn("Clipboard unavailable:", error.message);
       toast("Clipboard access is unavailable. Select and copy the visible command manually.");
     }
-  } else if (button.dataset.removeRule) {
-    workshop.rules = workshop.rules.filter((rule) => rule.id !== button.dataset.removeRule);
-    saveWorkshop();
-    renderWorkshop();
-    $("#rule-name").focus();
-  } else if (button.dataset.rehearse || button.dataset.lab) {
-    labFeature = button.dataset.rehearse ?? button.dataset.lab;
-    labStep = 0;
-    labStopped = false;
-    if ($("#feature-dialog").open) $("#feature-dialog").close();
-    showView("demos", false);
-    renderLab();
-    $("#lab-advance").focus();
-  } else if (button.id === "lab-advance") {
-    labStep = Math.min(labStep + 1, 3);
-    renderLab();
-    $("#lab-advance").focus();
-  } else if (button.id === "lab-stop") {
-    labStopped = true;
-    renderLab();
-    $("#lab-reset").focus();
-  } else if (button.id === "lab-reset") {
-    labStep = 0;
-    labStopped = false;
-    renderLab();
-    $("#lab-advance").focus();
-    toast("Browser rehearsal reset. No local files, account settings, or remote state were changed.");
   }
 });
 
@@ -484,14 +362,6 @@ $("#readiness-filter").addEventListener("change", (event) => { filters.readiness
 $("#surface-filter").addEventListener("change", (event) => { filters.surface = event.target.value; renderCatalog(); });
 $("#ga-window").addEventListener("change", renderGa);
 $("#ga-kind").addEventListener("change", renderGa);
-$("#show-demo-guide").addEventListener("click", () => {
-  $("#demo-studio").scrollIntoView({ block: "start" });
-  $("#demo-studio-title").focus({ preventScroll: true });
-});
-$("#show-video-planner").addEventListener("click", () => {
-  $(".video-planner").scrollIntoView({ block: "start" });
-  $("#video-planner-title").focus({ preventScroll: true });
-});
 $("#preview-account-context").addEventListener("click", () => { sampleContextVisible = true; renderAccountContext(); });
 $("#clear-account-context").addEventListener("click", () => {
   sampleContextVisible = false;
@@ -499,18 +369,6 @@ $("#clear-account-context").addEventListener("click", () => {
   $("#preview-account-context").focus();
 });
 $("#context-window").addEventListener("change", renderAccountContext);
-$("#demo-studio").addEventListener("change", (event) => {
-  if (event.target.id !== "video-duration") return;
-  videoDuration = Number(event.target.value);
-  videoBrief = undefined;
-  $("#video-brief").hidden = true;
-  $("#download-video-brief").disabled = true;
-});
-$("#demo-studio").addEventListener("click", (event) => {
-  const button = event.target.closest("button");
-  if (button?.id === "build-video-brief") buildVideoBrief();
-  if (button?.id === "download-video-brief" && videoBrief) download(`runway-${labFeature}-recording-brief.md`, videoBrief);
-});
 $("#compare-open").addEventListener("click", openComparison);
 $("#compare-clear").addEventListener("click", () => {
   const firstSelected = [...compared][0];
@@ -520,24 +378,6 @@ $("#compare-clear").addEventListener("click", () => {
   ($(`[data-compare="${firstSelected}"]`) ?? $("#feature-search")).focus();
 });
 $("#feature-dialog").addEventListener("close", () => { currentFeature = undefined; setHash(`#view=${view}`); });
-
-$("#rule-form").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const input = $("#rule-name");
-  if (!input.checkValidity()) { input.reportValidity(); return; }
-  if (workshop.rules.length >= 25) { toast("Keep the local workshop bounded to 25 additions. Export and review before extending it."); return; }
-  const name = input.value.trim();
-  if (name.length < 3) { toast("Enter at least three non-whitespace characters."); return; }
-  workshop.rules.push({ id: `local-${crypto.randomUUID()}`, name, required: true, scope: "local-workshop" });
-  saveWorkshop();
-  renderWorkshop();
-  input.value = "";
-  toast("Added locally. Export and propose a repository change for durable adoption.");
-});
-
-$("#export-policy").addEventListener("click", () => {
-  download("runway-proposed-readiness-policy.json", `${JSON.stringify(policyExport(data.rubric, workshop), null, 2)}\n`, "application/json");
-});
 
 $("#cost-form").addEventListener("input", renderCost);
 $("#cost-form").addEventListener("submit", (event) => { event.preventDefault(); renderCost(); });
@@ -597,7 +437,7 @@ function route() {
 
 hydrateIcons();
 renderThemeToggle();
-loadWorkshop();
+workshop.load();
 renderMetrics();
 renderHeroKit();
 renderCatalog();

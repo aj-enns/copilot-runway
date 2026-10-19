@@ -153,6 +153,23 @@ Maintain recommendations in `catalog/features.json`'s `enterpriseUseCases` map. 
 
 After changing feature, rubric, or referenced-source content, run `npm run artifacts` to regenerate decks and Markdown. Enterprise-use recommendations and GA archive entries do not require slide regeneration; `artifacts:check` enforces evidence fingerprints. On Windows with PowerPoint, `scripts\render-slides.ps1` exports the combined deck to `qa-results\slides` and closes only the presentation it opened.
 
+### Code boundaries
+
+| Layer | Responsibility |
+| --- | --- |
+| `shared/evidence.mjs` | Pure source-reference, lifecycle, freshness, filtering, and readiness rules |
+| `shared/recipes.mjs` | Pure synthetic recipe validation and execution |
+| `shared/text.mjs`, `shared/validation.mjs` | Escaping, display dates, and structural validation primitives |
+| `site/` | DOM rendering and UI state; workshop and demo studio own their controllers |
+| `scripts/github.mjs` | GitHub HTTP transport with an injected fetcher; no authorization or publication policy |
+| `scripts/release.mjs` | Release safeguards and operations with explicit repository, credentials, clock, Git, and output dependencies |
+
+Shared modules must not import Node APIs or access the DOM. The existing `site/model.mjs` exports remain compatible; new cross-runtime logic belongs in `shared/`. Keep stricter automated-publication and recipe controls at their boundaries rather than weakening them into one permissive validator.
+
+The build uses pinned esbuild to bundle browser modules into the self-contained HTML. CSP hashes are computed from the final inline bundle; the deployed portal still makes no runtime network calls. GitHub API requests happen only in Node tooling. Official-source fetching retains its separate allowlist, redirect, and size controls. Mutating GitHub calls are not automatically retried.
+
+Slide generation normalizes ZIP and core-property timestamps to a fixed packaging date. Repeated generation with unchanged content produces identical bytes; content and template changes still regenerate every deck. Package timestamps are not human verification dates or evidence dates.
+
 ## Staying current
 
 | Automation | Schedule | Actual behavior |
@@ -180,7 +197,8 @@ For continuous Flight deck updates, follow [feature automation](docs/feature-aut
 | `features/` | Generated Markdown assessments |
 | `artifacts/slides/` | Generated, cited PowerPoint briefs |
 | `demos/` | Real-feature runbooks, synthetic fixtures, experimental orchestration logic |
-| `site/` | Static portal source and shared pure assessment/calculation model |
+| `site/` | Static portal source, UI controllers, and portal-specific calculation/workshop model |
+| `shared/` | Runtime-independent evidence, recipes, text, and validation helpers |
 | `docs/` | Automation trust boundaries, context/video integration blueprint, and illustrative UI screenshots |
 | `scripts/` | Validation, build, discovery, scoped demo setup/reset, and artifact generation |
 | `.github/workflows/` | CI, Pages, discovery, and source/compiled agentic scout |

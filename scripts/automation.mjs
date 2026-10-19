@@ -5,29 +5,8 @@ import { fromRoot, readJson, write, isDate, isOfficialUrl, loadCatalog } from ".
 import { scan, fetchOfficial, plainText } from "./discover.mjs";
 
 export const digest = (value) => createHash("sha256").update(typeof value === "string" ? value : JSON.stringify(value)).digest("hex");
-const idPattern = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
-const forbiddenKeys = new Set(["__proto__", "constructor", "prototype"]);
-
-export function inert(value, depth = 0, maxString = 20_000) {
-  if (depth > 16) throw new Error("Automation data nesting exceeds limit");
-  if (typeof value === "string" && (value.length > maxString || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value))) throw new Error("Invalid automation string");
-  if (value && typeof value === "object") {
-    if (Object.keys(value).length > 500) throw new Error("Automation object exceeds limit");
-    for (const [key, item] of Object.entries(value)) {
-      if (forbiddenKeys.has(key)) throw new Error(`Forbidden data key: ${key}`);
-      inert(item, depth + 1, maxString);
-    }
-  }
-  return value;
-}
-
-export function exactKeys(value, required, optional = []) {
-  if (!value || typeof value !== "object" || Array.isArray(value) ||
-    required.some((key) => !Object.hasOwn(value, key)) ||
-    Object.keys(value).some((key) => !required.includes(key) && !optional.includes(key))) {
-    throw new Error(`Expected fields: ${required.join(", ")}; optional: ${optional.join(", ")}`);
-  }
-}
+import { idPattern, inert, exactKeys } from "../shared/validation.mjs";
+export { inert, exactKeys } from "../shared/validation.mjs";
 
 export function operationalPolicy(policy, publication = false) {
   if (policy.schemaVersion !== 1) throw new Error("Unsupported automation policy");

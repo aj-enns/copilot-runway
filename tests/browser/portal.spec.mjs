@@ -20,6 +20,8 @@ test("site update dates distinguish build time, automated assessment and human e
     [feature.provenance?.assessedOn, feature.automatedReview?.assessedOn]).filter(Boolean).sort();
   expect(payload.siteUpdate.latestAutomatedAssessmentOn).toBe(assessmentDates.at(-1) ?? null);
   await expect(update).toContainText("do not renew human evidence verification");
+  await expect(update).toContainText("Last Scout run:");
+  await expect(update).toContainText("build-time snapshot, not live");
   if (!assessmentDates.length) await expect(update).toContainText("Latest automated assessment: not recorded");
   await page.setViewportSize({ width: 320, height: 960 });
   await expect(update).toBeVisible();
@@ -28,14 +30,55 @@ test("site update dates distinguish build time, automated assessment and human e
   let document = await readFile(site, "utf8");
   const match = document.match(/<script type="application\/json" id="runway-data">([\s\S]*?)<\/script>/);
   const fixture = JSON.parse(match[1]);
-  fixture.siteUpdate = { builtAt: "2026-10-18T22:05:17.000Z", latestAutomatedAssessmentOn: "2026-10-18" };
+  fixture.siteUpdate = {
+    builtAt: "2026-10-18T22:05:17.000Z", latestAutomatedAssessmentOn: "2026-10-18",
+    scout: {
+      state: "recorded", startedAt: "2026-10-18T21:15:15.000Z",
+      status: "completed", conclusion: "success",
+      url: "https://github.com/aj-enns/copilot-runway/actions/runs/123",
+    },
+  };
   document = document.replace(match[1], () => JSON.stringify(fixture).replace(/</g, "\\u003c"));
   await page.route(new URL("/", test.info().project.use.baseURL).href, (route) => route.fulfill({ contentType: "text/html", body: document }));
   await page.goto("/");
   await expect(update).toContainText("18 Oct 2026, 22:05:17 UTC");
   await expect(update).toContainText("Latest automated assessment: 18 Oct 2026");
+  await expect(update).toContainText("Last Scout run: started 18 Oct 2026, 21:15:15 UTC");
+  await expect(update).toContainText("success");
+  await expect(update.getByRole("link", { name: "View Scout run" })).toHaveAttribute("href", fixture.siteUpdate.scout.url);
+  await expect(update).toContainText("A successful run does not mean its findings were published");
   await expect(page.locator(".topbar-date time")).toHaveAttribute("datetime", payload.updatedOn);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+for (const [scout, text] of [
+  [{ state: "not-configured" }, "not recorded in this build"],
+  [{ state: "no-runs" }, "no runs recorded on main"],
+  [{ state: "recorded", status: "completed", conclusion: "failure" }, "failure"],
+  [{ state: "recorded", status: "in_progress", conclusion: null }, "in progress"],
+]) {
+  test(`Scout footer reports ${text} without runtime network requests`, async ({ page }) => {
+    let document = await readFile(site, "utf8");
+    const match = document.match(/<script type="application\/json" id="runway-data">([\s\S]*?)<\/script>/);
+    const payload = JSON.parse(match[1]);
+    payload.siteUpdate.scout = {
+      startedAt: "2026-10-19T03:15:15.000Z",
+      url: "https://github.com/aj-enns/copilot-runway/actions/runs/123",
+      ...scout,
+    };
+    document = document.replace(match[1], () => JSON.stringify(payload).replace(/</g, "\\u003c"));
+    const externalRequests = [];
+    page.on("request", (request) => {
+      if (new URL(request.url()).origin !== new URL(test.info().project.use.baseURL).origin) externalRequests.push(request.url());
+    });
+    await page.route(new URL("/", test.info().project.use.baseURL).href, (route) => route.fulfill({ contentType: "text/html", body: document }));
+    await page.goto("/");
+    await expect(page.locator("#site-update")).toContainText(`Last Scout run: ${scout.state === "recorded" ? "started" : text}`);
+    await expect(page.locator("#site-update")).toContainText(text);
+    if (scout.state !== "recorded") await expect(page.locator("#site-update a")).toHaveCount(0);
+    expect(externalRequests).toEqual([]);
+  });
+}
 
 test("an unknown recipe feature supports details, downloads, rehearsal and recording without product claims", async ({ page }) => {
   const errors = [];
@@ -72,6 +115,8 @@ test("an unknown recipe feature supports details, downloads, rehearsal and recor
   await expect(card).toContainText("Hold for evidence");
   await card.getByRole("button", { name: "Assess", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: feature.name, exact: true });
+  await expect(dialog.locator(".dialog-badges")).toContainText("Not human verified (assessed 14 Oct 2026)");
+  await expect(dialog.locator(".dialog-badges")).not.toContainText("Reviewed not human verified");
   await dialog.getByRole("tab", { name: "Sources", exact: true }).click();
   await expect(dialog).toContainText("not human verified");
   await dialog.getByRole("tab", { name: "Demo", exact: true }).click();
