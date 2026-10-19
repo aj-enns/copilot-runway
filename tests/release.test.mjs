@@ -1,16 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { generateKeyPairSync, verify } from "node:crypto";
+import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { resolve } from "node:path";
+import { createReleaseService } from "../scripts/release.mjs";
+import { digest } from "../scripts/automation.mjs";
 
 const repository = "synthetic-owner/synthetic-runway";
-process.env.GITHUB_REPOSITORY = repository;
-process.env.GH_TOKEN = "synthetic-local-test-token";
-process.env.QUALITY_RUN_ID = "123";
-const { origin } = await import("../scripts/release.mjs");
-const { mergeRelease } = await import("../scripts/release.mjs");
-const { digest } = await import("../scripts/automation.mjs");
 const head = "a".repeat(40);
 
 function responses(pulls, producer = {}) {
@@ -21,27 +18,26 @@ function responses(pulls, producer = {}) {
   ];
 }
 
-async function mockApi(values, action) {
-  const previous = globalThis.fetch;
+async function mockApi(values, action, overrides = {}) {
   const calls = [];
-  globalThis.fetch = async (url, options) => {
-    calls.push({ url, method: options.method });
-    assert.ok(url.startsWith(`https://api.github.com/repos/${repository}/`));
-    assert.equal(options.method, url.endsWith("/merge") ? "PUT" : "GET");
-    assert.ok(values.length, "Unexpected additional GitHub API call");
-    return { ok: true, status: 200, json: async () => values.shift() };
-  };
-  try {
-    await action(calls);
-  } finally {
-    globalThis.fetch = previous;
-  }
+  const service = createReleaseService({
+    repository, token: "synthetic-test-token", qualityRunId: "123",
+    fetcher: async (url, options) => {
+      calls.push({ url, method: options.method });
+      assert.ok(url.startsWith(`https://api.github.com/repos/${repository}/`));
+      assert.equal(options.method, url.endsWith("/merge") ? "PUT" : "GET");
+      assert.ok(values.length, "Unexpected additional GitHub API call");
+      return { ok: true, status: 200, json: async () => values.shift() };
+    },
+    ...overrides,
+  });
+  await action(calls, service);
 }
 
 const releasePr = () => ({ state: "open", head: { sha: head, ref: "runway/automated-456" } });
 
 test("release origin ignores ordinary PRs without minting credentials", async () => {
-  await mockApi(responses([{ state: "open", head: { sha: head, ref: "ordinary-change" } }]), async (calls) => {
+  await mockApi(responses([{ state: "open", head: { sha: head, ref: "ordinary-change" } }]), async (calls, { origin, mergeRelease }) => {
     await origin();
     assert.equal(calls.length, 2);
   });
@@ -63,7 +59,7 @@ test("automatic merge requires exact attested content, strict protection, curren
       { total_count: 2, check_runs: policy.requiredChecks.map((name) => ({ name, head_sha: head, app: { slug: "github-actions" }, status: "completed", conclusion: "success" })) },
       { merged: true },
     ];
-    await mockApi(fixtures(), async (calls) => {
+    await mockApi(fixtures(), async (calls, { origin, mergeRelease }) => {
       await mergeRelease(manifest, policy);
       assert.equal(calls.at(-1).method, "PUT");
     });
@@ -80,40 +76,81 @@ test("automatic merge requires exact attested content, strict protection, curren
     ]) {
       const values = fixtures();
       mutate(values[index]);
-      await mockApi(values, () => assert.rejects(mergeRelease(manifest, policy), error));
+      await mockApi(values, (calls, { mergeRelease }) => assert.rejects(mergeRelease(manifest, policy), error));
     }
 });
 
 test("release origin rejects fork validation, stale heads, and untrusted producer provenance", async () => {
   const fork = responses([releasePr()]);
   fork[0].head_repository.full_name = "untrusted/fork";
-  await mockApi(fork, () => assert.rejects(origin(), /Untrusted validation/));
+  await mockApi(fork, (calls, { origin }) => assert.rejects(origin(), /Untrusted validation/));
   for (const producer of [{ path: ".github/workflows/other.yml" }, { conclusion: "failure" }, { event: "workflow_dispatch" }, { head_branch: "untrusted" }, { head_repository: { full_name: "untrusted/fork" } }]) {
-    await mockApi(responses([releasePr()], producer), () => assert.rejects(origin(), /not trusted/));
+    await mockApi(responses([releasePr()], producer), (calls, { origin }) => assert.rejects(origin(), /not trusted/));
   }
-  await mockApi(responses([{ ...releasePr(), head: { ...releasePr().head, sha: "b".repeat(40) } }]), async (calls) => {
+  await mockApi(responses([{ ...releasePr(), head: { ...releasePr().head, sha: "b".repeat(40) } }]), async (calls, { origin, mergeRelease }) => {
     await origin();
     assert.equal(calls.length, 2);
   });
 });
 
 test("release waits for the trusted producer attestation and records only its exact run ID", async () => {
-  const directory = await mkdtemp(join(tmpdir(), "runway-release-test-"));
-  const previous = process.env.GITHUB_OUTPUT;
-  process.env.GITHUB_OUTPUT = join(directory, "output");
-  try {
-    const values = responses([releasePr()]);
-    values.splice(2, 0, { status: "in_progress" });
-    let waits = 0;
-    await mockApi(values, async () => origin({ wait: async () => { waits++; } }));
-    assert.equal(waits, 1);
-    assert.equal(await readFile(process.env.GITHUB_OUTPUT, "utf8"), "producer=456\n");
-    const unfinished = responses([releasePr()]).slice(0, 2);
-    unfinished.push(...Array.from({ length: 13 }, () => ({ status: "in_progress" })));
-    await mockApi(unfinished, () => assert.rejects(origin({ wait: async () => {} }), /has not completed/));
-  } finally {
-    if (previous === undefined) delete process.env.GITHUB_OUTPUT;
-    else process.env.GITHUB_OUTPUT = previous;
-    await rm(directory, { recursive: true });
-  }
+  const outputs = [];
+  const values = responses([releasePr()]);
+  values.splice(2, 0, { status: "in_progress" });
+  let waits = 0;
+  await mockApi(values, (calls, service) => service.origin(), {
+    wait: async () => { waits++; }, writeOutput: async (value) => outputs.push(value),
+  });
+  assert.equal(waits, 1);
+  assert.deepEqual(outputs, ["producer=456\n"]);
+  const unfinished = responses([releasePr()]).slice(0, 2);
+  unfinished.push(...Array.from({ length: 13 }, () => ({ status: "in_progress" })));
+  await mockApi(unfinished, (calls, service) => assert.rejects(service.origin(), /has not completed/), { wait: async () => {} });
 });
+
+test("release App identity uses an injected clock and repository-scoped permissions", async () => {
+    const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+    const outputs = [];
+    const service = createReleaseService({
+      repository, appId: "123", installationId: "456", privateKey,
+      now: () => Date.parse("2026-10-19T03:00:00Z"),
+      writeOutput: async (value) => outputs.push(value),
+      fetcher: async (url, options) => {
+        assert.equal(url, "https://api.github.com/app/installations/456/access_tokens");
+        const jwt = options.headers.Authorization.slice("Bearer ".length);
+        const [header, payload, signature] = jwt.split(".");
+        assert.equal(verify("RSA-SHA256", Buffer.from(`${header}.${payload}`), publicKey, Buffer.from(signature, "base64url")), true);
+        const claims = JSON.parse(Buffer.from(payload, "base64url").toString());
+        assert.deepEqual(claims, { iat: 1792378770, exp: 1792379100, iss: "123" });
+        const body = JSON.parse(options.body);
+        assert.deepEqual(body.repositories, ["synthetic-runway"]);
+        assert.deepEqual(body.permissions, { contents: "write", pull_requests: "write", actions: "read", checks: "read", administration: "read" });
+        return { ok: true, status: 200, json: async () => ({ token: "synthetic-installation-token" }) };
+      },
+    });
+    await service.appToken();
+    assert.deepEqual(outputs, ["token=synthetic-installation-token\n"]);
+  });
+
+test("trusted generation can pack allowlisted content without release credentials", async () => {
+    const directory = await mkdtemp(resolve(tmpdir(), "runway-pack-test-"));
+    const root = (...parts) => resolve(directory, ...parts);
+    try {
+      await mkdir(root("release-input"));
+      await mkdir(root("catalog"));
+      await writeFile(root("release-input", "proposal.json"), JSON.stringify({ baseSha: head, researchRunId: "111" }));
+      await writeFile(root("catalog", "automation-state.json"), '{"schemaVersion":1}');
+      const service = createReleaseService({
+        repository, runId: "456", root,
+        git: (...args) => args[0] === "rev-parse" ? head : args[0] === "diff" ? "catalog/automation-state.json" : "",
+        fetcher: () => assert.fail("Packing must not contact GitHub"),
+      });
+      await service.pack();
+      const manifest = JSON.parse(await readFile(root("release-output", "manifest.json"), "utf8"));
+      assert.equal(manifest.producerRunId, "456");
+      assert.equal(manifest.files[0].path, "catalog/automation-state.json");
+      assert.equal(await readFile(root("release-output", "files", "catalog", "automation-state.json"), "utf8"), '{"schemaVersion":1}');
+    } finally {
+      await rm(directory, { recursive: true });
+    }
+  });

@@ -1,5 +1,5 @@
-import { escapeHtml } from "../scripts/lib.mjs";
-import { runRecipe } from "./model.mjs";
+import { escapeHtml } from "../shared/text.mjs";
+import { runRecipe } from "../shared/recipes.mjs";
 
 export function featureVisual(feature, icons) {
   const accent = feature.lifecycle.status === "experimental" ? "accent" : "link";

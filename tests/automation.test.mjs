@@ -153,7 +153,7 @@ test("release eligibility rejects infrastructure paths, missing checks, and stal
 test("a previously unknown feature generates complete offline assets without per-feature code edits", async () => {
   const directory = await mkdtemp(fromRoot(".automation-test-"));
   try {
-    for (const name of ["scripts", "site", "catalog", "readiness", "demos", "features", "artifacts", "docs", "tests"]) {
+    for (const name of ["scripts", "shared", "site", "catalog", "readiness", "demos", "features", "artifacts", "docs", "tests"]) {
       await cp(fromRoot(name), resolve(directory, name), { recursive: true });
     }
     await cp(fromRoot("package.json"), resolve(directory, "package.json"));

@@ -21,6 +21,7 @@ jobs:
     permissions:
       contents: read
       pages: read
+      actions: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -36,6 +37,9 @@ jobs:
         run: npm run sources:scan -- --update
       - name: Build reviewed catalog with a fresh discovery-only Radar
         run: npm run build
+        env:
+          RUNWAY_SCOUT_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
       - name: Install the portal test browser
         run: npx playwright install --with-deps chromium
       - name: Verify portal behavior before publication

@@ -1,5 +1,6 @@
-import { mdText, mdFence, mdUrl } from "../scripts/lib.mjs";
-import { validateRecipe, runRecipe, sameRecipeOutput, featureSourceIds } from "../site/model.mjs";
+import { mdText, mdFence, mdUrl } from "../shared/text.mjs";
+import { validateRecipe, runRecipe, sameRecipeOutput } from "../shared/recipes.mjs";
+import { featureSourceIds } from "../shared/evidence.mjs";
 
 export { validateRecipe, runRecipe, sameRecipeOutput };
 

@@ -9,6 +9,25 @@ const watch = await readJson(fromRoot("catalog", "watch.json"));
 const current = new Date("2026-10-14T12:00:00Z");
 const copy = () => structuredClone(data);
 
+test("malformed catalog shapes fail with field-specific errors rather than TypeErrors", () => {
+  for (const [mutate, message] of [
+    [(value) => { value.rubric = null; }, /Rubric: expected an object/],
+    [(value) => { value.features = null; }, /Features: expected an array/],
+    [(value) => { value.features[0] = null; }, /Features\[0\]: expected an object/],
+    [(value) => { value.features[0].readiness = {}; }, /readiness: expected an array/],
+    [(value) => { value.features[0].readiness[0] = null; }, /readiness\[0\]: expected an object/],
+    [(value) => { value.features[0].cost.sources = "billing"; }, /cost.sources: expected an array/],
+    [(value) => { value.features[0].enablement[0].sources = null; }, /enablement\[0\].sources: expected an array/],
+    [(value) => { value.sources.computer = null; }, /Source computer: expected an object/],
+    [(value) => { value.features[0].automatedReview = { findings: null }; }, /automatedReview.findings: expected an array/],
+  ]) {
+    const malformed = copy();
+    mutate(malformed);
+    assert.throws(() => validateCatalog(malformed, watch), (error) => !(error instanceof TypeError) && message.test(error.message));
+  }
+  assert.throws(() => validateCatalog(null, watch), /Catalog: expected an object/);
+});
+
 test("curated and automated capabilities use ten explicit required gates", () => {
   assert.doesNotThrow(() => validateCatalog(data, watch));
   for (const id of ["computer-use", "dynamic-workflows", "agentic-workflows", "cloud-sandboxes", "copilot-memory", "autopilot"]) {

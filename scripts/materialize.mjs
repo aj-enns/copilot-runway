@@ -1,9 +1,10 @@
+import { exactKeys, idPattern } from "../shared/validation.mjs";
 import { pathToFileURL } from "node:url";
 import { appendFile } from "node:fs/promises";
 import { fromRoot, readJson, write, loadCatalog, isOfficialUrl } from "./lib.mjs";
-import { operationalPolicy, validateBundle, exactKeys, readBoundedJson } from "./automation.mjs";
+import { operationalPolicy, validateBundle, readBoundedJson } from "./automation.mjs";
 import { validateCatalog } from "./validate.mjs";
-import { validateDemoRecipe } from "../site/model.mjs";
+import { validateRecipe } from "../shared/recipes.mjs";
 
 function text(value, maximum, label) {
   if (typeof value !== "string" || !value.trim() || value.length > maximum) throw new Error(`${label}: concise text of at most ${maximum} characters required`);
@@ -60,11 +61,11 @@ export function applyBundle(bundle, research, policy, data, watch, state) {
       for (const [field, limit] of [["title", 100], ["mode", 80], ["prompt", 2000], ["expected", 1000], ["remoteCleanup", 600]]) text(feature.demo[field], limit, `Demo ${field}`);
       if (!Number.isInteger(feature.demo.minutes) || feature.demo.minutes < 1 || feature.demo.minutes > 30) throw new Error("Demo must be 1 to 30 minutes");
       if (!feature.demo.recipe || feature.demo.liveStatus !== "not-run" || feature.demo.status !== "kit-tested") throw new Error("Only tested offline recipes with no live claim can publish");
-      validateDemoRecipe(feature.demo.recipe);
+      validateRecipe(feature.demo.recipe);
       feature.provenance = provenance(decision.citations);
       const sourceIds = new Set(Object.keys(decision.sources));
       for (const [id, source] of Object.entries(decision.sources)) {
-        if (!/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(id)) throw new Error("Invalid source ID");
+        if (!idPattern.test(id)) throw new Error("Invalid source ID");
         exactKeys(source, ["title", "shortTitle", "url", "publisher", "kind", "verifiedOn"]);
         for (const [field, limit] of [["title", 180], ["shortTitle", 40], ["publisher", 40], ["kind", 40]]) text(source[field], limit, `Source ${field}`);
         if (result.sources[id]) throw new Error("Automated features cannot overwrite a source");

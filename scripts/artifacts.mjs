@@ -1,14 +1,15 @@
+import { presentationBytes } from "./presentation.mjs";
 import { mkdir } from "node:fs/promises";
 import pptxgen from "pptxgenjs";
 import octicons from "@primer/octicons";
 import { fromRoot, loadCatalog, readJson, write, fingerprint, assessmentMarkdown, verdict, verdictLabels } from "./lib.mjs";
 import { validateCatalog } from "./validate.mjs";
-import { featureSourceIds, lifecycleLabels, reviewLabel, evaluationDate } from "../site/model.mjs";
+import { featureSourceIds, lifecycleLabels, reviewLabel, evaluationDate } from "../shared/evidence.mjs";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { recipeRunbook, assertRecipeFeature, recipeFixtures } from "../demos/recipes.mjs";
 import { setupDemo, rehearseDemo, verifyDemo } from "./demo.mjs";
-import { runRecipe } from "../site/model.mjs";
+import { runRecipe } from "../shared/recipes.mjs";
 
 // Trusted offline acceptance: kit-tested is claimed only after this passes; it never implies live validation.
 async function acceptRecipe(feature) {
@@ -197,9 +198,9 @@ for (const [index, feature] of data.features.entries()) {
   const deckPath = `artifacts/slides/${feature.id}.pptx`;
   const assessmentPath = `features/${feature.id}/assessment.md`;
   await write(fromRoot(assessmentPath), assessmentMarkdown(feature, data));
-  await write(fromRoot(deckPath), await deck.write({ outputType: "nodebuffer" }));
+  await write(fromRoot(deckPath), await presentationBytes(deck));
   manifest.features.push({ id: feature.id, slides: 2, deck: deckPath, assessment: assessmentPath, fingerprint: fingerprint(feature, data) });
 }
-await write(fromRoot("artifacts", "slides", "copilot-runway.pptx"), await combined.write({ outputType: "nodebuffer" }));
+await write(fromRoot("artifacts", "slides", "copilot-runway.pptx"), await presentationBytes(combined));
 await write(fromRoot("artifacts", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 console.log(`Generated ${manifest.features.length} two-slide briefs, the combined ${manifest.features.length * 2}-slide architect deck, and matching Markdown assessments with primary-source links.`);
