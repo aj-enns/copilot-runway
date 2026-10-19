@@ -181,6 +181,10 @@ test("a previously unknown feature generates complete offline assets without per
     assert.equal(tests.status, 0, `${tests.stdout}\n${tests.stderr}`);
     const portal = await readFile(resolve(directory, "dist", "index.html"), "utf8");
     assert.match(portal, /synthetic-capability/);
+    const payload = JSON.parse(portal.match(/<script type="application\/json" id="runway-data">([\s\S]*?)<\/script>/)[1]);
+    assert.equal(payload.siteUpdate.latestAutomatedAssessmentOn, today);
+    assert.ok(Number.isFinite(Date.parse(payload.siteUpdate.builtAt)));
+    assert.equal(payload.updatedOn, data.updatedOn);
     assert.match(await readFile(resolve(directory, "demos", "synthetic-capability", "README.md"), "utf8"), /offline/i);
   } finally {
     await rm(directory, { recursive: true, force: true });

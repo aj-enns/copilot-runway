@@ -119,6 +119,8 @@ Only use this recipe when it meaningfully illustrates the capability's control s
 
 ## Validation and recovery
 
+The dashboard footer shows **Site built** with a UTC timestamp and **Latest automated assessment** with the newest machine-assessment date included in that build. If none exists, it says **not recorded**. Build time is not deployment completion: confirm the Pages run succeeded. Neither value changes the top-bar human **Evidence reviewed** date or proves live readiness. An unchanged/excluded queue decision or source scan alone is not a new feature assessment.
+
 ```powershell
 npm run automation:prepare
 npm run artifacts
