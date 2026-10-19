@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "39294592983",
+  "baseSha": "52eb2bba7930cf7adb17fc209f74e9c449d740ef",
+  "decisions": [
+    {
+      "id": "computer-use",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The fetched concept doc still says public preview and managed-settings control. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "e5d7d0827f8dfdb9525a06f98480e2eec862562b670a698fd18c9ff664a3672a",
+          "quote": "Computer use is in public preview and subject to change."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "e5d7d0827f8dfdb9525a06f98480e2eec862562b670a698fd18c9ff664a3672a",
+          "quote": "Enterprise administrators can disable computer use through managed settings. Enabling computer use locally does not override an enterprise policy."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Doc states public preview on macOS and Windows. No tested client version or eligible pilot identity is evidenced.",
+          "next": "Record the client version and a named pilot cohort."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Doc says managed settings can disable it. No negative enforcement test is evidenced.",
+          "next": "Run a negative test with a disabled test identity."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Fetched doc covers app approvals, not identity scopes, credential owner, or revocation.",
+          "next": "Document identity flow, scopes, and revocation."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Doc warns windows can expose sensitive data. Retention, deletion, and residency are not evidenced.",
+          "next": "Complete a data-flow review with synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "Doc describes approval prompts and Esc to stop. No prompt-injection test is evidenced.",
+          "next": "Test an untrusted on-screen instruction."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "Doc says tool activity can be reviewed in the session. Enterprise audit coverage is not evidenced.",
+          "next": "Confirm what audit records a session produces."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The fetched doc quotes no computer-use pricing or usage limit.",
+          "next": "Measure usage in the pilot tenant."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "The fetched doc covers local desktop control, not network or egress controls.",
+          "next": "Review model and endpoint egress for the client."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Doc warns UI changes can cause wrong or repeated actions. No support or monitoring owner is evidenced.",
+          "next": "Name an owner and failure-handling runbook."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Removing an always-allow approval does not revoke an active session. No rollback evidence is fetched.",
+          "next": "Document disable, revoke, and data-recovery steps."
+        }
+      ]
+    }
+  ]
+}
