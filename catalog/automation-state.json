@@ -65,6 +65,28 @@
       "reason": "Weekly reassessment. The fetched concept doc still says public preview and managed-settings control. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
       "attemptedOn": "2026-10-19",
       "runId": "39294592983"
+    },
+    "copilot-memory": {
+      "assessedOn": "2026-10-20",
+      "sourceHashes": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22"
+        }
+      ],
+      "revision": "e3ee87875e9e72aef91dc6b561aa5bd2297a4d52a243fca20bee0507aa29af5a",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The 2026-10-20 concept doc still says public preview, with admin enablement for managed plans and 28-day expiry of unused entries. No lifecycle change is shown. Tenant tests, audit, network, and cost evidence are not in the fetch, so every gate stays unknown. Human dates are not renewed.",
+      "attemptedOn": "2026-10-20",
+      "runId": "39450523244"
     }
   }
 }

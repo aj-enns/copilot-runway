@@ -36,7 +36,7 @@
       "slides": 2,
       "deck": "artifacts/slides/copilot-memory.pptx",
       "assessment": "features/copilot-memory/assessment.md",
-      "fingerprint": "6cc69bf702b123f23352210cdac63a2f9720584a03a129734d4ee89e71e2330a"
+      "fingerprint": "bad545e06b83920f37dd46535142df726cfeaf14a154cb05e15d362b49b94202"
     },
     {
       "id": "autopilot",
