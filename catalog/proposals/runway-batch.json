@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "39630491358",
+  "baseSha": "979604ac67975ea16470390d4d279aa85be77bac",
+  "decisions": [
+    {
+      "id": "dynamic-workflows",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The pinned SDK doc still says the API is experimental, with execution gated on eligible credentials. No lifecycle change is shown. Every gate stays unknown; human dates are not renewed. This is the session SDK API, not GitHub Agentic Workflows.",
+      "citations": [
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "07225bacc9f6194dd91e90a4dc16ae86eabe571b850af50da2cf104db45af30e",
+          "quote": "Dynamic Workflows are extension-authored, session-scoped workflows that coordinate subagents and durable steps. The API is experimental."
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "07225bacc9f6194dd91e90a4dc16ae86eabe571b850af50da2cf104db45af30e",
+          "quote": "still require eligible credentials (token-based billing or trusted HMAC authentication)."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "The doc says experimental and requires eligible credentials. Tested client version, tenant eligibility, and a pilot cohort are not in the fetch.",
+          "next": "Record client version and test an eligible and an ineligible identity."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "The fetched doc shows no enterprise policy or managed setting that disables the API.",
+          "next": "Find an official policy source and run a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Credential eligibility is described, but not scopes, ownership, or revocation.",
+          "next": "Document credential owner, scopes, and revocation; test out-of-scope denial."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Journal and checkpoint persistence is mentioned, but retention, deletion, and residency are not in the fetch.",
+          "next": "Review journal contents, retention, and deletion with synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No approval boundary or prompt-injection test evidence is in the fetch.",
+          "next": "Test an untrusted instruction and confirm pause or cancel controls."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "Run state and logs are mentioned, but identity mapping, retention, and access control are not shown.",
+          "next": "Reconstruct a synthetic run and record trace gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The doc names token-based billing as an eligibility path. Parallel subagent usage and spend limits are unmeasured.",
+          "next": "Cite current billing docs and measure a rehearsal run."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "No endpoint, proxy, or egress evidence is in the fetch.",
+          "next": "Validate allowed and denied destinations on the target client."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Experimental status implies API change risk. Support route and version inventory are not documented in the fetch.",
+          "next": "Record risk acceptance, version pin, support route, and an incident owner."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Cancel and resume are described, but cleanup of persisted journals and remote state is not evidenced.",
+          "next": "Rehearse cancel and reset twice; account for persisted state separately."
+        }
+      ]
+    }
+  ]
+}
