@@ -87,6 +87,24 @@
       "reason": "Weekly reassessment. The 2026-10-20 concept doc still says public preview, with admin enablement for managed plans and 28-day expiry of unused entries. No lifecycle change is shown. Tenant tests, audit, network, and cost evidence are not in the fetch, so every gate stays unknown. Human dates are not renewed.",
       "attemptedOn": "2026-10-20",
       "runId": "39450523244"
+    },
+    "dynamic-workflows": {
+      "assessedOn": "2026-10-21",
+      "sourceHashes": [
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "07225bacc9f6194dd91e90a4dc16ae86eabe571b850af50da2cf104db45af30e"
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "07225bacc9f6194dd91e90a4dc16ae86eabe571b850af50da2cf104db45af30e"
+        }
+      ],
+      "revision": "df814bab6839e93a3747ac3af7664f5af1da293b0c276597e2c982d5a4c2249b",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The pinned SDK doc still says the API is experimental, with execution gated on eligible credentials. No lifecycle change is shown. Every gate stays unknown; human dates are not renewed. This is the session SDK API, not GitHub Agentic Workflows.",
+      "attemptedOn": "2026-10-21",
+      "runId": "39630491358"
     }
   }
 }
