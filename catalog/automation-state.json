@@ -7,6 +7,13 @@
       "reason": "Material governance change (2026-10-22 changelog: global default policy for GA Copilot features, rollout through October 26). Needs a human-reviewed record. The only supported recipe, classify-required-booleans, does not exercise the real tenant policy. Admin-UI behavior, eligibility, exceptions and audit evidence are not in the fetched document. Retry once the default-availability docs are fetched.",
       "attemptedOn": "2026-10-23",
       "runId": "39946541228"
+    },
+    "0b0f6a529f6c1387": {
+      "revision": "e71e66be57f98b6dc49577814301b24121a12c42bc8d76834152e2bdc02ee49a",
+      "outcome": "pending",
+      "reason": "Possible lifecycle signal, but not enough evidence. The 1.0.104-0 pre-release note says Assisted Permissions no longer need experimental mode. It gives no stage (GA/preview), plan or policy scope, or admin controls. No existing catalog record covers it. The classify-required-booleans recipe cannot exercise real permission behavior. Retry when official docs or a stable release describe it.",
+      "attemptedOn": "2026-10-24",
+      "runId": "40089920279"
     }
   },
   "reviews": {
