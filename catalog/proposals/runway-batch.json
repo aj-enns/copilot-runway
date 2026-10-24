@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "40089920279",
+  "baseSha": "dc06890ce4a4d1f4ba8f2932a738ab400ce4b8e7",
+  "decisions": [
+    {
+      "id": "0b0f6a529f6c1387",
+      "outcome": "pending",
+      "reason": "Possible lifecycle signal, but not enough evidence. The 1.0.104-0 pre-release note says Assisted Permissions no longer need experimental mode. It gives no stage (GA/preview), plan or policy scope, or admin controls. No existing catalog record covers it. The classify-required-booleans recipe cannot exercise real permission behavior. Retry when official docs or a stable release describe it.",
+      "citations": []
+    }
+  ]
+}
