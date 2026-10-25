@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "runId": "39450523244",
+  "baseSha": "30eb61b5b9c291b3845b4597a1ea1b0566206680",
+  "decisions": [
+    {
+      "id": "copilot-memory",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The 2026-10-20 concept doc still says public preview, with admin enablement for managed plans and 28-day expiry of unused entries. No lifecycle change is shown. Tenant tests, audit, network, and cost evidence are not in the fetch, so every gate stays unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22",
+          "quote": "This feature is currently in public preview and is subject to change."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22",
+          "quote": "For enterprise- and organization-managed plans, an administrator must enable the policy first, and then individual users can opt out."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22",
+          "quote": "any stored fact or preference that goes unused is automatically deleted after 28 days."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Doc states public preview and per-user enablement. No tested client, tenant eligibility, or pilot cohort evidence is in this fetch.",
+          "next": "Confirm eligibility for a named pilot identity and a non-eligible identity."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Doc says admins must enable the policy and users can then opt out. No negative enforcement test or effective-policy evidence was fetched.",
+          "next": "Disable the policy for a test identity and verify it cannot be overridden."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Doc says repository facts need write-access users and preferences are tied to a billing entity. Token and scope evidence is not fetched.",
+          "next": "Test an out-of-scope repository and a user with the wrong billing entity."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Doc describes cited facts, billing-entity ownership, admin export/delete, and 28-day expiry. No data-flow, residency, or deletion evidence was tested.",
+          "next": "Review data flow with synthetic data and demonstrate deletion of the exact test memory."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "The fetched doc does not describe approval boundaries or stop controls for memory creation or reuse.",
+          "next": "Test whether an untrusted instruction can create a memory that changes later agent behavior."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "The fetched doc does not cover audit events or log retention for memory creation, use, or deletion.",
+          "next": "Check audit coverage for create, use, export, and delete on a synthetic memory."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The fetched doc lists no separate memory price. Usage cost from the surfaces that use memory is not measured.",
+          "next": "Measure a rehearsal and confirm the effective spending policy."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "The fetched doc has no network, proxy, or endpoint information for memory.",
+          "next": "Validate allowed and denied paths on the target client and execution surface."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Public preview is subject to change. No support route, version inventory, or incident ownership was fetched.",
+          "next": "Record preview risk acceptance, a support route, and a fallback."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Doc says repo owners and users can delete memories. Cleanup of one exact test memory was not demonstrated.",
+          "next": "Delete one synthetic memory and verify no unrelated memory is removed."
+        }
+      ]
+    }
+  ]
+}
