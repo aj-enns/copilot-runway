@@ -763,75 +763,83 @@
       },
       "automatedReview": {
         "kind": "automated",
-        "assessedOn": "2026-10-18",
-        "runId": "39170904897",
+        "assessedOn": "2026-10-25",
+        "runId": "40188888409",
         "sourceHashes": [
           {
             "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
-            "sha256": "f18f2b589ff15a4405cf8dfc4a2aabaef9cb78a5c860eec3929060d59891769e"
+            "sha256": "1524b78799703657cb4e165ac78fe03f7bf99805800c43922e54f1761636222c"
+          },
+          {
+            "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+            "sha256": "1524b78799703657cb4e165ac78fe03f7bf99805800c43922e54f1761636222c"
+          },
+          {
+            "url": "https://github.github.io/gh-aw/setup/quick-start/",
+            "sha256": "d9d1051857f35e395b36b01c9f983bac9910167a35d3fce8cc770de6e9589016"
           }
         ],
-        "reason": "Weekly reassessment. The 2026-02-13 changelog says technical preview. No newer lifecycle change is in the fetched evidence. Every gate stays unknown; this does not renew human dates.",
+        "reason": "Weekly reassessment. The 2026-02-13 changelog still says technical preview. The quick start gives no stage and no newer lifecycle change. This is GitHub Actions Agentic Workflows, not the session SDK Dynamic Workflows. Every gate stays unknown; human dates are not renewed.",
         "findings": [
           {
             "gate": "eligibility",
             "status": "unknown",
-            "reason": "The changelog states technical preview via the gh aw CLI. It gives no account, plan, or tenant eligibility.",
-            "next": "Confirm eligibility and the pinned gh aw version in official docs for a named pilot cohort."
+            "reason": "Changelog says technical preview via the gh aw extension. Plan eligibility and tested client versions are not in the fetch.",
+            "next": "Confirm stage, eligibility and a named pilot cohort in current official docs."
           },
           {
             "gate": "admin-control",
             "status": "unknown",
-            "reason": "The fetched changelog names no enterprise policy to disable or restrict the feature, and no bypass test.",
-            "next": "Find the official admin policy and run a negative enforcement test."
+            "reason": "No enterprise policy or negative enforcement test is in the fetched evidence.",
+            "next": "Test whether admins can disable or restrict workflows for a test identity."
           },
           {
             "gate": "identity",
             "status": "unknown",
-            "reason": "The changelog says workflows are read-only by default with safe outputs for writes. Identity and token scopes are not evidenced.",
-            "next": "Document the credential owner, scopes, storage, and revocation, then test denial."
+            "reason": "Read-only default is documented. Token scopes, credential owner and revocation are not verified.",
+            "next": "Document the credential owner and test an out-of-scope access attempt."
           },
           {
             "gate": "data",
             "status": "unknown",
-            "reason": "No retention, residency, or model-input handling is stated in the fetched changelog.",
-            "next": "Complete a data-flow review with synthetic data."
+            "reason": "The quick start tells readers to review engine data handling. Retention, residency and deletion evidence is absent.",
+            "next": "Complete a data-flow review with synthetic data per engine."
           },
           {
             "gate": "human-approval",
             "status": "unknown",
-            "reason": "Safe outputs are mentioned, but no human approval or stop mechanism is evidenced. No prompt-injection test was run.",
-            "next": "Define approval boundaries and run an untrusted-instruction test."
+            "reason": "Safe outputs are described for write operations. Approval boundaries and a prompt-injection test are not evidenced.",
+            "next": "Run an untrusted-instruction test and record the stop mechanism."
           },
           {
             "gate": "audit",
             "status": "unknown",
-            "reason": "The changelog gives no audit trail of requester, inputs, tool actions, or approvals.",
-            "next": "Reconstruct a synthetic run from Actions logs and record gaps."
+            "reason": "No sample trace, log access or retention evidence is in the fetch.",
+            "next": "Reconstruct a synthetic run from Actions logs and note gaps."
           },
           {
             "gate": "cost",
             "status": "unknown",
-            "reason": "The changelog gives no cost or billing detail. Spend is unmeasured.",
-            "next": "Cite current official billing docs and measure a rehearsal run."
+            "reason": "Billing paths are mentioned in the quick start. No measured usage or approved budget exists.",
+            "next": "Measure a rehearsal and confirm the billing path and budget owner."
           },
           {
             "gate": "network",
             "status": "unknown",
-            "reason": "The changelog mentions sandboxed execution and network isolation. No endpoint allowlist is evidenced.",
-            "next": "Validate allowed and denied destinations on the target runner."
+            "reason": "No endpoint allowlist or firewall validation is in the fetched evidence.",
+            "next": "Validate allowed and denied egress on the actual runner."
           },
           {
             "gate": "operations",
             "status": "unknown",
-            "reason": "Technical preview support terms, version cadence, and incident ownership are not in the fetched evidence.",
-            "next": "Record preview risk acceptance, support route, and a failure rehearsal."
+            "reason": "Technical preview caveats are noted. Support route, version inventory and incident owner are not verified.",
+            "next": "Record preview risk acceptance, a support route and an owner."
           },
           {
             "gate": "rollback",
             "status": "unknown",
-            "reason": "No scoped reset or remote cleanup procedure is evidenced.",
-            "next": "Document workflow removal and remote cleanup; verify after reset."
+            "reason": "No scoped reset or remote-state cleanup evidence is in the fetch.",
+            "next": "Define removal of workflow files, secrets and runs, and verify it."
           }
         ]
       }

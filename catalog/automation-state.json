@@ -18,18 +18,26 @@
   },
   "reviews": {
     "agentic-workflows": {
-      "assessedOn": "2026-10-18",
+      "assessedOn": "2026-10-25",
       "sourceHashes": [
         {
           "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
-          "sha256": "f18f2b589ff15a4405cf8dfc4a2aabaef9cb78a5c860eec3929060d59891769e"
+          "sha256": "1524b78799703657cb4e165ac78fe03f7bf99805800c43922e54f1761636222c"
+        },
+        {
+          "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+          "sha256": "1524b78799703657cb4e165ac78fe03f7bf99805800c43922e54f1761636222c"
+        },
+        {
+          "url": "https://github.github.io/gh-aw/setup/quick-start/",
+          "sha256": "d9d1051857f35e395b36b01c9f983bac9910167a35d3fce8cc770de6e9589016"
         }
       ],
-      "revision": "4d389991040e8a4a39b01ac3b0830735033f7f5b5cc0496f22b0a3eea2db1698",
+      "revision": "e626b05244a8b56c60b8eb1c109902ac3922f995aac66f23969ffb0bb6eb2d2a",
       "outcome": "review",
-      "reason": "Weekly reassessment. The 2026-02-13 changelog says technical preview. No newer lifecycle change is in the fetched evidence. Every gate stays unknown; this does not renew human dates.",
-      "attemptedOn": "2026-10-18",
-      "runId": "39170904897"
+      "reason": "Weekly reassessment. The 2026-02-13 changelog still says technical preview. The quick start gives no stage and no newer lifecycle change. This is GitHub Actions Agentic Workflows, not the session SDK Dynamic Workflows. Every gate stays unknown; human dates are not renewed.",
+      "attemptedOn": "2026-10-25",
+      "runId": "40188888409"
     },
     "autopilot": {
       "assessedOn": "2026-10-19",
