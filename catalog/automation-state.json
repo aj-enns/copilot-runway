@@ -40,18 +40,22 @@
       "runId": "40188888409"
     },
     "autopilot": {
-      "assessedOn": "2026-10-19",
+      "assessedOn": "2026-10-26",
       "sourceHashes": [
         {
           "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
-          "sha256": "661149adc3a90aa03d1e48c56def2bde6ae0a88e3f5377e1abb70b3b5b915dda"
+          "sha256": "8f723a78dc88da8db2cc5753d3fc4fefaf6a590064364fc0cf51db2b099e7192"
+        },
+        {
+          "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+          "sha256": "8f723a78dc88da8db2cc5753d3fc4fefaf6a590064364fc0cf51db2b099e7192"
         }
       ],
-      "revision": "fabdc93cddc7ff74cbd98af0b10e905176deb7b4a9fdde6e767f631821495072",
+      "revision": "e928c07c4bd02536a9375f23cf0fa1be26f02a35b973dcf54c1bd2c9f3e9df8c",
       "outcome": "review",
-      "reason": "Weekly reassessment. The pinned CLI README still lists Autopilot under Experimental Features. No lifecycle change is shown. Gates stay unknown; human dates are not renewed.",
-      "attemptedOn": "2026-10-19",
-      "runId": "39193804483"
+      "reason": "Weekly reassessment. The pinned CLI README still lists Autopilot under Experimental Features. No lifecycle change is shown. Every gate stays unknown; human dates are not renewed.",
+      "attemptedOn": "2026-10-26",
+      "runId": "40316354804"
     },
     "cloud-sandboxes": {
       "assessedOn": "2026-10-19",

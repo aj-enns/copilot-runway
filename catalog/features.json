@@ -1564,75 +1564,79 @@
       },
       "automatedReview": {
         "kind": "automated",
-        "assessedOn": "2026-10-19",
-        "runId": "39193804483",
+        "assessedOn": "2026-10-26",
+        "runId": "40316354804",
         "sourceHashes": [
           {
             "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
-            "sha256": "661149adc3a90aa03d1e48c56def2bde6ae0a88e3f5377e1abb70b3b5b915dda"
+            "sha256": "8f723a78dc88da8db2cc5753d3fc4fefaf6a590064364fc0cf51db2b099e7192"
+          },
+          {
+            "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+            "sha256": "8f723a78dc88da8db2cc5753d3fc4fefaf6a590064364fc0cf51db2b099e7192"
           }
         ],
-        "reason": "Weekly reassessment. The pinned CLI README still lists Autopilot under Experimental Features. No lifecycle change is shown. Gates stay unknown; human dates are not renewed.",
+        "reason": "Weekly reassessment. The pinned CLI README still lists Autopilot under Experimental Features. No lifecycle change is shown. Every gate stays unknown; human dates are not renewed.",
         "findings": [
           {
             "gate": "eligibility",
             "status": "unknown",
-            "reason": "README lists Autopilot as experimental. Plan, client version, and tenant eligibility are not shown.",
-            "next": "Confirm eligibility for the target client and plan in official docs."
+            "reason": "README says experimental mode, not a supported stage. Plan and tenant eligibility are not shown.",
+            "next": "Confirm stage, client version, and eligibility for a named pilot cohort."
           },
           {
             "gate": "admin-control",
             "status": "unknown",
-            "reason": "README does not describe enterprise policy controls for Autopilot.",
-            "next": "Find the official admin control for experimental CLI modes."
+            "reason": "The fetch has no policy to disable Autopilot or block a local experimental flag.",
+            "next": "Run a negative enforcement test with managed settings."
           },
           {
             "gate": "identity",
             "status": "unknown",
-            "reason": "README does not state identity or token scope for autonomous continuation.",
-            "next": "Verify the identity and scopes used during autonomous runs."
+            "reason": "The fetch does not describe scopes or credentials used during autonomous runs.",
+            "next": "Document identity flow and test out-of-scope denial."
           },
           {
             "gate": "data",
             "status": "unknown",
-            "reason": "README does not state data handling or retention for Autopilot sessions.",
-            "next": "Verify data handling in official CLI documentation."
+            "reason": "The fetch has no data retention, context, or residency detail for Autopilot.",
+            "next": "Complete a data-flow review with synthetic data."
           },
           {
             "gate": "human-approval",
             "status": "unknown",
-            "reason": "README says Autopilot continues until done. Approval behavior for tools is not shown in this excerpt.",
-            "next": "Verify permission prompts and unattended-run behavior."
+            "reason": "README says the agent continues until the task completes. Approval boundaries are not shown.",
+            "next": "Test prompt injection and the stop mechanism."
           },
           {
             "gate": "audit",
             "status": "unknown",
-            "reason": "README does not describe audit records for autonomous actions.",
-            "next": "Find official audit or session-log evidence for CLI activity."
+            "reason": "The fetch has no trace or log evidence for autonomous runs.",
+            "next": "Reconstruct a synthetic run and record the gaps."
           },
           {
             "gate": "cost",
             "status": "unknown",
-            "reason": "README billing text is legacy premium-request wording. Current tenant cost and budget caps are unmeasured.",
-            "next": "Measure usage on a synthetic task against current billing docs."
+            "reason": "README says each prompt reduces premium requests by one. Autonomous-run cost is unmeasured.",
+            "next": "Measure a rehearsal against current billing docs."
           },
           {
             "gate": "network",
             "status": "unknown",
-            "reason": "README does not state network or sandbox boundaries for Autopilot.",
-            "next": "Verify sandbox and network enforcement on the target OS."
+            "reason": "The fetch has no endpoint or egress guidance for Autopilot.",
+            "next": "Validate allowed and denied paths on the target OS."
           },
           {
             "gate": "operations",
             "status": "unknown",
-            "reason": "Experimental behavior may change between versions. No support or retirement terms are in the evidence.",
-            "next": "Recheck the CLI release notes before each use."
+            "reason": "Experimental behavior may change. Support and incident ownership are not documented.",
+            "next": "Record preview risk acceptance and a fallback runbook."
           },
           {
             "gate": "rollback",
             "status": "unknown",
-            "reason": "No rollback or disable procedure is described in the fetched evidence.",
-            "next": "Document how to stop a run and revert synthetic changes."
+            "reason": "README says the experimental setting persists in config. Reset is not tested here.",
+            "next": "Test a scoped reset and verify the baseline twice."
           }
         ]
       }
