@@ -1030,79 +1030,79 @@
       },
       "automatedReview": {
         "kind": "automated",
-        "assessedOn": "2026-10-19",
-        "runId": "39251646199",
+        "assessedOn": "2026-10-27",
+        "runId": "40496746781",
         "sourceHashes": [
           {
             "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
-            "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25"
+            "sha256": "d1ea3ff5b1ec18d3d37eb3825333ed7978d0bcb42f24533dd57b43efd1c4dfba"
           },
           {
             "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
-            "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25"
+            "sha256": "d1ea3ff5b1ec18d3d37eb3825333ed7978d0bcb42f24533dd57b43efd1c4dfba"
           }
         ],
-        "reason": "Weekly reassessment. The fetched doc still says cloud sandboxes are in public preview and billed by usage. No lifecycle change is shown. The fetch does not cover tenant policy, data, audit, or network controls, so every gate stays unknown. Human dates are not renewed.",
+        "reason": "Weekly reassessment. Docs still say public preview and usage-billed. Local sandboxing is now documented beside it, so keep the two separate. No human date or gate is renewed.",
         "findings": [
           {
             "gate": "eligibility",
             "status": "unknown",
-            "reason": "The doc states public preview. Pilot identity, client version, and account eligibility are not shown in the fetched evidence.",
-            "next": "Verify a permitted and an ineligible pilot identity on a supported client."
+            "reason": "Docs state public preview; account, plan, and client eligibility not re-verified by automation.",
+            "next": "Human to confirm pilot identity and client."
           },
           {
             "gate": "admin-control",
             "status": "unknown",
-            "reason": "The fetched page does not show an enforceable admin policy or a negative enforcement test.",
-            "next": "Test the disabled policy with a pilot identity."
+            "reason": "Cloud policy controls not evidenced in the cited passages.",
+            "next": "Human to test enterprise/org policy on and off."
           },
           {
             "gate": "identity",
             "status": "unknown",
-            "reason": "No identity flow, token scope, or revocation evidence is in the fetched text.",
-            "next": "Document identity flow, scopes, owner, and revocation."
+            "reason": "Identity and repository access for cloud sessions not evidenced in the cited passages.",
+            "next": "Human to approve billing owner and repository access."
           },
           {
             "gate": "data",
             "status": "unknown",
-            "reason": "Retention, deletion, and residency for session state are not verified in this run.",
-            "next": "Review data flow, retention, and deletion with synthetic data."
+            "reason": "Snapshot retention and residency not evidenced in the cited passages.",
+            "next": "Human to approve retention, residency, and deletion."
           },
           {
             "gate": "human-approval",
             "status": "unknown",
-            "reason": "No approval boundary or prompt-injection test result is in the fetched evidence.",
-            "next": "Run an untrusted-instruction test and confirm a safe stop."
+            "reason": "Isolation does not establish approval for high-impact actions.",
+            "next": "Human to define approval points."
           },
           {
             "gate": "audit",
             "status": "unknown",
-            "reason": "No sample trace or log-access evidence is in the fetched text.",
-            "next": "Reconstruct a synthetic run from available traces."
+            "reason": "Audit export and retention for cloud sessions not evidenced here.",
+            "next": "Human to reconstruct a run from audit data."
           },
           {
             "gate": "cost",
             "status": "unknown",
-            "reason": "The doc says cloud sandboxing is billed by usage. Current rates, budget, and observed usage were not verified in this run.",
-            "next": "Check current billing docs and measure a rehearsal."
+            "reason": "Docs say billed by usage; current prices not re-verified in this run.",
+            "next": "Human to recheck prices and set a budget."
           },
           {
             "gate": "network",
             "status": "unknown",
-            "reason": "Endpoint allowlist and egress validation are not shown in the fetched evidence.",
-            "next": "Validate allowed and denied destinations on the target surface."
+            "reason": "Cloud egress policy not evidenced in the cited passages.",
+            "next": "Human to test allow/deny in a remote session."
           },
           {
             "gate": "operations",
             "status": "unknown",
-            "reason": "The preview is subject to change. Support route, risk acceptance, and incident ownership are not shown.",
-            "next": "Record preview risk acceptance, support route, and owner."
+            "reason": "Preview status implies change risk; support and lifecycle handling not verified.",
+            "next": "Human to assign an owner and rehearse failure."
           },
           {
             "gate": "rollback",
             "status": "unknown",
-            "reason": "Remote session and snapshot cleanup are not verified in this run.",
-            "next": "Rehearse stop and delete, and verify remote state separately."
+            "reason": "Remote stop and cleanup not evidenced in the cited passages.",
+            "next": "Human to verify stop and snapshot deletion."
           }
         ]
       }

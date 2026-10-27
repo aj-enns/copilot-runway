@@ -58,22 +58,22 @@
       "runId": "40316354804"
     },
     "cloud-sandboxes": {
-      "assessedOn": "2026-10-19",
+      "assessedOn": "2026-10-27",
       "sourceHashes": [
         {
           "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
-          "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25"
+          "sha256": "d1ea3ff5b1ec18d3d37eb3825333ed7978d0bcb42f24533dd57b43efd1c4dfba"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
-          "sha256": "667c6812da907fd160d9569b9300e6b2b6701ad7932e411d5d2862f72eda8e25"
+          "sha256": "d1ea3ff5b1ec18d3d37eb3825333ed7978d0bcb42f24533dd57b43efd1c4dfba"
         }
       ],
-      "revision": "d6937759ed0197c979452b20fe1f179caf8893598b6aae3c4499237491209abd",
+      "revision": "46d9588d19a4bda9adbcdb1e20db3ec2a3c0715343b539a8aa67f7b63e497caf",
       "outcome": "review",
-      "reason": "Weekly reassessment. The fetched doc still says cloud sandboxes are in public preview and billed by usage. No lifecycle change is shown. The fetch does not cover tenant policy, data, audit, or network controls, so every gate stays unknown. Human dates are not renewed.",
-      "attemptedOn": "2026-10-19",
-      "runId": "39251646199"
+      "reason": "Weekly reassessment. Docs still say public preview and usage-billed. Local sandboxing is now documented beside it, so keep the two separate. No human date or gate is renewed.",
+      "attemptedOn": "2026-10-27",
+      "runId": "40496746781"
     },
     "computer-use": {
       "assessedOn": "2026-10-19",
