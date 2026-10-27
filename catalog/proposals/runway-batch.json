@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "runId": "40496746781",
+  "baseSha": "5d5609fc297ae8423c78928e0e0e5408a49b5c3a",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. Docs still say public preview and usage-billed. Local sandboxing is now documented beside it, so keep the two separate. No human date or gate is renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "d1ea3ff5b1ec18d3d37eb3825333ed7978d0bcb42f24533dd57b43efd1c4dfba",
+          "quote": "Cloud sandboxes for GitHub Copilot are in public preview and subject to change."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "d1ea3ff5b1ec18d3d37eb3825333ed7978d0bcb42f24533dd57b43efd1c4dfba",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub. Cloud sandboxing is billed based on usage."
+        }
+      ],
+      "findings": [
+        {"gate": "eligibility", "status": "unknown", "reason": "Docs state public preview; account, plan, and client eligibility not re-verified by automation.", "next": "Human to confirm pilot identity and client."},
+        {"gate": "admin-control", "status": "unknown", "reason": "Cloud policy controls not evidenced in the cited passages.", "next": "Human to test enterprise/org policy on and off."},
+        {"gate": "identity", "status": "unknown", "reason": "Identity and repository access for cloud sessions not evidenced in the cited passages.", "next": "Human to approve billing owner and repository access."},
+        {"gate": "data", "status": "unknown", "reason": "Snapshot retention and residency not evidenced in the cited passages.", "next": "Human to approve retention, residency, and deletion."},
+        {"gate": "human-approval", "status": "unknown", "reason": "Isolation does not establish approval for high-impact actions.", "next": "Human to define approval points."},
+        {"gate": "audit", "status": "unknown", "reason": "Audit export and retention for cloud sessions not evidenced here.", "next": "Human to reconstruct a run from audit data."},
+        {"gate": "cost", "status": "unknown", "reason": "Docs say billed by usage; current prices not re-verified in this run.", "next": "Human to recheck prices and set a budget."},
+        {"gate": "network", "status": "unknown", "reason": "Cloud egress policy not evidenced in the cited passages.", "next": "Human to test allow/deny in a remote session."},
+        {"gate": "operations", "status": "unknown", "reason": "Preview status implies change risk; support and lifecycle handling not verified.", "next": "Human to assign an owner and rehearse failure."},
+        {"gate": "rollback", "status": "unknown", "reason": "Remote stop and cleanup not evidenced in the cited passages.", "next": "Human to verify stop and snapshot deletion."}
+      ]
+    }
+  ]
+}
