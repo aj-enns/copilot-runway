@@ -76,22 +76,30 @@
       "runId": "40496746781"
     },
     "computer-use": {
-      "assessedOn": "2026-10-19",
+      "assessedOn": "2026-10-28",
       "sourceHashes": [
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-          "sha256": "e5d7d0827f8dfdb9525a06f98480e2eec862562b670a698fd18c9ff664a3672a"
+          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-          "sha256": "e5d7d0827f8dfdb9525a06f98480e2eec862562b670a698fd18c9ff664a3672a"
+          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
         }
       ],
-      "revision": "584d303a9ac4053f25be62a4f77f5ba4b9f54866725692a4b924237d229c71bd",
+      "revision": "bd40cd5a3ad91ede0b57995716bcc3b742944a975f828bb616d260cc363b5258",
       "outcome": "review",
-      "reason": "Weekly reassessment. The fetched concept doc still says public preview and managed-settings control. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
-      "attemptedOn": "2026-10-19",
-      "runId": "39294592983"
+      "reason": "Weekly reassessment. The concept doc still says public preview, on CLI and app for macOS and Windows. It is disabled by default and follows tool permission settings. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
+      "attemptedOn": "2026-10-28",
+      "runId": "40679663823"
     },
     "copilot-memory": {
       "assessedOn": "2026-10-20",
