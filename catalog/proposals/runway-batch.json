@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "runId": "40679663823",
+  "baseSha": "1a90960ec4ae630d9da6d18d0c7f9b91eef7f09e",
+  "decisions": [
+    {
+      "id": "computer-use",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The concept doc still says public preview, on CLI and app for macOS and Windows. It is disabled by default and follows tool permission settings. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649",
+          "quote": "Computer use is in public preview and subject to change."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649",
+          "quote": "Computer use is available in GitHub Copilot CLI and the GitHub Copilot app on macOS and Windows."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649",
+          "quote": "Computer use is disabled by default. You must enable it before an agent can use its tools."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649",
+          "quote": "If you choose Always allow for a specific application, Copilot stores the decision locally."
+        }
+      ],
+      "findings": [
+        {"gate": "eligibility", "status": "unknown", "reason": "Docs state public preview and macOS/Windows on CLI and app. Plan and account eligibility are not in the fetch.", "next": "Confirm plan and tenant eligibility in official docs."},
+        {"gate": "admin-control", "status": "unknown", "reason": "Docs say disabled by default and tied to tool permission settings. Enterprise policy controls were not shown in this fetch.", "next": "Verify the enterprise managed-settings control in a tenant."},
+        {"gate": "identity", "status": "unknown", "reason": "No identity or account-scoping evidence in the fetched doc.", "next": "Find official identity and account scope guidance."},
+        {"gate": "data", "status": "unknown", "reason": "Docs warn windows may show sensitive information. Data handling and retention are not documented in the fetch.", "next": "Find official data handling and retention evidence."},
+        {"gate": "human-approval", "status": "unknown", "reason": "Docs describe per-application approval, with a saved Always allow stored locally. Enterprise enforcement of approval is unverified.", "next": "Test whether policy can block Always allow."},
+        {"gate": "audit", "status": "unknown", "reason": "No audit-log evidence for computer-use actions in the fetch.", "next": "Find official audit evidence or confirm none exists."},
+        {"gate": "cost", "status": "unknown", "reason": "Fetched billing docs were not assessed for computer-use cost. Cost is unmeasured.", "next": "Measure a synthetic session's usage and billing."},
+        {"gate": "network", "status": "unknown", "reason": "No network or egress control evidence in the fetched concept doc.", "next": "Document required endpoints and egress controls."},
+        {"gate": "operations", "status": "unknown", "reason": "Preview is subject to change. Support, monitoring, and incident handling are not shown.", "next": "Define an owner and a preview change watch."},
+        {"gate": "rollback", "status": "unknown", "reason": "Docs say removing an app approval deletes it for CLI and app. Fleet-wide disablement is unverified.", "next": "Test disablement and approval removal on a synthetic host."}
+      ]
+    }
+  ]
+}
