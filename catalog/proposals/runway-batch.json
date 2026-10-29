@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "runId": "40865067823",
+  "baseSha": "b873a857aab416fa21c833d3a1064075aa3a5edf",
+  "decisions": [
+    {
+      "id": "copilot-memory",
+      "outcome": "review",
+      "reason": "Material change: the 2026-10-29 doc gives a 90-day default expiry, with owner-set 7-180 days for repository facts. The prior review recorded 28 days. This fetch states no stage for Copilot Memory; only Copilot Dreaming is called public preview. Lifecycle is unverified. No tenant evidence was fetched, so every gate stays unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "The default expiry period is 90 days. Enterprise and organization owners can configure the expiry period for repository-level facts to any value between 7 and 180 days (inclusive)."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "Copilot Memory is available on all paid Copilot plans."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "Memories are only created when the applicable settings allow that type of memory."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "Copilot Dreaming is in public preview and is subject to change."
+        }
+      ],
+      "findings": [
+        {"gate": "eligibility", "status": "unknown", "reason": "Doc says all paid plans and lists surfaces. It states no release stage for Memory itself; only Dreaming is public preview. No pilot-cohort test.", "next": "Confirm Memory stage in an official source; test a permitted and an ineligible identity."},
+        {"gate": "admin-control", "status": "unknown", "reason": "Doc says plan settings and policies decide use, and owners set repository-fact expiry. No negative enforcement test was fetched.", "next": "Disable Memory for a test identity and verify local settings cannot override it."},
+        {"gate": "identity", "status": "unknown", "reason": "User-level preferences follow a user across repositories; repository facts are shared with collaborators. Scope and credential evidence is absent.", "next": "Document identity flow and run an out-of-scope repository access test."},
+        {"gate": "data", "status": "unknown", "reason": "Expiry is 90 days by default (7-180 for repository facts); user preferences stay at the default. Hidden memories can remain stored until expiry. Residency and deletion evidence is absent.", "next": "Review the data flow with synthetic data; prove deletion of repository and user memories."},
+        {"gate": "human-approval", "status": "unknown", "reason": "Doc describes secret screening and model-control token rejection. No approval boundary or prompt-injection test was fetched.", "next": "Run an untrusted-instruction test and record approval and stop controls."},
+        {"gate": "audit", "status": "unknown", "reason": "No audit-log or trace evidence for memory creation, use, or deletion is in the fetch.", "next": "Reconstruct a synthetic memory create/use/delete run and record the gaps."},
+        {"gate": "cost", "status": "unknown", "reason": "The doc has a usage and billing section, but cost was not measured. No budget or observed usage exists.", "next": "Read the billing section and measure a rehearsal against an owned budget."},
+        {"gate": "network", "status": "unknown", "reason": "Many surfaces can use Memory (app, CLI, cloud agent, Slack, Teams). No endpoint or proxy evidence was fetched.", "next": "Validate allowed and denied paths on each target surface."},
+        {"gate": "operations", "status": "unknown", "reason": "Expiry changed from the earlier 28-day record with no changelog in the fetch. Stage, support route, and incident owner are unconfirmed.", "next": "Find the official change note; record preview acceptance and an owner."},
+        {"gate": "rollback", "status": "unknown", "reason": "Doc says a memory leaving the list may not be deleted. Explicit deletion is in settings. Scoped cleanup was not tested.", "next": "Delete synthetic memories, verify after reset, and list cleanup separately."}
+      ]
+    }
+  ]
+}
