@@ -102,26 +102,46 @@
       "runId": "40679663823"
     },
     "copilot-memory": {
-      "assessedOn": "2026-10-20",
+      "assessedOn": "2026-10-30",
       "sourceHashes": [
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22"
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22"
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a4ed7b3a9ffd97511bea1272046b8cea305bde96d856d167dbcc814e51905d22"
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/copilot-memory/manage-for-yourself",
+          "sha256": "46452b474fe6bb11b342c2c497dcd120a00ef9b4a50f0dc3db9c3f7ea300f03d"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/billing-and-usage/organizations-and-enterprises/billing",
+          "sha256": "418430b5fd9189a3df0ee079233202ccb0d9fc7c7e1d842b5c6d7b7acc762db6"
         }
       ],
-      "revision": "e3ee87875e9e72aef91dc6b561aa5bd2297a4d52a243fca20bee0507aa29af5a",
+      "revision": "3433894424b1f2d7a5b42914a1e392b19b7559931ed726dd40afde8d2cb99f17",
       "outcome": "review",
-      "reason": "Weekly reassessment. The 2026-10-20 concept doc still says public preview, with admin enablement for managed plans and 28-day expiry of unused entries. No lifecycle change is shown. Tenant tests, audit, network, and cost evidence are not in the fetch, so every gate stays unknown. Human dates are not renewed.",
-      "attemptedOn": "2026-10-20",
-      "runId": "39450523244"
+      "reason": "Weekly reassessment. The 2026-10-30 docs now give a 90-day default expiry, reset only by upvote, with owner-configurable periods. The catalog says 28 days with use-based renewal. The fetched Memory pages state no release stage, so public preview is unconfirmed. Every gate stays unknown. Human dates are not renewed.",
+      "attemptedOn": "2026-10-30",
+      "runId": "41047700057"
     },
     "dynamic-workflows": {
       "assessedOn": "2026-10-21",
