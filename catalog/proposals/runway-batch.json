@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "runId": "41047700057",
+  "baseSha": "b873a857aab416fa21c833d3a1064075aa3a5edf",
+  "decisions": [
+    {
+      "id": "copilot-memory",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The 2026-10-30 docs now give a 90-day default expiry, reset only by upvote, with owner-configurable periods. The catalog says 28 days with use-based renewal. The fetched Memory pages state no release stage, so public preview is unconfirmed. Every gate stays unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "The expiry period starts when a memory is created and resets when Copilot upvotes it. Simply retrieving a memory does not reset this period. The default expiry period is 90 days."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "On enterprise- and organization-managed plans, user-level preferences are off until an administrator enables them, after which you can opt out."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "On Copilot Business and Copilot Enterprise plans, user-level preferences are owned by the billing entity, which is the organization or enterprise that grants the user their license."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "Organization and enterprise owners can export or delete user-level preferences for their members, either in bulk or per user."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "Repository facts can be captured from pull requests that were closed without merging."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c",
+          "quote": "A memory disappearing from the list does not necessarily mean it has been deleted."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/copilot-memory/manage-for-yourself",
+          "sha256": "46452b474fe6bb11b342c2c497dcd120a00ef9b4a50f0dc3db9c3f7ea300f03d",
+          "quote": "Disabling user-level preferences does not disable repository-level facts or delete stored memories."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/billing-and-usage/organizations-and-enterprises/billing",
+          "sha256": "418430b5fd9189a3df0ee079233202ccb0d9fc7c7e1d842b5c6d7b7acc762db6",
+          "quote": "The AI credits paid usage policy is enabled by default for Copilot Business, Copilot Enterprise, and Copilot access."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Docs say Memory is for all paid plans. The fetched Memory pages state no release stage, so the catalog's public-preview claim is unconfirmed. No tested client or pilot cohort evidence was fetched.",
+          "next": "Confirm the current stage from a primary source. Test a permitted and an ineligible pilot identity."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Docs say managed-plan user preferences stay off until an admin enables them, and repository access is controlled separately. No negative enforcement test was fetched.",
+          "next": "Disable the policy for a test identity. Verify local settings cannot override it for both memory types."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Docs say billing entities own user preferences and repository facts need write access. Token and scope evidence, and out-of-scope denial, were not fetched.",
+          "next": "Test an out-of-scope repository and a user with the wrong or no default billing entity."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Expiry is now documented as 90 days by default, reset only by upvote, and owner-configurable. This conflicts with the catalog's 28-day use-based wording. Facts can come from unmerged PRs. Residency evidence is missing.",
+          "next": "Reconcile the retention wording. Approve fact classes, test deletion, and review residency with synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "Docs say Copilot creates memories itself as a byproduct of work. Users cannot directly create or edit a memory. No review-before-use or prompt-injection evidence was fetched.",
+          "next": "Define a fact reviewer. Test an untrusted instruction that tries to store a harmful fact."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "Docs say owners can export or delete user preferences. Memories carry citations. No sample trace, log retention, or incident reconstruction was fetched.",
+          "next": "Run a synthetic session. Reconstruct who created, used, and deleted a memory, and record gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The billing doc says the AI credits paid usage policy is on by default for Business and Enterprise. No standalone Memory price or observed usage was fetched.",
+          "next": "Measure a rehearsal and test the effective spending policy and budgets before any quotation."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Memory is a server-side service used across surfaces. No endpoint list, proxy test, or denied-path test was fetched.",
+          "next": "Document required endpoints. Validate allowed and denied paths on each target surface."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "The retention change shows behavior can shift between reviews. The fetched pages give no stage or support commitment for Memory. No owner or runbook evidence exists.",
+          "next": "Accept the lifecycle risk in writing. Assign an owner and rehearse invalid-citation handling."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Docs say hidden memories can remain stored until they expire, and local reset cannot remove server-side memories. Post-cleanup verification evidence was not fetched.",
+          "next": "Delete only the exact synthetic fact. Verify it is gone, not merely hidden, and account for its expiry."
+        }
+      ]
+    }
+  ]
+}
