@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "runId": "41196613835",
+  "baseSha": "efff8e55d01221ce88718aa4ecdfe6ae1d62d21b",
+  "decisions": [
+    {
+      "id": "dynamic-workflows",
+      "outcome": "review",
+      "reason": "Weekly reassessment of the session SDK Dynamic Workflows doc. It still says the API is experimental. It adds eligibility limits, soft AI-credit budgets and storage requirements. No human date or gate is renewed.",
+      "citations": [
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016",
+          "quote": "Dynamic Workflows are extension-authored, session-scoped workflows that coordinate subagents and durable steps. The API is experimental."
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016",
+          "quote": "still require eligible credentials (token-based billing or trusted HMAC authentication)."
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016",
+          "quote": "This is a soft, post-paid ceiling, so completed or parallel turns can settle above it before the run stops."
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016",
+          "quote": "SDK-initiated run and resume do not request permission, so they have no declined outcome."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Doc says the API is experimental and limits execution to token-based billing or trusted HMAC credentials. Tenant eligibility and a pilot cohort are not evidenced.",
+          "next": "Confirm the stage, supported clients and account eligibility with a pilot identity."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "The doc names no organization or enterprise policy to disable or scope Dynamic Workflows.",
+          "next": "Find an official admin control, or record that none exists."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Credential eligibility is described, but how runs map to user identity and least privilege is not.",
+          "next": "Verify identity and permission handling for runs in a pilot."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Runs journal results in durable storage. Retention, residency and prompt data handling are not documented here.",
+          "next": "Review official data handling and storage documentation."
+        },
+        {
+          "gate": "human-approval",
+          "status": "fail",
+          "reason": "SDK-initiated run and resume request no permission, so no human approval prompt applies on that path.",
+          "next": "Design an external approval checkpoint before any pilot."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "Run observation APIs exist, but enterprise audit-log coverage is not documented here.",
+          "next": "Check whether runs appear in audit or export logs."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "maxAiCredits is a soft, post-paid ceiling and may be exceeded. Real cost is unmeasured.",
+          "next": "Measure credits in a pilot and set a billing budget."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Network and endpoint requirements are not stated in this document.",
+          "next": "Document required endpoints and proxy behavior."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Resume, pause, cancel and storage-failure behavior is documented, but operational ownership and support are not.",
+          "next": "Assign an owner and test failure and resume handling."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "No documented way to disable the feature tenant-wide or revert a run's side effects.",
+          "next": "Define a stop procedure and an idempotency plan for side effects."
+        }
+      ]
+    }
+  ]
+}
