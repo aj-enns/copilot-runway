@@ -144,22 +144,30 @@
       "runId": "41047700057"
     },
     "dynamic-workflows": {
-      "assessedOn": "2026-10-21",
+      "assessedOn": "2026-10-31",
       "sourceHashes": [
         {
           "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
-          "sha256": "07225bacc9f6194dd91e90a4dc16ae86eabe571b850af50da2cf104db45af30e"
+          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
         },
         {
           "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
-          "sha256": "07225bacc9f6194dd91e90a4dc16ae86eabe571b850af50da2cf104db45af30e"
+          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
         }
       ],
-      "revision": "df814bab6839e93a3747ac3af7664f5af1da293b0c276597e2c982d5a4c2249b",
+      "revision": "79a0fe278c6576d3b89e094920add16e922918322b57dce1863e96627e4ef8f5",
       "outcome": "review",
-      "reason": "Weekly reassessment. The pinned SDK doc still says the API is experimental, with execution gated on eligible credentials. No lifecycle change is shown. Every gate stays unknown; human dates are not renewed. This is the session SDK API, not GitHub Agentic Workflows.",
-      "attemptedOn": "2026-10-21",
-      "runId": "39630491358"
+      "reason": "Weekly reassessment of the session SDK Dynamic Workflows doc. It still says the API is experimental. It adds eligibility limits, soft AI-credit budgets and storage requirements. No human date or gate is renewed.",
+      "attemptedOn": "2026-10-31",
+      "runId": "41196613835"
     }
   }
 }

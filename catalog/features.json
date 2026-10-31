@@ -505,79 +505,87 @@
       },
       "automatedReview": {
         "kind": "automated",
-        "assessedOn": "2026-10-21",
-        "runId": "39630491358",
+        "assessedOn": "2026-10-31",
+        "runId": "41196613835",
         "sourceHashes": [
           {
             "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
-            "sha256": "07225bacc9f6194dd91e90a4dc16ae86eabe571b850af50da2cf104db45af30e"
+            "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
           },
           {
             "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
-            "sha256": "07225bacc9f6194dd91e90a4dc16ae86eabe571b850af50da2cf104db45af30e"
+            "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
+          },
+          {
+            "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+            "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
+          },
+          {
+            "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+            "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
           }
         ],
-        "reason": "Weekly reassessment. The pinned SDK doc still says the API is experimental, with execution gated on eligible credentials. No lifecycle change is shown. Every gate stays unknown; human dates are not renewed. This is the session SDK API, not GitHub Agentic Workflows.",
+        "reason": "Weekly reassessment of the session SDK Dynamic Workflows doc. It still says the API is experimental. It adds eligibility limits, soft AI-credit budgets and storage requirements. No human date or gate is renewed.",
         "findings": [
           {
             "gate": "eligibility",
             "status": "unknown",
-            "reason": "The doc says experimental and requires eligible credentials. Tested client version, tenant eligibility, and a pilot cohort are not in the fetch.",
-            "next": "Record client version and test an eligible and an ineligible identity."
+            "reason": "Doc says the API is experimental and limits execution to token-based billing or trusted HMAC credentials. Tenant eligibility and a pilot cohort are not evidenced.",
+            "next": "Confirm the stage, supported clients and account eligibility with a pilot identity."
           },
           {
             "gate": "admin-control",
             "status": "unknown",
-            "reason": "The fetched doc shows no enterprise policy or managed setting that disables the API.",
-            "next": "Find an official policy source and run a negative enforcement test."
+            "reason": "The doc names no organization or enterprise policy to disable or scope Dynamic Workflows.",
+            "next": "Find an official admin control, or record that none exists."
           },
           {
             "gate": "identity",
             "status": "unknown",
-            "reason": "Credential eligibility is described, but not scopes, ownership, or revocation.",
-            "next": "Document credential owner, scopes, and revocation; test out-of-scope denial."
+            "reason": "Credential eligibility is described, but how runs map to user identity and least privilege is not.",
+            "next": "Verify identity and permission handling for runs in a pilot."
           },
           {
             "gate": "data",
             "status": "unknown",
-            "reason": "Journal and checkpoint persistence is mentioned, but retention, deletion, and residency are not in the fetch.",
-            "next": "Review journal contents, retention, and deletion with synthetic data."
+            "reason": "Runs journal results in durable storage. Retention, residency and prompt data handling are not documented here.",
+            "next": "Review official data handling and storage documentation."
           },
           {
             "gate": "human-approval",
-            "status": "unknown",
-            "reason": "No approval boundary or prompt-injection test evidence is in the fetch.",
-            "next": "Test an untrusted instruction and confirm pause or cancel controls."
+            "status": "fail",
+            "reason": "SDK-initiated run and resume request no permission, so no human approval prompt applies on that path.",
+            "next": "Design an external approval checkpoint before any pilot."
           },
           {
             "gate": "audit",
             "status": "unknown",
-            "reason": "Run state and logs are mentioned, but identity mapping, retention, and access control are not shown.",
-            "next": "Reconstruct a synthetic run and record trace gaps."
+            "reason": "Run observation APIs exist, but enterprise audit-log coverage is not documented here.",
+            "next": "Check whether runs appear in audit or export logs."
           },
           {
             "gate": "cost",
             "status": "unknown",
-            "reason": "The doc names token-based billing as an eligibility path. Parallel subagent usage and spend limits are unmeasured.",
-            "next": "Cite current billing docs and measure a rehearsal run."
+            "reason": "maxAiCredits is a soft, post-paid ceiling and may be exceeded. Real cost is unmeasured.",
+            "next": "Measure credits in a pilot and set a billing budget."
           },
           {
             "gate": "network",
             "status": "unknown",
-            "reason": "No endpoint, proxy, or egress evidence is in the fetch.",
-            "next": "Validate allowed and denied destinations on the target client."
+            "reason": "Network and endpoint requirements are not stated in this document.",
+            "next": "Document required endpoints and proxy behavior."
           },
           {
             "gate": "operations",
             "status": "unknown",
-            "reason": "Experimental status implies API change risk. Support route and version inventory are not documented in the fetch.",
-            "next": "Record risk acceptance, version pin, support route, and an incident owner."
+            "reason": "Resume, pause, cancel and storage-failure behavior is documented, but operational ownership and support are not.",
+            "next": "Assign an owner and test failure and resume handling."
           },
           {
             "gate": "rollback",
             "status": "unknown",
-            "reason": "Cancel and resume are described, but cleanup of persisted journals and remote state is not evidenced.",
-            "next": "Rehearse cancel and reset twice; account for persisted state separately."
+            "reason": "No documented way to disable the feature tenant-wide or revert a run's side effects.",
+            "next": "Define a stop procedure and an idempotency plan for side effects."
           }
         ]
       }
