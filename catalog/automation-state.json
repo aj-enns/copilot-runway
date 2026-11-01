@@ -18,26 +18,26 @@
   },
   "reviews": {
     "agentic-workflows": {
-      "assessedOn": "2026-10-25",
+      "assessedOn": "2026-11-01",
       "sourceHashes": [
         {
           "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
-          "sha256": "1524b78799703657cb4e165ac78fe03f7bf99805800c43922e54f1761636222c"
+          "sha256": "617feaf6cf55fa4c4d484bb83d698afafba0846f1fa925f7e09f1675043d5d0b"
         },
         {
-          "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
-          "sha256": "1524b78799703657cb4e165ac78fe03f7bf99805800c43922e54f1761636222c"
+          "url": "https://github.com/github/gh-aw",
+          "sha256": "6ba2980e7df1a11aee4dbbf89f5485653e412ef85b21793ad9c58d697845e7f8"
         },
         {
-          "url": "https://github.github.io/gh-aw/setup/quick-start/",
-          "sha256": "d9d1051857f35e395b36b01c9f983bac9910167a35d3fce8cc770de6e9589016"
+          "url": "https://github.github.io/gh-aw/reference/safe-outputs/",
+          "sha256": "10b346f4dda04129594a97a443059ba9102f2f868ac61253989284ff54bc9950"
         }
       ],
-      "revision": "e626b05244a8b56c60b8eb1c109902ac3922f995aac66f23969ffb0bb6eb2d2a",
+      "revision": "c8abf0e1955e5221c38b729a11354254f91d95339fb6781d68ccc4a4c49fdd55",
       "outcome": "review",
-      "reason": "Weekly reassessment. The 2026-02-13 changelog still says technical preview. The quick start gives no stage and no newer lifecycle change. This is GitHub Actions Agentic Workflows, not the session SDK Dynamic Workflows. Every gate stays unknown; human dates are not renewed.",
-      "attemptedOn": "2026-10-25",
-      "runId": "40188888409"
+      "reason": "Weekly reassessment of GitHub Actions Agentic Workflows (not session SDK Dynamic Workflows). The 2026-02-13 changelog still states technical preview. No newer lifecycle source was fetched. Sources now include safe-outputs docs, but no tenant policy or audit evidence. All gates stay unknown; human dates are not renewed.",
+      "attemptedOn": "2026-11-01",
+      "runId": "41301619588"
     },
     "autopilot": {
       "assessedOn": "2026-10-26",
