@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "runId": "41301619588",
+  "baseSha": "53295a8ae78a89e36bef287318143e889720dc5d",
+  "decisions": [
+    {
+      "id": "agentic-workflows",
+      "outcome": "review",
+      "reason": "Weekly reassessment of GitHub Actions Agentic Workflows (not session SDK Dynamic Workflows). The 2026-02-13 changelog still states technical preview. No newer lifecycle source was fetched. Sources now include safe-outputs docs, but no tenant policy or audit evidence. All gates stay unknown; human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+          "sha256": "617feaf6cf55fa4c4d484bb83d698afafba0846f1fa925f7e09f1675043d5d0b",
+          "quote": "The feature is available in technical preview through the gh aw CLI extension."
+        },
+        {
+          "url": "https://github.com/github/gh-aw",
+          "sha256": "6ba2980e7df1a11aee4dbbf89f5485653e412ef85b21793ad9c58d697845e7f8",
+          "quote": "The supported agent-job path defaults to read-only GitHub access and sandboxed execution."
+        },
+        {
+          "url": "https://github.github.io/gh-aw/reference/safe-outputs/",
+          "sha256": "10b346f4dda04129594a97a443059ba9102f2f868ac61253989284ff54bc9950",
+          "quote": "Safe outputs separate action requests from execution: the agent requests actions through structured output, and separate permission-controlled jobs execute permitted requests."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "The changelog names technical preview via the gh aw extension. Plan eligibility, tested client versions and a pilot cohort are not in the fetched evidence.",
+          "next": "Confirm stage, plan eligibility and a named pilot cohort in current official docs."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No enterprise policy or negative enforcement test is in the fetched evidence.",
+          "next": "Test whether admins can disable or restrict workflows for a test identity."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Read-only agent-job defaults are documented, but they are configurable. Token scopes, credential owner and revocation are not verified.",
+          "next": "Document the credential owner and test an out-of-scope access attempt."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "No retention, residency or deletion evidence for model inputs and persisted context was fetched.",
+          "next": "Complete a data-flow review with synthetic data for each engine."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "Safe outputs separate requests from writes. Approval boundaries, stop mechanism and a prompt-injection test are not evidenced.",
+          "next": "Run an untrusted-instruction test and record the stop mechanism."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "The safe-outputs page mentions auditability as a goal. No sample trace, log retention or incident reconstruction was fetched.",
+          "next": "Reconstruct a synthetic run from Actions logs and record gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The billing page was fetched, but it does not state how agentic workflow runs are billed. No budget or measured usage exists.",
+          "next": "Find the official billing reference for engine and Actions usage, then measure a rehearsal."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Sandboxed execution is described. No endpoint allowlist or denied-destination test on the target runner was fetched.",
+          "next": "Validate allowed paths and a denied destination on the actual runner."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Technical preview limits, support route and version-change policy are not evidenced. No newer lifecycle source was fetched.",
+          "next": "Record preview risk acceptance, version inventory and an incident owner."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "No fetched evidence covers removing workflows, revoking credentials or cleaning up produced drafts and logs.",
+          "next": "Write and rehearse a scoped disable and cleanup checklist."
+        }
+      ]
+    }
+  ]
+}
