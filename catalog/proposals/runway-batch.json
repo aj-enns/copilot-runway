@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "41436358007",
+  "baseSha": "a822ec9d9bd32c0f14c8cc972b2f38906be82b41",
+  "decisions": [
+    {
+      "id": "autopilot",
+      "outcome": "review",
+      "reason": "Weekly reassessment of Autopilot (Copilot CLI). The README revision changed (new SHA-256) but still lists Autopilot under experimental features. Release v1.0.97 (2026-10-13) adds an unattended-permission behavior note, not a lifecycle change. No GA or preview source was fetched. All gates stay unknown; human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+          "sha256": "04d3f59e534d8788a114ea3f3979d19e90e5efe63cfe443aa36ff29bc8990a29",
+          "quote": "Autopilot mode: Autopilot is a new mode (press Shift+Tab to cycle through modes), which encourages the agent to continue working until a task is completed."
+        },
+        {
+          "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97",
+          "sha256": "4637441b12a4cdcc851ee2e02b7bbcddc791ead4414b6fb170d7cd1aaa16b289",
+          "quote": "Autopilot denies a preToolUse hook's \"ask\" decision instead of stopping on a permission dialog nobody is watching"
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "README still lists Autopilot as experimental; no source states a newer stage or tenant eligibility.",
+          "next": "Verify stage, client version, and account eligibility in official docs."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "v1.0.97 says managed permission rules are read-only in /config, but no source proves an admin can disable Autopilot.",
+          "next": "Test an enterprise policy that disables Autopilot; confirm local settings cannot override it."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "No fetched evidence defines Autopilot identity flow or token scopes.",
+          "next": "Document identity, scopes, and revocation for a pilot identity."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "No fetched evidence covers Autopilot context, retention, or deletion.",
+          "next": "Run a synthetic-data review of captured context and deletion."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "v1.0.97 says Autopilot denies a hook's ask decision when unattended. This is a release note, not a tested approval boundary.",
+          "next": "Run a prompt-injection test for send, delete, and access-change actions."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No fetched evidence describes an Autopilot audit trail.",
+          "next": "Reconstruct a synthetic run from available traces and record the gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "README premium-request text is legacy. v1.0.97 mentions billed AI Credits in /usage, but no spend was measured.",
+          "next": "Measure a rehearsal in /usage and test the effective budget policy."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "No fetched evidence defines the Autopilot endpoint or egress needs.",
+          "next": "Validate the allowlist and a denied destination on the target OS."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Experimental status implies change risk; no support route or version policy was fetched.",
+          "next": "Record preview risk acceptance, version inventory, and incident owner."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "No fetched evidence covers reset or cleanup of persisted Autopilot state.",
+          "next": "Run a scoped reset twice and list saved permissions and remote state separately."
+        }
+      ]
+    }
+  ]
+}
