@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "runId": "41626958877",
+  "baseSha": "b3b4f611f609639f8996ede2cb6e260acb21b087",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. Fetched docs still describe cloud sandboxes as separate from local sandboxing and usage-billed, with snapshot storage metered. They do not state a lifecycle stage, so the public-preview label is not re-confirmed here. No human date or gate is renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "c184ff4e7edfa9fbd6c7356389c3a88a31ff8cc67c4d94d8cb85b6984c32b56f",
+          "quote": "Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "c184ff4e7edfa9fbd6c7356389c3a88a31ff8cc67c4d94d8cb85b6984c32b56f",
+          "quote": "Cloud sandboxing is billed based on usage."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "42227550d555765a5df9c2100edc6acdc76e2f13c84af0eaa74840c90f780877",
+          "quote": "Snapshot storage is metered from the time the sandbox is stopped until the sandbox is deleted."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Fetched docs give no release stage, plan eligibility, or enablement path for cloud sandboxes.",
+          "next": "Confirm stage, supported clients, and plan eligibility in official docs; name a pilot cohort."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No org or enterprise policy to disable cloud sandboxes appears in the fetched evidence.",
+          "next": "Find the policy and run a negative enforcement test for a test identity."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Billing text assigns usage to an owner, but token and repository scoping inside the sandbox are not evidenced.",
+          "next": "Document identity flow and scopes; test an out-of-scope access attempt."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Snapshot storage is metered, but retention, deletion, and residency terms are not in the fetched evidence.",
+          "next": "Review snapshot retention and deletion; test with synthetic data only."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No approval boundary or stop control for sandbox sessions is evidenced.",
+          "next": "Run a prompt-injection test and confirm a human can stop the session."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No audit-log or session-trace evidence was fetched.",
+          "next": "Capture a sample trace and confirm log access and retention."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Billing docs describe usage metering, but spend for this tenant is unmeasured.",
+          "next": "Set a budget and measure a synthetic session's compute, memory, and snapshot cost."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Egress and firewall behavior for cloud sandboxes is not in the fetched evidence.",
+          "next": "Document egress controls and test an allowed and a blocked destination."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Support, monitoring, and lifecycle-change handling are not evidenced.",
+          "next": "Name an owner and a change-monitoring process before any pilot."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Stopped sessions keep metered snapshots until deleted; the deletion path is not evidenced.",
+          "next": "Document and test sandbox and snapshot deletion separately from local reset."
+        }
+      ]
+    }
+  ]
+}
