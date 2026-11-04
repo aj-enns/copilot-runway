@@ -226,87 +226,83 @@
       },
       "automatedReview": {
         "kind": "automated",
-        "assessedOn": "2026-10-28",
-        "runId": "40679663823",
+        "assessedOn": "2026-11-04",
+        "runId": "41820443442",
         "sourceHashes": [
           {
             "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-            "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
+            "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f"
           },
           {
             "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-            "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
+            "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f"
           },
           {
             "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-            "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
-          },
-          {
-            "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-            "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
+            "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f"
           }
         ],
-        "reason": "Weekly reassessment. The concept doc still says public preview, on CLI and app for macOS and Windows. It is disabled by default and follows tool permission settings. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
+        "reason": "Weekly reassessment. The concept doc (fetched 2026-11-04, new hash) still says public preview, with CLI and app on macOS and Windows. It is disabled by default and admins can disable it via managed settings. No lifecycle change shown. Tenant evidence is absent, so all gates stay unknown. Human dates are not renewed.",
         "findings": [
           {
             "gate": "eligibility",
             "status": "unknown",
-            "reason": "Docs state public preview and macOS/Windows on CLI and app. Plan and account eligibility are not in the fetch.",
-            "next": "Confirm plan and tenant eligibility in official docs."
+            "reason": "Docs state public preview on CLI and app for macOS and Windows. Tested client version and pilot eligibility are not evidenced.",
+            "next": "Record the client version and an eligible and ineligible test identity."
           },
           {
             "gate": "admin-control",
             "status": "unknown",
-            "reason": "Docs say disabled by default and tied to tool permission settings. Enterprise policy controls were not shown in this fetch.",
-            "next": "Verify the enterprise managed-settings control in a tenant."
+            "reason": "Docs say admins can disable it via managed settings. No negative enforcement test was fetched.",
+            "next": "Test a managed-settings denial on a separate identity."
           },
           {
             "gate": "identity",
             "status": "unknown",
-            "reason": "No identity or account-scoping evidence in the fetched doc.",
-            "next": "Find official identity and account scope guidance."
+            "reason": "No identity, scope, or credential evidence in the fetched documents.",
+            "next": "Document app rights, isolated profile, and revocation."
           },
           {
             "gate": "data",
             "status": "unknown",
-            "reason": "Docs warn windows may show sensitive information. Data handling and retention are not documented in the fetch.",
-            "next": "Find official data handling and retention evidence."
+            "reason": "Docs warn windows may show sensitive data. Retention and residency evidence is missing.",
+            "next": "Complete a data-flow review using synthetic data."
           },
           {
             "gate": "human-approval",
             "status": "unknown",
-            "reason": "Docs describe per-application approval, with a saved Always allow stored locally. Enterprise enforcement of approval is unverified.",
-            "next": "Test whether policy can block Always allow."
+            "reason": "Docs describe approvals and Esc interruption. No prompt-injection or stop test was run.",
+            "next": "Run an untrusted-instruction test and a stop test."
           },
           {
             "gate": "audit",
             "status": "unknown",
-            "reason": "No audit-log evidence for computer-use actions in the fetch.",
-            "next": "Find official audit evidence or confirm none exists."
+            "reason": "Session tool activity is mentioned. No enterprise audit trail evidence was fetched.",
+            "next": "Capture a synthetic trace and map audit gaps."
           },
           {
             "gate": "cost",
             "status": "unknown",
-            "reason": "Fetched billing docs were not assessed for computer-use cost. Cost is unmeasured.",
-            "next": "Measure a synthetic session's usage and billing."
+            "reason": "No scenario-specific usage or approved budget was measured.",
+            "next": "Measure a rehearsal and confirm the tenant budget."
           },
           {
             "gate": "network",
             "status": "unknown",
-            "reason": "No network or egress control evidence in the fetched concept doc.",
-            "next": "Document required endpoints and egress controls."
+            "reason": "No endpoint or egress validation evidence was fetched.",
+            "next": "Validate allowed and denied paths on the target OS."
           },
           {
             "gate": "operations",
             "status": "unknown",
-            "reason": "Preview is subject to change. Support, monitoring, and incident handling are not shown.",
-            "next": "Define an owner and a preview change watch."
+            "reason": "Docs say preview is subject to change. Support route and risk acceptance are not evidenced.",
+            "next": "Record preview risk acceptance and an incident owner."
           },
           {
             "gate": "rollback",
             "status": "unknown",
-            "reason": "Docs say removing an app approval deletes it for CLI and app. Fleet-wide disablement is unverified.",
-            "next": "Test disablement and approval removal on a synthetic host."
+            "reason": "Docs describe removing Always allow approvals. Reset verification was not performed.",
+            "next": "Rehearse a scoped reset and approval removal."
           }
         ]
       }
