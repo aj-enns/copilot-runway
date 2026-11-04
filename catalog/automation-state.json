@@ -80,30 +80,26 @@
       "runId": "41626958877"
     },
     "computer-use": {
-      "assessedOn": "2026-10-28",
+      "assessedOn": "2026-11-04",
       "sourceHashes": [
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
+          "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
+          "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
-        },
-        {
-          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
-          "sha256": "ad9ac0e4d92da2f469262c50281efc568b87ed026c865a5ef763c4fc455f5649"
+          "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f"
         }
       ],
-      "revision": "bd40cd5a3ad91ede0b57995716bcc3b742944a975f828bb616d260cc363b5258",
+      "revision": "8f6a3232446d12ee836e7f806fb636d619b397faac2e614386994090bc5072e7",
       "outcome": "review",
-      "reason": "Weekly reassessment. The concept doc still says public preview, on CLI and app for macOS and Windows. It is disabled by default and follows tool permission settings. No lifecycle change is shown. Tenant policy, data, audit, and network evidence is not in the fetch, so every gate stays unknown. Human dates are not renewed.",
-      "attemptedOn": "2026-10-28",
-      "runId": "40679663823"
+      "reason": "Weekly reassessment. The concept doc (fetched 2026-11-04, new hash) still says public preview, with CLI and app on macOS and Windows. It is disabled by default and admins can disable it via managed settings. No lifecycle change shown. Tenant evidence is absent, so all gates stay unknown. Human dates are not renewed.",
+      "attemptedOn": "2026-11-04",
+      "runId": "41820443442"
     },
     "copilot-memory": {
       "assessedOn": "2026-10-30",
