@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "runId": "41820443442",
+  "baseSha": "4945ca77a281e6d7281f5e503c73120c4d4171d3",
+  "decisions": [
+    {
+      "id": "computer-use",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The concept doc (fetched 2026-11-04, new hash) still says public preview, with CLI and app on macOS and Windows. It is disabled by default and admins can disable it via managed settings. No lifecycle change shown. Tenant evidence is absent, so all gates stay unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f",
+          "quote": "Computer use is in public preview and subject to change."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f",
+          "quote": "Computer use is disabled by default. You must enable it before an agent can use its tools."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/computer-use",
+          "sha256": "e92e3a42ed80fccc030e87fabd4b3eb5c5972f43e48ab7d49cee08ad9022f71f",
+          "quote": "Enterprise administrators can disable computer use through managed settings."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Docs state public preview on CLI and app for macOS and Windows. Tested client version and pilot eligibility are not evidenced.",
+          "next": "Record the client version and an eligible and ineligible test identity."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Docs say admins can disable it via managed settings. No negative enforcement test was fetched.",
+          "next": "Test a managed-settings denial on a separate identity."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "No identity, scope, or credential evidence in the fetched documents.",
+          "next": "Document app rights, isolated profile, and revocation."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Docs warn windows may show sensitive data. Retention and residency evidence is missing.",
+          "next": "Complete a data-flow review using synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "Docs describe approvals and Esc interruption. No prompt-injection or stop test was run.",
+          "next": "Run an untrusted-instruction test and a stop test."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "Session tool activity is mentioned. No enterprise audit trail evidence was fetched.",
+          "next": "Capture a synthetic trace and map audit gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "No scenario-specific usage or approved budget was measured.",
+          "next": "Measure a rehearsal and confirm the tenant budget."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "No endpoint or egress validation evidence was fetched.",
+          "next": "Validate allowed and denied paths on the target OS."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Docs say preview is subject to change. Support route and risk acceptance are not evidenced.",
+          "next": "Record preview risk acceptance and an incident owner."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Docs describe removing Always allow approvals. Reset verification was not performed.",
+          "next": "Rehearse a scoped reset and approval removal."
+        }
+      ]
+    }
+  ]
+}
