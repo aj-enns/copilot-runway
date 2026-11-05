@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "runId": "42018514685",
+  "baseSha": "6f3ebdb1fbfe7a4ef38eafdccae8eac9e8fcbb63",
+  "decisions": [
+    {
+      "id": "074b04407169f2f6",
+      "outcome": "excluded",
+      "reason": "Routine gh-aw v0.93.5 patch release (2026-10-25) focused on linters, diagnostics, and dependency pins. No new capability, lifecycle change, billing, or retirement. The safe-output network-credential change is noted for a later gh-aw reassessment, but the notes give no lifecycle or policy detail.",
+      "citations": [
+        {
+          "url": "https://github.com/github/gh-aw/releases/tag/v0.93.5",
+          "sha256": "14dc8bf641668d3c65a7db9a3a683b363aa5d793504ed57d83469f9c1d1afa2f",
+          "quote": "This release focuses on hardening: stronger static analysis linters, safer credential handling, and more robust diagnostics."
+        }
+      ]
+    }
+  ]
+}
