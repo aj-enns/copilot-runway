@@ -110,46 +110,38 @@
       "runId": "41820443442"
     },
     "copilot-memory": {
-      "assessedOn": "2026-10-30",
+      "assessedOn": "2026-11-06",
       "sourceHashes": [
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63"
         },
         {
           "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
-          "sha256": "a31ab1839fd512c5a9dab7356edde30ee28c3ad7941aa892a8b84af2e27d8c8c"
-        },
-        {
-          "url": "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/copilot-memory/manage-for-yourself",
-          "sha256": "46452b474fe6bb11b342c2c497dcd120a00ef9b4a50f0dc3db9c3f7ea300f03d"
-        },
-        {
-          "url": "https://docs.github.com/en/copilot/concepts/billing-and-usage/organizations-and-enterprises/billing",
-          "sha256": "418430b5fd9189a3df0ee079233202ccb0d9fc7c7e1d842b5c6d7b7acc762db6"
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63"
         }
       ],
-      "revision": "3433894424b1f2d7a5b42914a1e392b19b7559931ed726dd40afde8d2cb99f17",
+      "revision": "ef46af0403a1e45d001a31f2783425b9ddf070faff604183b3ee69e874507d52",
       "outcome": "review",
-      "reason": "Weekly reassessment. The 2026-10-30 docs now give a 90-day default expiry, reset only by upvote, with owner-configurable periods. The catalog says 28 days with use-based renewal. The fetched Memory pages state no release stage, so public preview is unconfirmed. Every gate stays unknown. Human dates are not renewed.",
-      "attemptedOn": "2026-10-30",
-      "runId": "41047700057"
+      "reason": "The source hash changed. Retention now reads 90 days by default (7–180 configurable for repository facts); the curated record says 28 days. The page states no release stage, so the public-preview label is unconfirmed.",
+      "attemptedOn": "2026-11-06",
+      "runId": "42209777891"
     },
     "dynamic-workflows": {
       "assessedOn": "2026-10-31",
