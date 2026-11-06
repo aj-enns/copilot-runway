@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "runId": "42209777891",
+  "baseSha": "062b0d139f428250a962b46172afa907208863f9",
+  "decisions": [
+    {
+      "id": "copilot-memory",
+      "outcome": "review",
+      "reason": "The source hash changed. Retention now reads 90 days by default (7–180 configurable for repository facts); the curated record says 28 days. The page states no release stage, so the public-preview label is unconfirmed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63",
+          "quote": "The default expiry period is 90 days. Enterprise and organization owners can configure the expiry period for repository-level facts to any value between 7 and 180 days (inclusive)."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63",
+          "quote": "Copilot Memory is available on all paid Copilot plans."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63",
+          "quote": "Some of this data—for example, the voting details—is for internal use only and is therefore not displayed on the GitHub website or included in audit logs."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63",
+          "quote": "Copilot cloud agent and Copilot code review do not ask for this approval."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63",
+          "quote": "Memories that are downvoted past a threshold are no longer used and will be deleted after a period of disuse."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-memory",
+          "sha256": "b6695ee1aaeefc74d4a9ba205d87664a5a1a253139b4ef9505d35b95b685ec63",
+          "quote": "Memories included in a model's context count toward token usage and can affect the AI credits consumed by an interaction."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Paid-plan availability is documented, but the fetched page states no release stage. Surface defaults differ (CLI, app, VS Code, cloud agent). Tenant eligibility is untested.",
+          "next": "Find a primary source for the release stage. Test a named pilot identity and a non-eligible identity."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Policy and repository controls are described, but no negative enforcement test exists. Business and Enterprise user preferences are off until an owner enables them.",
+          "next": "Disable the policy for a test identity. Confirm local settings and --enable-memory cannot override it."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Repository facts need push access to create. User preferences follow the billing entity. Multi-license users must pick a default entity. No out-of-scope denial is verified.",
+          "next": "Test cross-entity and read-only access. Record the credential owner and revocation steps."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Retention is now 90 days by default and 7–180 for repository facts, conflicting with the curated 28 days. Facts may come from unmerged PRs. Secret screening is documented but unproven.",
+          "next": "Reconcile retention in the curated record. Inspect a synthetic memory, its export, and its deletion."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "App and interactive CLI can ask before storing a memory. Cloud agent and code review do not. Stored memories may not be applied in every session.",
+          "next": "Define review ownership. Run a prompt-injection test attempting to store an untrusted instruction."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "Voting data is not shown or included in audit logs. Whether memory creation, use, and deletion are fully auditable is not established.",
+          "next": "Reconstruct a synthetic memory lifecycle from audit and settings evidence. Record the gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Memories in model context count toward token usage and AI credits. No standalone memory price is stated. Cost has not been measured.",
+          "next": "Measure a rehearsal with and without Memory. Confirm the budget owner and spending policy."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Memory is a server-side capability across several surfaces. No endpoint or egress requirements appear in the fetched page.",
+          "next": "Validate the service path on each target surface and attempt a denied destination."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Lifecycle stage is not stated on the page. Expiry and voting behavior changed from the curated record. Facts may be stale or wrong. Support and incident ownership are unassigned.",
+          "next": "Record the source-backed stage. Assign a fact owner. Demonstrate invalid-citation handling."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Owners can delete memories. Downvoted memories can stay stored until they expire, and local reset cannot remove server-side memories.",
+          "next": "Delete only the synthetic demo fact. Verify it is absent, and that the stored fact is not merely hidden."
+        }
+      ]
+    }
+  ]
+}
