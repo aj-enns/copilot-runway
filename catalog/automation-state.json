@@ -144,30 +144,30 @@
       "runId": "42209777891"
     },
     "dynamic-workflows": {
-      "assessedOn": "2026-10-31",
+      "assessedOn": "2026-11-07",
       "sourceHashes": [
         {
           "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
-          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
+          "sha256": "4a21f4fadd4cf009cb52e58b14b4e4281fdce0d0bd17966dc6d65ecdcf697ef2"
         },
         {
           "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
-          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
+          "sha256": "4a21f4fadd4cf009cb52e58b14b4e4281fdce0d0bd17966dc6d65ecdcf697ef2"
         },
         {
           "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
-          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
+          "sha256": "4a21f4fadd4cf009cb52e58b14b4e4281fdce0d0bd17966dc6d65ecdcf697ef2"
         },
         {
           "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
-          "sha256": "e0efb933bd9121933126891a3569b7b38ad9199e399a21de83f2b6ea4dba3016"
+          "sha256": "4a21f4fadd4cf009cb52e58b14b4e4281fdce0d0bd17966dc6d65ecdcf697ef2"
         }
       ],
-      "revision": "79a0fe278c6576d3b89e094920add16e922918322b57dce1863e96627e4ef8f5",
+      "revision": "bff2d7784db65046964e2cae89e718215bce265cf4c5d1b0d15a24890637dc37",
       "outcome": "review",
-      "reason": "Weekly reassessment of the session SDK Dynamic Workflows doc. It still says the API is experimental. It adds eligibility limits, soft AI-credit budgets and storage requirements. No human date or gate is renewed.",
-      "attemptedOn": "2026-10-31",
-      "runId": "41196613835"
+      "reason": "Weekly reassessment of the session SDK Dynamic Workflows doc (fetched 2026-11-07). The source hash changed since 2026-10-31. It still says the API is experimental and execution needs eligible credentials. Cost limits are soft. No human date or gate is renewed. This is not GitHub Agentic Workflows (Actions).",
+      "attemptedOn": "2026-11-07",
+      "runId": "42367877904"
     }
   }
 }
