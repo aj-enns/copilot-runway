@@ -15,7 +15,7 @@
       "slides": 2,
       "deck": "artifacts/slides/dynamic-workflows.pptx",
       "assessment": "features/dynamic-workflows/assessment.md",
-      "fingerprint": "05d666628f04e2395b6e57e8e87b27d74ac96c83bb6347b81097e7ca9ad868b6"
+      "fingerprint": "cf895d59f0d6d4249153a3976d66727b4f8922d066e45dfad307614b5342a630"
     },
     {
       "id": "agentic-workflows",
