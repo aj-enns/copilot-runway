@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "runId": "42367877904",
+  "baseSha": "37716fb22b764eebd602549f2f20cfef7bf196bb",
+  "decisions": [
+    {
+      "id": "dynamic-workflows",
+      "outcome": "review",
+      "reason": "Weekly reassessment of the session SDK Dynamic Workflows doc (fetched 2026-11-07). The source hash changed since 2026-10-31. It still says the API is experimental and execution needs eligible credentials. Cost limits are soft. No human date or gate is renewed. This is not GitHub Agentic Workflows (Actions).",
+      "citations": [
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "4a21f4fadd4cf009cb52e58b14b4e4281fdce0d0bd17966dc6d65ecdcf697ef2",
+          "quote": "Dynamic Workflows are extension-authored, session-scoped workflows that coordinate subagents and durable steps. The API is experimental."
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "4a21f4fadd4cf009cb52e58b14b4e4281fdce0d0bd17966dc6d65ecdcf697ef2",
+          "quote": "still require eligible credentials (token-based billing or trusted HMAC authentication)."
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "4a21f4fadd4cf009cb52e58b14b4e4281fdce0d0bd17966dc6d65ecdcf697ef2",
+          "quote": "This is a soft, post-paid ceiling, so completed or parallel turns can settle above it before the run stops."
+        },
+        {
+          "url": "https://github.com/github/copilot-sdk/blob/ad20f9f4319d48000b895c9c4180242c2232e1ab/nodejs/docs/workflows.md",
+          "sha256": "4a21f4fadd4cf009cb52e58b14b4e4281fdce0d0bd17966dc6d65ecdcf697ef2",
+          "quote": "Workflow-owned subagents are intentionally hidden from read_agent"
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Doc says the API is experimental and execution needs token-based billing or trusted HMAC authentication. Ineligible requests fail with dynamic_workflows_unavailable. Tenant and plan eligibility are not documented here.",
+          "next": "Confirm eligibility with a named pilot identity and an ineligible control identity."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "The doc names no enterprise policy or setting to disable or restrict Dynamic Workflows.",
+          "next": "Find an official admin control and run a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Only credential eligibility is described. How workflow subagents map to the user identity and permissions is not documented here.",
+          "next": "Verify the identity and permissions subagents run under in a test session."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Runs are journaled in session workflow storage, which needs SQLite support. Retention, residency and prompt content handling are not stated.",
+          "next": "Document where journals live, their retention, and what they contain."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "ctx.pause gives a durable checkpoint. The doc says SDK-initiated run and resume request no permission, so approval must be built into the workflow.",
+          "next": "Test a pause checkpoint and confirm no run starts without explicit approval."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "Run, progress and detail APIs exist. Workflow-owned subagents are hidden from read_agent. Export, retention and tamper resistance are not documented.",
+          "next": "Check whether run history can be exported and retained for audit."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "maxAiCredits is a soft, post-paid ceiling and turns can settle above it. Billed-spend behavior is unmeasured.",
+          "next": "Measure credits for a synthetic run and set a separate billing budget."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "The doc does not describe network destinations or proxy and firewall behavior for workflow subagents.",
+          "next": "Capture network behavior in a controlled test session."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Pause, resume, cancel and limit failures are documented. Support ownership, monitoring and the experimental-API change policy are not.",
+          "next": "Name an owner and a change-watch process for SDK doc updates."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Runs can be cancelled. The doc does not describe undoing side effects from workflow subagents or disabling the feature fleet-wide.",
+          "next": "Define cancel and cleanup steps for synthetic runs and test them."
+        }
+      ]
+    }
+  ]
+}
