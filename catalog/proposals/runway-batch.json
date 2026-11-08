@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "39809098361",
+  "baseSha": "fb0faf8cf65211e14cf35676785cbcc722c7cad2",
+  "decisions": [
+    {
+      "id": "23e33b55fee080cd",
+      "outcome": "pending",
+      "reason": "Governance/audit signal (2026-10-12 changelog: managed telemetry identity capture and per-class capture controls). Kept retryable: the changelog gives no release stage, and the only supported recipe (classify-required-booleans) would not exercise real telemetry or managed-settings enforcement. A full kit needs the linked managed-settings and OpenTelemetry docs, which were not fetched.",
+      "citations": []
+    }
+  ]
+}
