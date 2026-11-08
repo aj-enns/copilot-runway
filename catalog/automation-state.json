@@ -26,26 +26,26 @@
   },
   "reviews": {
     "agentic-workflows": {
-      "assessedOn": "2026-11-01",
+      "assessedOn": "2026-11-08",
       "sourceHashes": [
         {
           "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
-          "sha256": "617feaf6cf55fa4c4d484bb83d698afafba0846f1fa925f7e09f1675043d5d0b"
+          "sha256": "ac6754b03d1e5169dc51fefdaeb47bbbaf95b9981ced3a6826dda26850625891"
         },
         {
-          "url": "https://github.com/github/gh-aw",
-          "sha256": "6ba2980e7df1a11aee4dbbf89f5485653e412ef85b21793ad9c58d697845e7f8"
+          "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+          "sha256": "ac6754b03d1e5169dc51fefdaeb47bbbaf95b9981ced3a6826dda26850625891"
         },
         {
-          "url": "https://github.github.io/gh-aw/reference/safe-outputs/",
-          "sha256": "10b346f4dda04129594a97a443059ba9102f2f868ac61253989284ff54bc9950"
+          "url": "https://github.github.io/gh-aw/setup/quick-start/",
+          "sha256": "8486f8a8bccfb58d29c6b64b3a10a710946dd405e378d5f49e9e82b11150ece9"
         }
       ],
-      "revision": "c8abf0e1955e5221c38b729a11354254f91d95339fb6781d68ccc4a4c49fdd55",
+      "revision": "242b773cfef9038f782122207505b0219c986f3276970f03718f964f1be15679",
       "outcome": "review",
-      "reason": "Weekly reassessment of GitHub Actions Agentic Workflows (not session SDK Dynamic Workflows). The 2026-02-13 changelog still states technical preview. No newer lifecycle source was fetched. Sources now include safe-outputs docs, but no tenant policy or audit evidence. All gates stay unknown; human dates are not renewed.",
-      "attemptedOn": "2026-11-01",
-      "runId": "41301619588"
+      "reason": "Weekly reassessment of GitHub Actions Agentic Workflows (not session SDK Dynamic Workflows). The 2026-02-13 changelog still states technical preview; the content hash changed since the 2026-11-01 review, but the fetched text shows no newer lifecycle, billing, or policy change. No tenant policy or audit evidence was fetched, so every gate stays unknown. Human dates are not renewed.",
+      "attemptedOn": "2026-11-08",
+      "runId": "42475468648"
     },
     "autopilot": {
       "assessedOn": "2026-11-02",
