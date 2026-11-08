@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "runId": "42475468648",
+  "baseSha": "35107f15461f1e40125ea42965b412dcbd6964b0",
+  "decisions": [
+    {
+      "id": "agentic-workflows",
+      "outcome": "review",
+      "reason": "Weekly reassessment of GitHub Actions Agentic Workflows (not session SDK Dynamic Workflows). The 2026-02-13 changelog still states technical preview; the content hash changed since the 2026-11-01 review, but the fetched text shows no newer lifecycle, billing, or policy change. No tenant policy or audit evidence was fetched, so every gate stays unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+          "sha256": "ac6754b03d1e5169dc51fefdaeb47bbbaf95b9981ced3a6826dda26850625891",
+          "quote": "The feature is available in technical preview through the gh aw CLI extension."
+        },
+        {
+          "url": "https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/",
+          "sha256": "ac6754b03d1e5169dc51fefdaeb47bbbaf95b9981ced3a6826dda26850625891",
+          "quote": "Workflows run with read-only permissions by default and use preapproved"
+        },
+        {
+          "url": "https://github.github.io/gh-aw/setup/quick-start/",
+          "sha256": "8486f8a8bccfb58d29c6b64b3a10a710946dd405e378d5f49e9e82b11150ece9",
+          "quote": "This quickstart uses github.com and the default GitHub-hosted Linux runner."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Changelog says technical preview via the gh aw CLI extension. Plan, tenant, and GHEC/GHES eligibility are not stated; the quickstart covers only github.com on GitHub-hosted Linux runners.",
+          "next": "Confirm plan, enterprise deployment, and runner eligibility in current official docs."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No enterprise or organization policy that enforces or disables the feature was found in the fetched text.",
+          "next": "Find an enforceable enterprise/org control, or record that none exists."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Changelog states read-only defaults. The quickstart uses a PAT or copilot-requests token. Least-privilege identity is not proven.",
+          "next": "Test the permission set and token scope in a non-production repository."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "The quickstart says to review each AI engine's data handling before enabling. Data boundaries per engine are not verified.",
+          "next": "Review engine data-handling terms against approved data classes."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "Writes use preapproved safe outputs. Whether a human approves impactful actions is not shown.",
+          "next": "Check safe-output staged mode and required PR review for write actions."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No audit-log or traceability evidence was found in the fetched sources.",
+          "next": "Confirm what Actions logs and audit logs record for agent runs."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Billing depends on the engine and auth path. Spend per run is unmeasured and no budget cap is evidenced.",
+          "next": "Measure run cost and set an owner and budget before any pilot."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Changelog mentions network isolation. The approved allowlist and egress path are not verified.",
+          "next": "Review the network configuration docs against the approved egress list."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "The feature is a technical preview with no stated support commitment.",
+          "next": "Confirm support terms and the owner for a time-boxed pilot."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "No rollback or disable procedure was verified.",
+          "next": "Document and test removing the workflow and lock files and revoking secrets."
+        }
+      ]
+    }
+  ]
+}
