@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "39946541228",
+  "baseSha": "fb0faf8cf65211e14cf35676785cbcc722c7cad2",
+  "decisions": [
+    {
+      "id": "0e375f073b17fe04",
+      "outcome": "pending",
+      "reason": "Material governance change (2026-10-22 changelog: global default policy for GA Copilot features, rollout through October 26). Needs a human-reviewed record. The only supported recipe, classify-required-booleans, does not exercise the real tenant policy. Admin-UI behavior, eligibility, exceptions and audit evidence are not in the fetched document. Retry once the default-availability docs are fetched.",
+      "citations": []
+    }
+  ]
+}
