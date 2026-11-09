@@ -1592,79 +1592,79 @@
       },
       "automatedReview": {
         "kind": "automated",
-        "assessedOn": "2026-11-02",
-        "runId": "41436358007",
+        "assessedOn": "2026-11-09",
+        "runId": "42608552002",
         "sourceHashes": [
           {
             "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
-            "sha256": "04d3f59e534d8788a114ea3f3979d19e90e5efe63cfe443aa36ff29bc8990a29"
+            "sha256": "4887b83c7a70f6991058dcea10b6c96462b3cb667dc6cf2218e41670ed8195fb"
           },
           {
-            "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97",
-            "sha256": "4637441b12a4cdcc851ee2e02b7bbcddc791ead4414b6fb170d7cd1aaa16b289"
+            "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+            "sha256": "4887b83c7a70f6991058dcea10b6c96462b3cb667dc6cf2218e41670ed8195fb"
           }
         ],
-        "reason": "Weekly reassessment of Autopilot (Copilot CLI). The README revision changed (new SHA-256) but still lists Autopilot under experimental features. Release v1.0.97 (2026-10-13) adds an unattended-permission behavior note, not a lifecycle change. No GA or preview source was fetched. All gates stay unknown; human dates are not renewed.",
+        "reason": "Weekly reassessment of Autopilot (Copilot CLI). README hash changed again, but it still lists Autopilot under experimental features and shows no stage change. No GA/preview, policy, audit, or billing-control source was fetched. All gates stay unknown; human dates are not renewed.",
         "findings": [
           {
             "gate": "eligibility",
             "status": "unknown",
-            "reason": "README still lists Autopilot as experimental; no source states a newer stage or tenant eligibility.",
-            "next": "Verify stage, client version, and account eligibility in official docs."
+            "reason": "README says experimental and needs --experimental or /experimental. No plan, version, or tenant eligibility is documented.",
+            "next": "Find official docs for stage, supported clients, and eligibility."
           },
           {
             "gate": "admin-control",
             "status": "unknown",
-            "reason": "v1.0.97 says managed permission rules are read-only in /config, but no source proves an admin can disable Autopilot.",
-            "next": "Test an enterprise policy that disables Autopilot; confirm local settings cannot override it."
+            "reason": "README only notes admins can disable the CLI. No policy for Autopilot or experimental mode is shown.",
+            "next": "Test whether policy disables Autopilot and blocks local bypass."
           },
           {
             "gate": "identity",
             "status": "unknown",
-            "reason": "No fetched evidence defines Autopilot identity flow or token scopes.",
-            "next": "Document identity, scopes, and revocation for a pilot identity."
+            "reason": "No document describes Autopilot permission scopes or token handling.",
+            "next": "Document identity flow and run an out-of-scope access test."
           },
           {
             "gate": "data",
             "status": "unknown",
-            "reason": "No fetched evidence covers Autopilot context, retention, or deletion.",
-            "next": "Run a synthetic-data review of captured context and deletion."
+            "reason": "No data-flow, retention, or residency evidence for Autopilot was fetched.",
+            "next": "Review official data handling docs with synthetic data."
           },
           {
             "gate": "human-approval",
             "status": "unknown",
-            "reason": "v1.0.97 says Autopilot denies a hook's ask decision when unattended. This is a release note, not a tested approval boundary.",
-            "next": "Run a prompt-injection test for send, delete, and access-change actions."
+            "reason": "README says Autopilot continues until the task is complete. Approval and stop behavior are not documented.",
+            "next": "Test stop control and approval on untrusted high-impact instructions."
           },
           {
             "gate": "audit",
             "status": "unknown",
-            "reason": "No fetched evidence describes an Autopilot audit trail.",
-            "next": "Reconstruct a synthetic run from available traces and record the gaps."
+            "reason": "No trace or log evidence for Autopilot runs was fetched.",
+            "next": "Reconstruct a synthetic run and record the gaps."
           },
           {
             "gate": "cost",
             "status": "unknown",
-            "reason": "README premium-request text is legacy. v1.0.97 mentions billed AI Credits in /usage, but no spend was measured.",
-            "next": "Measure a rehearsal in /usage and test the effective budget policy."
+            "reason": "README says each submitted prompt reduces premium requests by one. Autopilot multi-step cost is not measured.",
+            "next": "Measure a rehearsal and review current billing docs."
           },
           {
             "gate": "network",
             "status": "unknown",
-            "reason": "No fetched evidence defines the Autopilot endpoint or egress needs.",
-            "next": "Validate the allowlist and a denied destination on the target OS."
+            "reason": "No network or egress requirements for Autopilot were fetched.",
+            "next": "Validate allowed and denied destinations on the target OS."
           },
           {
             "gate": "operations",
             "status": "unknown",
-            "reason": "Experimental status implies change risk; no support route or version policy was fetched.",
-            "next": "Record preview risk acceptance, version inventory, and incident owner."
+            "reason": "Experimental stage; support, version stability, and incident ownership are not documented.",
+            "next": "Record preview risk acceptance and a tested client version."
           },
           {
             "gate": "rollback",
             "status": "unknown",
-            "reason": "No fetched evidence covers reset or cleanup of persisted Autopilot state.",
-            "next": "Run a scoped reset twice and list saved permissions and remote state separately."
+            "reason": "No reset or cleanup evidence for Autopilot state was fetched.",
+            "next": "Reset twice and account for persisted experimental setting."
           }
         ]
       }
