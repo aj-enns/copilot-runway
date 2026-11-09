@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "runId": "42608552002",
+  "baseSha": "0b2b918c4f0399327cb1d195aea8b1ace43f5b8a",
+  "decisions": [
+    {
+      "id": "autopilot",
+      "outcome": "review",
+      "reason": "Weekly reassessment of Autopilot (Copilot CLI). README hash changed again, but it still lists Autopilot under experimental features and shows no stage change. No GA/preview, policy, audit, or billing-control source was fetched. All gates stay unknown; human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+          "sha256": "4887b83c7a70f6991058dcea10b6c96462b3cb667dc6cf2218e41670ed8195fb",
+          "quote": "Autopilot mode: Autopilot is a new mode (press Shift+Tab to cycle through modes), which encourages the agent to continue working until a task is completed."
+        },
+        {
+          "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+          "sha256": "4887b83c7a70f6991058dcea10b6c96462b3cb667dc6cf2218e41670ed8195fb",
+          "quote": "Experimental mode enables access to new features that are still in development."
+        }
+      ],
+      "findings": [
+        {"gate": "eligibility", "status": "unknown", "reason": "README says experimental and needs --experimental or /experimental. No plan, version, or tenant eligibility is documented.", "next": "Find official docs for stage, supported clients, and eligibility."},
+        {"gate": "admin-control", "status": "unknown", "reason": "README only notes admins can disable the CLI. No policy for Autopilot or experimental mode is shown.", "next": "Test whether policy disables Autopilot and blocks local bypass."},
+        {"gate": "identity", "status": "unknown", "reason": "No document describes Autopilot permission scopes or token handling.", "next": "Document identity flow and run an out-of-scope access test."},
+        {"gate": "data", "status": "unknown", "reason": "No data-flow, retention, or residency evidence for Autopilot was fetched.", "next": "Review official data handling docs with synthetic data."},
+        {"gate": "human-approval", "status": "unknown", "reason": "README says Autopilot continues until the task is complete. Approval and stop behavior are not documented.", "next": "Test stop control and approval on untrusted high-impact instructions."},
+        {"gate": "audit", "status": "unknown", "reason": "No trace or log evidence for Autopilot runs was fetched.", "next": "Reconstruct a synthetic run and record the gaps."},
+        {"gate": "cost", "status": "unknown", "reason": "README says each submitted prompt reduces premium requests by one. Autopilot multi-step cost is not measured.", "next": "Measure a rehearsal and review current billing docs."},
+        {"gate": "network", "status": "unknown", "reason": "No network or egress requirements for Autopilot were fetched.", "next": "Validate allowed and denied destinations on the target OS."},
+        {"gate": "operations", "status": "unknown", "reason": "Experimental stage; support, version stability, and incident ownership are not documented.", "next": "Record preview risk acceptance and a tested client version."},
+        {"gate": "rollback", "status": "unknown", "reason": "No reset or cleanup evidence for Autopilot state was fetched.", "next": "Reset twice and account for persisted experimental setting."}
+      ]
+    }
+  ]
+}
