@@ -48,22 +48,22 @@
       "runId": "42475468648"
     },
     "autopilot": {
-      "assessedOn": "2026-11-02",
+      "assessedOn": "2026-11-09",
       "sourceHashes": [
         {
           "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
-          "sha256": "04d3f59e534d8788a114ea3f3979d19e90e5efe63cfe443aa36ff29bc8990a29"
+          "sha256": "4887b83c7a70f6991058dcea10b6c96462b3cb667dc6cf2218e41670ed8195fb"
         },
         {
-          "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.97",
-          "sha256": "4637441b12a4cdcc851ee2e02b7bbcddc791ead4414b6fb170d7cd1aaa16b289"
+          "url": "https://github.com/github/copilot-cli/blob/76c3172eb38f5e7537b90b9800a7023d81156438/README.md",
+          "sha256": "4887b83c7a70f6991058dcea10b6c96462b3cb667dc6cf2218e41670ed8195fb"
         }
       ],
-      "revision": "9391d2e5d4b2f95a465b124e6b374e94915f78587d849d260fbb7df144a20f11",
+      "revision": "e052f9d99d8e9160c10783ad6464297b74b7790fceb55e5521333f48e2348842",
       "outcome": "review",
-      "reason": "Weekly reassessment of Autopilot (Copilot CLI). The README revision changed (new SHA-256) but still lists Autopilot under experimental features. Release v1.0.97 (2026-10-13) adds an unattended-permission behavior note, not a lifecycle change. No GA or preview source was fetched. All gates stay unknown; human dates are not renewed.",
-      "attemptedOn": "2026-11-02",
-      "runId": "41436358007"
+      "reason": "Weekly reassessment of Autopilot (Copilot CLI). README hash changed again, but it still lists Autopilot under experimental features and shows no stage change. No GA/preview, policy, audit, or billing-control source was fetched. All gates stay unknown; human dates are not renewed.",
+      "attemptedOn": "2026-11-09",
+      "runId": "42608552002"
     },
     "cloud-sandboxes": {
       "assessedOn": "2026-11-03",
