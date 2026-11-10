@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "runId": "42807028845",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The sandbox concept page hash changed since 2026-11-03. It still describes cloud sandboxes as GitHub-hosted, ephemeral and usage-billed. The billing page adds compute, memory and snapshot-storage meters. No fetched page states a release stage, policy control, or audit evidence. Gates stay unknown; human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "0e483072a19c9814c89c947cb81657dc02337686d1ee989f3235cd8f7e673bad",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub. Cloud sandboxing is billed based on usage."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "42227550d555765a5df9c2100edc6acdc76e2f13c84af0eaa74840c90f780877",
+          "quote": "Billing applies to cloud sandboxing only. Local sandboxing is included in the standard GitHub Copilot seat at no additional cost."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "42227550d555765a5df9c2100edc6acdc76e2f13c84af0eaa74840c90f780877",
+          "quote": "Storage : snapshot storage for stopped sessions."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "No fetched page states the release stage, plan eligibility, or tenant enablement path for cloud sandboxes.",
+          "next": "Find an official source stating the stage and eligibility, then test with a pilot identity."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No fetched evidence shows an enterprise policy that disables cloud sandboxes or prevents bypass.",
+          "next": "Locate the policy documentation and run a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Credential flow and permission scope inside a cloud sandbox were not shown in fetched evidence.",
+          "next": "Document identity flow, scopes and revocation; test an out-of-scope access."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Snapshot retention is mentioned, but retention, deletion and residency terms were not verified.",
+          "next": "Review snapshot retention and deletion with privacy using synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "Approval boundaries and stop behavior for cloud sandbox sessions were not shown in fetched evidence.",
+          "next": "Run a prompt-injection test and confirm a person can stop a session."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No fetched evidence describes audit records for cloud sandbox sessions.",
+          "next": "Find audit-log coverage and reconstruct a synthetic run."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Billing meters are documented (compute, memory, snapshot storage), but rates, budgets and observed usage are unmeasured.",
+          "next": "Record current rates, set a budget, and measure a rehearsal run."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Egress and endpoint requirements for cloud sandboxes were not verified in fetched evidence.",
+          "next": "Validate allowed and denied destinations on the actual surface."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Support terms, preview limits and incident ownership were not stated in fetched evidence.",
+          "next": "Confirm lifecycle stage and support route; record risk acceptance."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Stopped sessions keep a snapshot until deleted, so remote cleanup is required. Cleanup was not tested.",
+          "next": "Test stop and delete of one synthetic session and verify snapshot removal."
+        }
+      ]
+    }
+  ]
+}
