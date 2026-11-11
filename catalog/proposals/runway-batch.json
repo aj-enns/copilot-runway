@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "43011481937",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The fetched page (hash changed from the 2026-11-03 review) is titled \"About local sandboxing\" and mentions cloud sandboxes only briefly. It confirms remote, ephemeral, usage-billed execution. It gives no lifecycle stage, so public preview is not re-confirmed. No human date or gate is renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "0e483072a19c9814c89c947cb81657dc02337686d1ee989f3235cd8f7e673bad",
+          "quote": "Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "0e483072a19c9814c89c947cb81657dc02337686d1ee989f3235cd8f7e673bad",
+          "quote": "Cloud sandboxing is billed based on usage."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Fetched page states no release stage, plan eligibility, or enablement path for cloud sandboxes.",
+          "next": "Confirm stage, supported clients, and plan eligibility in the cloud-sandbox article."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Enterprise policy text covers local sandboxing only. No cloud-sandbox policy appears.",
+          "next": "Find the cloud-sandbox policy and run a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Page says sandboxing uses existing Copilot authentication. Token and repository scoping in a cloud session are not evidenced.",
+          "next": "Document identity flow and scopes; test an out-of-scope access attempt."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Session is described as ephemeral, but retention, snapshot, and residency terms are not in the fetched text.",
+          "next": "Review snapshot retention and deletion; use synthetic data only."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No approval boundary or stop control for cloud sessions is evidenced.",
+          "next": "Run a prompt-injection test and confirm a human can stop the session."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No audit-log or session-trace evidence for cloud sessions was fetched.",
+          "next": "Capture a sample trace and confirm log access and retention."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Usage billing is stated, but rates are not in this page and tenant spend is unmeasured.",
+          "next": "Set a budget and measure a synthetic session's compute, memory, and storage."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Proxy and host-rule text covers local sandboxing. Cloud egress behavior is not evidenced.",
+          "next": "Document cloud egress controls; test an allowed and a blocked destination."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Support, monitoring, and lifecycle-change handling are not evidenced.",
+          "next": "Name an owner and a change-monitoring process before any pilot."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Stop and delete paths for cloud sessions are not evidenced.",
+          "next": "Document and test cloud cleanup separately from local reset."
+        }
+      ]
+    }
+  ]
+}
