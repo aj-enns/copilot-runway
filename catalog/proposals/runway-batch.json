@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "runId": "43208676878",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The fetched docs separate cloud from local sandboxing and say cloud is usage-billed with retained snapshots. They state no lifecycle stage, so public preview is not re-confirmed. Hashes changed since 2026-11-03. No human date or gate is renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "0e483072a19c9814c89c947cb81657dc02337686d1ee989f3235cd8f7e673bad",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub. Cloud sandboxing is billed based on usage."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "42227550d555765a5df9c2100edc6acdc76e2f13c84af0eaa74840c90f780877",
+          "quote": "When you stop a cloud sandbox, GitHub retains a snapshot of the sandbox's state so you can resume it later."
+        }
+      ],
+      "findings": [
+        {"gate": "eligibility", "status": "unknown", "reason": "Fetched pages do not state the release stage, account eligibility, or client version for cloud sandboxes.", "next": "Confirm the stage and eligibility in a primary source and a pilot identity."},
+        {"gate": "admin-control", "status": "unknown", "reason": "No fetched passage shows an enforceable enterprise policy or bypass prevention for cloud sandboxes.", "next": "Find the policy source and run a negative enforcement test."},
+        {"gate": "identity", "status": "unknown", "reason": "No fetched passage defines token scopes, repository access, or credential handling for cloud sessions.", "next": "Document identity flow, scopes, and revocation with a primary source."},
+        {"gate": "data", "status": "unknown", "reason": "The billing page says a snapshot is retained after stop, but retention period, residency, and deletion are not shown.", "next": "Obtain retention, residency, and deletion evidence for snapshots."},
+        {"gate": "human-approval", "status": "unknown", "reason": "No fetched passage covers approval boundaries or stop controls for agent actions in a cloud sandbox.", "next": "Test an untrusted instruction and confirm approval and stop behavior."},
+        {"gate": "audit", "status": "unknown", "reason": "No fetched passage describes audit events, export, or retention for cloud sandbox sessions.", "next": "Reconstruct a synthetic run and identify audit gaps."},
+        {"gate": "cost", "status": "unknown", "reason": "Usage billing and snapshot metering are documented, but no budget, observed usage, or billing-stop test exists.", "next": "Measure a rehearsal and test the effective spending policy."},
+        {"gate": "network", "status": "unknown", "reason": "No fetched passage shows egress controls or required endpoints for cloud sandboxes.", "next": "Validate allow and deny paths in an actual cloud session."},
+        {"gate": "operations", "status": "unknown", "reason": "Preview status, support route, and incident ownership are not established by the fetched pages.", "next": "Record stage acceptance, support route, and a failure rehearsal."},
+        {"gate": "rollback", "status": "unknown", "reason": "Snapshots persist remotely after stop; cleanup steps and verification are not shown in the fetched pages.", "next": "Document exact-session stop and authorized snapshot deletion."}
+      ]
+    }
+  ]
+}
