@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "runId": "43416613352",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The fetched page (2026-11-13, new hash) now carries the title \"About local sandboxing for GitHub Copilot\" and mainly covers local sandboxing. It still describes cloud sandboxing as remote, isolated, and usage-billed. It states no lifecycle stage, so public preview is not re-confirmed. No tenant, policy, audit, or retention evidence was fetched. Gates stay unknown. Human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "0e483072a19c9814c89c947cb81657dc02337686d1ee989f3235cd8f7e673bad",
+          "quote": "Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub. Cloud sandboxing is billed based on usage."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "The fetched page gives no lifecycle stage or plan eligibility for cloud sandboxes. Preview status is not re-confirmed.",
+          "next": "Check the official cloud sandboxes page for stage and eligibility."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No organization or enterprise policy for cloud sandbox access was fetched.",
+          "next": "Find the official policy source, then test it with a pilot identity."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "No cloud sandbox identity, billing-owner, or credential-handling evidence was fetched.",
+          "next": "Review official identity and billing-owner guidance for cloud sessions."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "The page does not state snapshot retention, residency, or deletion behavior for cloud sandboxes.",
+          "next": "Find official snapshot retention and deletion documentation."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No evidence was fetched on approval controls for actions taken inside a cloud sandbox.",
+          "next": "Review official approval behavior for cloud sandbox sessions."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No audit-log event, export, or retention evidence for cloud sandbox sessions was fetched.",
+          "next": "Find official audit events and verify them with a synthetic session."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The page says cloud sandboxing is billed based on usage. It gives no rates, budgets, or storage charges.",
+          "next": "Re-fetch the official sandbox billing page and set an approved budget."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "No cloud sandbox egress or firewall evidence was fetched.",
+          "next": "Find official network policy guidance and test allow/deny behavior."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "No stop, resume, limit, or failure-handling evidence was fetched.",
+          "next": "Review official lifecycle documentation and assign an owner."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "No evidence on stopping or deleting a cloud sandbox and its snapshot was fetched.",
+          "next": "Find official stop and delete steps; keep remote cleanup separate and authorized."
+        }
+      ]
+    }
+  ]
+}
