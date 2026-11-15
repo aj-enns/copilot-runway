@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "43708639015",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "The cited page changed (hash differs from the 2026-11-03 assessment) and now covers local sandboxing, with cloud sandboxes described as a separate page. Cloud-specific evidence must be re-fetched before any gate can be credited.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "0e483072a19c9814c89c947cb81657dc02337686d1ee989f3235cd8f7e673bad",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub."
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "0e483072a19c9814c89c947cb81657dc02337686d1ee989f3235cd8f7e673bad",
+          "quote": "Local sandboxing currently sits at the lighter-weight end of this spectrum"
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Fetched page is titled for local sandboxing and only summarizes cloud sandboxes; release stage and eligibility are not restated.",
+          "next": "Fetch the dedicated cloud sandbox page and confirm stage, client and eligibility."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No cloud-sandbox policy or bypass-prevention evidence in the fetched text.",
+          "next": "Re-check the cloud policy source and run a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Fetched text gives no cloud identity or token scope evidence.",
+          "next": "Review cloud identity, repository access and exposed variables."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Snapshot retention, deletion and residency are not covered by the fetched text.",
+          "next": "Re-verify snapshot retention and deletion on the cloud page."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No cloud approval-boundary evidence in the fetched text.",
+          "next": "Confirm approval and stop controls for cloud sessions."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No cloud audit trail or export evidence in the fetched text.",
+          "next": "Reconstruct a synthetic remote run and identify audit gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Page says cloud sandboxing is usage-billed but gives no current prices.",
+          "next": "Re-fetch the official sandbox billing page and confirm prices."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "No cloud egress or firewall evidence in the fetched text.",
+          "next": "Validate cloud network policy on the actual execution surface."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Preview limits, support and version expectations are not in the fetched text.",
+          "next": "Confirm preview limits and support route from the cloud page."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Remote stop and snapshot cleanup are not covered by the fetched text.",
+          "next": "Re-verify remote stop and snapshot deletion steps separately."
+        }
+      ]
+    }
+  ]
+}
