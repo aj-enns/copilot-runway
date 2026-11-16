@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "43857823792",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "pending",
+      "reason": "The fetched page (2026-11-16) is now titled \"About local sandboxing for GitHub Copilot\". It mentions cloud sandboxing only briefly and gives no release stage, enablement, policy, snapshot or billing detail. It cannot support a reassessment of the existing Cloud Sandboxes record. Human dates and findings stay unchanged. Retry with the dedicated cloud-sandbox pages once fetched.",
+      "citations": []
+    }
+  ]
+}
