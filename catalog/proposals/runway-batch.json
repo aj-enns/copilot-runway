@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "44073497665",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The primary docs page is now titled \"About local sandboxing\" and its hash changed. It still separates local from usage-billed cloud sandboxing. Billing docs still meter compute, memory and snapshot storage. No source states a lifecycle stage, so public preview is not re-confirmed. No policy, audit or data-retention source was fetched. All gates stay unknown; human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "0e66a7ae41ceced50f9ee1626654174ff11a2735809660b595c3213568c54a0b",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub. Cloud sandboxing is billed based on usage."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "42227550d555765a5df9c2100edc6acdc76e2f13c84af0eaa74840c90f780877",
+          "quote": "Storage : snapshot storage for stopped sessions."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "Fetched docs give no release stage or account eligibility for cloud sandboxes.",
+          "next": "Confirm the stage, eligible plans and client versions in a primary source."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No fetched source describes an enterprise policy to disable cloud sandboxes.",
+          "next": "Find the official policy doc and run a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Fetched sources do not describe credentials or repository scope inside a sandbox.",
+          "next": "Review identity flow, scopes and exposed environment variables."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Billing docs say stopped sessions keep a snapshot. Retention, deletion and residency are not documented in fetched text.",
+          "next": "Find retention, deletion and residency evidence; test with synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No fetched source defines approval boundaries or stop controls for sandboxed agent actions.",
+          "next": "Run an untrusted-instruction test and document the stop path."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No fetched source covers audit logs or session trace export.",
+          "next": "Reconstruct a synthetic run and identify trace gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Billing docs list compute, memory and snapshot-storage meters. Observed usage and a billing stop are not measured.",
+          "next": "Measure a rehearsal and test the effective budget policy."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "The fetched pages do not state egress controls or endpoint allowlists for cloud sandboxes.",
+          "next": "Validate allowed and denied destinations on the actual surface."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Support expectations and preview limits are not stated in fetched sources.",
+          "next": "Record risk acceptance, support route and incident owner."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Stop versus delete lifecycle for remote snapshots is not established by fetched text.",
+          "next": "Document remote cleanup and verify after reset."
+        }
+      ]
+    }
+  ]
+}
