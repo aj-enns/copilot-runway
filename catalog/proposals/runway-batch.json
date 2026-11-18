@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "44294207277",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "pending",
+      "reason": "The fetched page (sha256 1ba88748...7514) is now titled \"About local sandboxing for GitHub Copilot\" and covers local sandboxing. It only links to cloud sandboxes. No cloud-sandbox lifecycle, policy, audit, or billing text was fetched, so this reassessment lacks evidence. All gates stay unknown. Retry with a cloud-specific source. Human dates are not renewed.",
+      "citations": []
+    }
+  ]
+}
