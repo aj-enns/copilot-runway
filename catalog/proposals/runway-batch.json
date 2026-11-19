@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "44514339502",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "pending",
+      "reason": "The fetched document for the queued cloud-sandboxes URL is titled \"About local sandboxing for GitHub Copilot\". It only mentions cloud sandboxing in passing, with no lifecycle stage, access, policy, or retention detail. It cannot support a reassessment of the existing record. Retry once the cloud-sandbox page is fetched.",
+      "citations": []
+    }
+  ]
+}
