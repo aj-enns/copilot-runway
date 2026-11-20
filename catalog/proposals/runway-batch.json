@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "44727153031",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The cloud-sandbox URL now returns the local-sandboxing page, so no cloud lifecycle, policy, data, or audit text was fetched. Billing facts are consistent with the existing record. All gates stay unknown; no human date or gate is renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "1ba8874838c1cb798d8eb003c1d47b4251658352f51c0b1a19376edfe2907514",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub. Cloud sandboxing is billed based on usage."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "8b0751c3f3000d7643ad2e6f49940f22dede9b416b030ad5a47610bca8a7edba",
+          "quote": "When you stop a cloud sandbox, GitHub retains a snapshot of the sandbox's state so you can resume it later."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "The fetched page is the local-sandboxing article. It gives no cloud release stage, plan eligibility, or client requirement.",
+          "next": "Re-fetch the cloud-sandbox article; confirm stage, clients, and plan eligibility."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Only local-sandbox enterprise managed settings were fetched. No org or enterprise policy for cloud sandboxes appears.",
+          "next": "Find the cloud-sandbox policy; run a negative test with a test identity."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "Billing assigns usage to an owner. Token and repository scoping inside a cloud sandbox are not evidenced.",
+          "next": "Document the identity flow and scopes; test an out-of-scope access attempt."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Snapshots are retained after a stop. Retention limits, deletion, and residency terms are not in the fetched evidence.",
+          "next": "Review snapshot retention and deletion; test with synthetic data only."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No approval boundary or stop control for cloud sessions is evidenced.",
+          "next": "Run a prompt-injection test; confirm a human can stop the session."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No audit-log or session-trace evidence for cloud sandboxes was fetched.",
+          "next": "Capture a sample trace; confirm log access and retention."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "Billing meters are documented, but actual allocation, budget, and spend are unmeasured.",
+          "next": "Measure a synthetic session and set an approved budget."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Network controls for cloud sandboxes were not fetched. Only local proxy and host rules appear.",
+          "next": "Find cloud egress controls; validate allow and deny in a remote session."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Billing text defines stop, resume, and delete. Owner, failure handling, and preview limits are not evidenced.",
+          "next": "Assign an owner; rehearse stop, resume, and failure handling."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "Snapshot storage is metered until deletion. Remote cleanup was not tested.",
+          "next": "Stop the exact demo session; delete its snapshot only with authorization."
+        }
+      ]
+    }
+  ]
+}
