@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "44898814686",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "The fetched page now covers local sandboxing and only points to a separate cloud page. It gives no cloud lifecycle stage, policy, retention, or pricing evidence. All gates stay unknown; the curated record and its dates are unchanged.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "1ba8874838c1cb798d8eb003c1d47b4251658352f51c0b1a19376edfe2907514",
+          "quote": "Cloud sandboxing is billed based on usage. For more information, see About cloud sandboxes for GitHub Copilot"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "1ba8874838c1cb798d8eb003c1d47b4251658352f51c0b1a19376edfe2907514",
+          "quote": "If enterprise managed settings require sandboxing, ordinary settings and startup options cannot turn it off."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "The fetched page is about local sandboxing. It does not state the cloud release stage, eligibility, or client requirements.",
+          "next": "Fetch the dedicated cloud sandbox page and record its exact stage and eligibility."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Managed-settings enforcement is documented for local sandboxing only. No cloud-sandbox policy or bypass evidence was fetched.",
+          "next": "Find the official cloud policy source and run a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "The page says sandboxing uses existing Copilot authentication, but it does not cover cloud repository scope or billing owner.",
+          "next": "Verify cloud identity, repository access, and environment variable exposure."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "The page says cloud runs are ephemeral. It gives no cloud snapshot retention, deletion, or residency evidence.",
+          "next": "Verify cloud snapshot retention, deletion, and residency from official sources."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No cloud approval or stop-control evidence appears in the fetched page.",
+          "next": "Test approval and stop behavior with an untrusted instruction in a pilot session."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No cloud session audit, export, or retention evidence appears in the fetched page.",
+          "next": "Reconstruct a synthetic cloud run and identify audit gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The page says cloud sandboxing is usage-billed but gives no rates. Existing prices were not re-verified in this run.",
+          "next": "Re-fetch official cloud billing rates and measure a rehearsal."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Network proxy detail in the fetched page is local-sandbox specific. Cloud egress policy was not fetched.",
+          "next": "Validate allowed and denied destinations in an actual cloud session."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "The cloud preview stage, support, and lifecycle states are not in the fetched evidence.",
+          "next": "Confirm stage and lifecycle states, then assign an owner and rehearse failure."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "No cloud stop or delete evidence was fetched. Local cleanup cannot remove remote state.",
+          "next": "Verify stop and delete steps for the exact synthetic session with authorization."
+        }
+      ]
+    }
+  ]
+}
