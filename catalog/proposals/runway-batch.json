@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "runId": "45017037578",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment of Cloud Sandboxes. The fetched sandbox page is the local-sandboxing article, so its cloud-specific stage and policy text was not fetched. The billing page confirms the meters and the separate-budget caveat. Prices are per vCPU second, which differs from the catalog's per-compute-second wording. All gates stay unknown; human dates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "1ba8874838c1cb798d8eb003c1d47b4251658352f51c0b1a19376edfe2907514",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "8b0751c3f3000d7643ad2e6f49940f22dede9b416b030ad5a47610bca8a7edba",
+          "quote": "The compute meter tracks the time a cloud sandbox is running, measured in vCPU seconds."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "8b0751c3f3000d7643ad2e6f49940f22dede9b416b030ad5a47610bca8a7edba",
+          "quote": "To control cloud sandbox spending, use a product-level or SKU-level budget."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "The fetched page describes cloud sandboxing only briefly. It gives no release stage, supported client, or account eligibility. Public-preview status is not re-verified.",
+          "next": "Fetch the cloud-sandbox page and confirm stage, client, and eligibility."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "No fetched text covers the enterprise or organization policy that enables or disables cloud sandboxes, or any bypass test.",
+          "next": "Review the cloud-sandbox policy source and run a negative test with a pilot identity."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "No fetched text covers authentication, repository access, environment variables, or credential revocation for cloud sessions.",
+          "next": "Review identity and credential handling, then run an out-of-scope access test."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "The billing page says stopped sessions keep a snapshot. Content, retention, deletion, and residency were not fetched.",
+          "next": "Review snapshot content, retention, and deletion with synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No fetched text defines approval boundaries or stop controls for actions inside a cloud sandbox. Isolation is not approval.",
+          "next": "Run a prompt-injection test and confirm a person can stop the session."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No fetched text covers audit events, log export, or retention for cloud sandbox runs.",
+          "next": "Reconstruct a synthetic run and identify audit gaps."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The billing page lists compute (vCPU second), memory, and snapshot meters. It says AI-credit budgets do not cover cloud sandboxes; use a product or SKU budget. No budget or measured usage exists.",
+          "next": "Reconcile vCPU-second pricing, set a product budget, and measure a rehearsal."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "No fetched text covers the cloud sandbox egress policy, allowlist, or firewall behavior.",
+          "next": "Review the network policy and test an allowed and a denied destination."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "No fetched text covers preview limits, support, reliability, or incident ownership for cloud sandboxes.",
+          "next": "Record preview risk acceptance, a support route, and a rehearsed fallback."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "The billing page says snapshots are metered until the sandbox is deleted. No fetched text shows scoped stop and delete steps or after-cleanup verification.",
+          "next": "Document and rehearse stop and delete steps, then verify no snapshot remains."
+        }
+      ]
+    }
+  ]
+}
