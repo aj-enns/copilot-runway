@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "runId": "45383786707",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Source hash changed since 2026-11-03. The page now covers local and cloud sandboxing and says cloud use is usage-billed. It does not state the cloud release stage, so lifecycle and all gates stay unknown. Human dates are unchanged.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "1ba8874838c1cb798d8eb003c1d47b4251658352f51c0b1a19376edfe2907514",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub. Cloud sandboxing is billed based on usage."
+        }
+      ],
+      "findings": [
+        {"gate": "eligibility", "status": "unknown", "reason": "Fetched page does not state the cloud sandbox release stage, eligible plans, or enablement path.", "next": "Re-verify stage and eligibility on the cloud sandbox page."},
+        {"gate": "admin-control", "status": "unknown", "reason": "No enterprise policy or bypass-prevention control for cloud sandboxes appears in the fetched evidence.", "next": "Find an official policy source and run a negative test."},
+        {"gate": "identity", "status": "unknown", "reason": "The fetched evidence shows no identity flow or token scoping for cloud sessions.", "next": "Document identity flow and scopes from official sources."},
+        {"gate": "data", "status": "unknown", "reason": "Retention, deletion, and residency of cloud session data are not in the fetched evidence.", "next": "Obtain data-flow and retention documentation."},
+        {"gate": "human-approval", "status": "unknown", "reason": "No approval-flow evidence for cloud sandbox actions was fetched.", "next": "Verify approval behavior in a pilot."},
+        {"gate": "audit", "status": "unknown", "reason": "No audit-log coverage for cloud sandbox sessions was fetched.", "next": "Find official audit event documentation."},
+        {"gate": "cost", "status": "unknown", "reason": "Page says cloud sandboxing is billed on usage; rates, budgets, and snapshot costs are not measured.", "next": "Read the billing page and measure a pilot."},
+        {"gate": "network", "status": "unknown", "reason": "Egress controls for cloud sandboxes are not shown in the fetched evidence.", "next": "Verify egress policy and test denial."},
+        {"gate": "operations", "status": "unknown", "reason": "No support, quota, or lifecycle-operations evidence was fetched.", "next": "Define owner and runbook after review."},
+        {"gate": "rollback", "status": "unknown", "reason": "No evidence on stopping sessions or removing snapshots was fetched.", "next": "Verify cleanup steps for remote resources."}
+      ]
+    }
+  ]
+}
