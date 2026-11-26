@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "45810146230",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment of Cloud Sandboxes. The fetched overview URL now returns the local sandboxing article, with cloud sandboxing as a short summary. The billing page still shows usage-based billing with budget controls. No fetched page states a lifecycle stage. Human dates and gates are not renewed.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "619851bdb473811c37bfc79a80998dc0a56762c8d15b06d86a83e83c9dc187c8",
+          "quote": "Cloud sandboxing : Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub. Cloud sandboxing is billed based on usage."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "8b0751c3f3000d7643ad2e6f49940f22dede9b416b030ad5a47610bca8a7edba",
+          "quote": "If you enable Stop usage when budget limit is reached , additional cloud sandbox usage is blocked once the budget reaches 100%, and a banner notifies users in the affected scope."
+        }
+      ],
+      "findings": [
+        {
+          "gate": "eligibility",
+          "status": "unknown",
+          "reason": "No fetched page states the cloud sandbox release stage, supported accounts, or enablement path.",
+          "next": "Find a primary source that states the stage and eligibility. Then test with a named pilot cohort."
+        },
+        {
+          "gate": "admin-control",
+          "status": "unknown",
+          "reason": "Fetched text covers enterprise policy only for local sandboxing. No cloud sandbox disable or restrict control was found.",
+          "next": "Find the cloud sandbox policy documentation. Then run a negative enforcement test."
+        },
+        {
+          "gate": "identity",
+          "status": "unknown",
+          "reason": "The fetched pages do not describe cloud session identity, repository scope, or credential handling.",
+          "next": "Review the cloud identity flow and run an out-of-scope access test."
+        },
+        {
+          "gate": "data",
+          "status": "unknown",
+          "reason": "Retention, deletion, and residency for cloud sessions and stored snapshots are not covered in the fetched text.",
+          "next": "Obtain the data-flow, snapshot retention, and deletion evidence. Then rehearse with synthetic data."
+        },
+        {
+          "gate": "human-approval",
+          "status": "unknown",
+          "reason": "No fetched page defines approval boundaries or stop behavior for cloud sandbox sessions.",
+          "next": "Document the approval boundaries and run a prompt-injection test."
+        },
+        {
+          "gate": "audit",
+          "status": "unknown",
+          "reason": "No fetched page describes audit events or logs for cloud sandbox sessions.",
+          "next": "Find the audit evidence and reconstruct a synthetic run."
+        },
+        {
+          "gate": "cost",
+          "status": "unknown",
+          "reason": "The billing page documents meters and budgets, but no representative usage was measured and no budget was tested.",
+          "next": "Measure a rehearsal and test a product-level or SKU-level stop-usage budget."
+        },
+        {
+          "gate": "network",
+          "status": "unknown",
+          "reason": "Fetched text does not list cloud sandbox endpoints or egress controls. Local network details do not apply.",
+          "next": "Find cloud network requirements and test an allowed and a denied destination."
+        },
+        {
+          "gate": "operations",
+          "status": "unknown",
+          "reason": "Support terms, stage limitations, and incident ownership are not stated in the fetched text.",
+          "next": "Record the stage and support route. Obtain preview risk acceptance if applicable."
+        },
+        {
+          "gate": "rollback",
+          "status": "unknown",
+          "reason": "The billing page says stopped sessions keep a snapshot until deleted, but no cleanup or deletion steps were verified.",
+          "next": "Verify stop and delete steps for the exact session and its snapshot."
+        }
+      ]
+    }
+  ]
+}
