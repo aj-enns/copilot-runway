@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "runId": "45990081106",
+  "baseSha": "10903a6c114e6c7928495b5b0a0f45c183eeb634",
+  "decisions": [
+    {
+      "id": "cloud-sandboxes",
+      "outcome": "review",
+      "reason": "Weekly reassessment. The source page changed (new revision) and now frames cloud and local sandboxing together. It does not state a release stage, so lifecycle stays unverified. Billing is usage-based; local sandboxing is included in the seat.",
+      "citations": [
+        {
+          "url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes",
+          "sha256": "619851bdb473811c37bfc79a80998dc0a56762c8d15b06d86a83e83c9dc187c8",
+          "quote": "Run an entire Copilot session remotely, inside a fully isolated, ephemeral Linux environment hosted by GitHub."
+        },
+        {
+          "url": "https://docs.github.com/en/billing/concepts/product-billing/cloud-and-local-sandboxes",
+          "sha256": "8b0751c3f3000d7643ad2e6f49940f22dede9b416b030ad5a47610bca8a7edba",
+          "quote": "Billing applies to cloud sandboxing only. Local sandboxing is included in the standard GitHub Copilot seat at no additional cost."
+        }
+      ],
+      "findings": [
+        {"gate": "eligibility", "status": "unknown", "reason": "Fetched text states no release stage or account eligibility for cloud sandboxes. Human lifecycle verification is still required.", "next": "Confirm stage, plan eligibility, and enablement path in current official docs."},
+        {"gate": "admin-control", "status": "unknown", "reason": "No enforceable policy or bypass test was captured in the fetched evidence.", "next": "Locate the enterprise policy and run a negative enforcement test."},
+        {"gate": "identity", "status": "unknown", "reason": "Fetched evidence does not establish token scopes, credential owner, or revocation.", "next": "Document identity flow and test an out-of-scope access denial."},
+        {"gate": "data", "status": "unknown", "reason": "Snapshot retention is billed, but retention, deletion, and residency terms were not captured.", "next": "Review data-flow, snapshot retention, and deletion evidence."},
+        {"gate": "human-approval", "status": "unknown", "reason": "No approval boundary or prompt-injection test is evidenced.", "next": "Define approval boundaries and run an untrusted-instruction test."},
+        {"gate": "audit", "status": "unknown", "reason": "No audit trail or log retention is evidenced for cloud sessions.", "next": "Reconstruct a synthetic cloud run from available traces."},
+        {"gate": "cost", "status": "unknown", "reason": "Billing page lists compute, memory, and snapshot storage meters. No rate, budget, or measured usage is captured.", "next": "Record current rates and measure a rehearsal against a budget."},
+        {"gate": "network", "status": "unknown", "reason": "Egress controls and required endpoints were not captured in this evidence.", "next": "Validate allowed and denied destinations on the actual surface."},
+        {"gate": "operations", "status": "unknown", "reason": "Preview risk acceptance, support route, and incident ownership are not evidenced.", "next": "Record stage, support route, and a failure rehearsal."},
+        {"gate": "rollback", "status": "unknown", "reason": "Stopped sessions keep snapshots until deleted. Cleanup steps were not verified.", "next": "Document and test snapshot deletion separately from local reset."}
+      ]
+    }
+  ]
+}
